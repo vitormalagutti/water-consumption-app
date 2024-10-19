@@ -6,7 +6,7 @@ from streamlit_folium import st_folium
 import matplotlib.pyplot as plt
 
 # Set up the Streamlit page
-st.title("Water Consumption and Building Visualization")
+st.title("Water Consumption Model")
 
 # File upload section
 uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
@@ -74,7 +74,7 @@ if uploaded_file:
         with tab2:
             st.write("### User Type Percentages Overview")
             fig, ax = plt.subplots(figsize=(10, 6))
-            combined_table_raw.drop('Overall').plot(kind='bar', stacked=True, ax=ax)
+            combined_table_raw.drop('Overall').plot(kind='bar', stacked=False, ax=ax)
             ax.set_ylabel('Percentage')
             ax.set_title('User Type Percentages by Zone')
             st.pyplot(fig)
