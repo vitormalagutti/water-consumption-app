@@ -4,8 +4,20 @@ import plotly.express as px
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 
-# Set up the Streamlit page with custom title and layout
+# Set up the Streamlit page with custom title and layout and white background
 st.set_page_config(page_title="Water Consumption Visualization", layout="wide")
+
+# Apply custom CSS to set the background color to white
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: white;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # Main Title with description
 st.title("🌊 Water Consumption and Building Visualization")
@@ -41,10 +53,10 @@ if uploaded_file:
         # Create a formatted version of the combined table for display
         combined_table_formatted = combined_table_raw.copy().applymap(lambda x: f"{x:.1f}%" if x > 0 else "0.0%")
 
-        # Sidebar inputs section with sliders for average values
+        # Sidebar inputs section with sliders only for the average litres per person
         st.sidebar.header("🔧 Average Inputs")
-        avg_floors = st.sidebar.slider("Average Floors per Building", min_value=0, max_value=10, step=1, value=1)
-        avg_people_per_family = st.sidebar.slider("Average People per Family", min_value=1, max_value=10, step=1, value=5)
+        avg_floors = st.sidebar.number_input("Average Floors per Building", min_value=0.0, step=0.1, value=1.0)
+        avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=1.0, step=1.0, value=5.0)
         avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=500, step=10, value=150)
 
         # Display total cubic meters needed if averages are provided
@@ -103,9 +115,8 @@ if uploaded_file:
             st.markdown("### 🗺️ Map of Building Locations with Satellite View")
             category = st.sidebar.selectbox("Choose a characteristic to display on the map", options=['Zone', 'Status', 'User Type'], index=0)
 
-            # Debugging: Show dataframe for checking coordinates
-            st.markdown("### Debug: Map Data Overview")
-            st.dataframe(df[['X', 'Y', 'ID', category]].head())
+            # Assume that the coordinates are in WGS84 format
+            st.markdown("**Note**: Coordinates are assumed to be in WGS84 (latitude/longitude).")
 
             # Create a Plotly map with scatter_mapbox
             fig = px.scatter_mapbox(
@@ -121,7 +132,7 @@ if uploaded_file:
             )
 
             fig.update_layout(
-                mapbox_style="satellite",
+                mapbox_style="carto-positron",
                 margin={"r": 0, "t": 0, "l": 0, "b": 0}
             )
 
