@@ -78,7 +78,7 @@ if uploaded_file:
 
            # Plot Water Consumption Variation per Zone
             st.write("### Water Consumption Variation per Zone")
-          if 'Cubic Metres' in water_per_zone.columns:
+        if 'Cubic Metres' in water_per_zone.columns:
              fig, ax = plt.subplots(figsize=(10, 6))
              water_per_zone['Cubic Metres'] = pd.to_numeric(water_per_zone['Cubic Metres'], errors='coerce')
              water_per_zone.plot(x='Zone', y='Cubic Metres', kind='bar', ax=ax, color='skyblue')
