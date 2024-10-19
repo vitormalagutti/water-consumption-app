@@ -37,11 +37,11 @@ if uploaded_file:
         # Create a formatted version of the combined table for display
         combined_table_formatted = combined_table_raw.copy().applymap(lambda x: f"{x:.1f}%" if x > 0 else "0.0%")
 
-        # Input section for averages
+        # Input section for averages with predefined default values
         st.sidebar.header("Average Inputs")
-        avg_floors = st.sidebar.number_input("Average Floors per Building", min_value=0.0, step=0.1)
-        avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=0.0, step=0.1)
-        avg_litres_per_person = st.sidebar.number_input("Average Litres per Person per Day", min_value=0.0, step=0.1)
+        avg_floors = st.sidebar.number_input("Average Floors per Building", min_value=0.0, step=0.1, value=1.0)
+        avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=0.0, step=0.1, value=5.0)
+        avg_litres_per_person = st.sidebar.number_input("Average Litres per Person per Day", min_value=0.0, step=0.1, value=150.0)
 
         # Display total cubic meters needed if averages are provided
         if avg_floors > 0 and avg_people_per_family > 0 and avg_litres_per_person > 0:
@@ -92,6 +92,8 @@ if uploaded_file:
                 st.error("The 'Cubic Metres' column is missing in the water_per_zone DataFrame.")
 
         with tab3:
+            # Ensure that the map is created before entering the tab
+            st.write("### Map of Building Locations with Satellite View")
             # Let the user choose which column to use for categorization
             category = st.sidebar.selectbox("Choose a characteristic to display on the map", options=['Zone', 'Status', 'User Type'])
 
@@ -127,7 +129,6 @@ if uploaded_file:
                 ).add_to(my_map)
 
             # Display the map within the tab
-            st.write("### Map of Building Locations with Satellite View")
             st_data = st_folium(my_map, width=700, height=500)
 
     else:
