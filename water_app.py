@@ -4,6 +4,7 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 import geopandas as gpd
 from shapely.geometry import Point
+import contextily as ctx  # Import contextily for basemap support
 
 # Set up the Streamlit page with custom title and layout
 st.set_page_config(page_title="Water Consumption Visualization", layout="wide")
