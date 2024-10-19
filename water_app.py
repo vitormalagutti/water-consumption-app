@@ -92,10 +92,9 @@ if uploaded_file:
                 st.error("The 'Cubic Metres' column is missing in the water_per_zone DataFrame.")
 
         with tab3:
-            # Ensure that the map is created before entering the tab
             st.write("### Map of Building Locations with Satellite View")
-            # Let the user choose which column to use for categorization
-            category = st.sidebar.selectbox("Choose a characteristic to display on the map", options=['Zone', 'Status', 'User Type'])
+            # Let the user choose which column to use for categorization, defaulting to "Zone"
+            category = st.sidebar.selectbox("Choose a characteristic to display on the map", options=['Zone', 'Status', 'User Type'], index=0)
 
             # Assign a color for each unique value in the chosen category
             unique_values = df[category].unique()
@@ -133,3 +132,4 @@ if uploaded_file:
 
     else:
         st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', or 'Status'.")
+
