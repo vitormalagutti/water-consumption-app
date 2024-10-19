@@ -57,7 +57,7 @@ if uploaded_file:
         st.sidebar.header("🔧 Average Inputs")
         avg_floors = st.sidebar.number_input("Average Floors per Building", min_value=0.0, step=0.1, value=1.0)
         avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=1.0, step=1.0, value=5.0)
-        avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=500, step=10, value=150)
+        avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=1000, step=10, value=150)
 
         # Display total cubic meters needed if averages are provided
         if avg_floors > 0 and avg_people_per_family > 0 and avg_litres_per_person > 0:
@@ -115,10 +115,13 @@ if uploaded_file:
             st.markdown("### 🗺️ Map of Building Locations with Satellite View")
             category = st.sidebar.selectbox("Choose a characteristic to display on the map", options=['Zone', 'Status', 'User Type'], index=0)
 
+            # Create a unique list of zone values to avoid legend stretching
+            unique_zones = df['Zone'].unique()
+
             # Assume that the coordinates are in WGS84 format
             st.markdown("**Note**: Coordinates are assumed to be in WGS84 (latitude/longitude).")
 
-            # Create a Plotly map with scatter_mapbox
+            # Create a Plotly map with scatter_mapbox and a satellite basemap
             fig = px.scatter_mapbox(
                 df,
                 lat='Y',
@@ -126,13 +129,14 @@ if uploaded_file:
                 color=category,
                 hover_name='ID',
                 hover_data={'Zone': True, 'Status': True},
+                category_orders={category: unique_zones.tolist()},
                 color_discrete_sequence=px.colors.qualitative.Safe,
                 zoom=9,
                 height=500
             )
 
             fig.update_layout(
-                mapbox_style="carto-positron",
+                mapbox_style="satellite",
                 margin={"r": 0, "t": 0, "l": 0, "b": 0}
             )
 
