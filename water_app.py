@@ -3,6 +3,7 @@ import pandas as pd
 import folium
 from folium.plugins import MarkerCluster
 from streamlit_folium import st_folium
+import matplotlib.pyplot as plt
 
 # Set up the Streamlit page
 st.title("Water Consumption and Building Visualization")
@@ -24,13 +25,19 @@ if uploaded_file:
 
         # Calculate overall percentages of each user type
         user_counts = df['User Type'].value_counts(normalize=True) * 100
-        st.write("### Overall User Type Percentages")
-        st.dataframe(user_counts)
+        user_counts = user_counts.apply(lambda x: f"{x:.1f}%")  # Format with percentage and 1 decimal place
 
         # Calculate percentages per zone
         user_per_zone = df.groupby('Zone')['User Type'].value_counts(normalize=True).unstack().fillna(0) * 100
-        st.write("### User Type Percentages per Zone")
-        st.dataframe(user_per_zone)
+        user_per_zone = user_per_zone.applymap(lambda x: f"{x:.1f}%" if x > 0 else "0.0%")  # Format with percentage and 1 decimal place
+
+        # Combine the overall and per-zone percentages into a single table
+        combined_table = user_per_zone.copy()
+        combined_table.loc['Overall'] = df['User Type'].value_counts(normalize=True) * 100
+        combined_table.loc['Overall'] = combined_table.loc['Overall'].apply(lambda x: f"{x:.1f}%")
+        
+        st.write("### User Type Percentages (Overall and Per Zone)")
+        st.dataframe(combined_table)
 
         # Input section for averages
         st.sidebar.header("Average Inputs")
@@ -50,6 +57,7 @@ if uploaded_file:
             df['Cubic Metres'] = df['People'] * avg_litres_per_person / 1000
             water_per_zone = df[df['User Type'].isin(['Legal', 'Illegal'])].groupby('Zone')['Cubic Metres'].sum().reset_index()
             water_per_zone['Percentage'] = (water_per_zone['Cubic Metres'] / total_cumecs_needed) * 100
+            water_per_zone['Percentage'] = water_per_zone['Percentage'].apply(lambda x: f"{x:.1f}%")
 
             st.write(f"### Total cubic metres needed per day: {total_cumecs_needed:.2f}")
             st.write("### Water Consumption per Zone")
@@ -89,22 +97,17 @@ if uploaded_file:
                 popup=f"ID: {row['ID']}, Zone: {row['Zone']}, Status: {row['Status']}"
             ).add_to(my_map)
 
-        # Add a legend to the map for the selected category
-        legend_html = f'''
-            <div style="position: fixed; 
-                        bottom: 50px; left: 50px; width: 200px; height: {30 * len(unique_values)}px; 
-                        border:2px solid grey; z-index:9999; font-size:14px;
-                        background-color:white; padding: 10px;">
-            <h4 style="margin-bottom:10px;">{category} Legend</h4>
-            '''
-        for value, color in color_dict.items():
-            legend_html += f'<i style="background:{color}; width:20px; height:20px; float:left; margin-right:5px; border-radius:50%;"></i>{value}<br>'
-        legend_html += '</div>'
-        my_map.get_root().html.add_child(folium.Element(legend_html))
-
         # Display the map
-        st.write("### Map of Building Locations with Satellite View and Legend")
+        st.write("### Map of Building Locations with Satellite View")
         st_data = st_folium(my_map, width=700, height=500)
+
+        # Plot User Type Percentages
+        st.write("### User Type Percentages Overview")
+        fig, ax = plt.subplots(figsize=(10, 6))
+        combined_table.drop('Overall').plot(kind='bar', stacked=True, ax=ax)
+        ax.set_ylabel('Percentage')
+        ax.set_title('User Type Percentages by Zone')
+        st.pyplot(fig)
 
     else:
         st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', or 'Status'.")
