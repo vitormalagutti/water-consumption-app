@@ -36,7 +36,29 @@ if uploaded_file:
 
         # Create a formatted version of the combined table for display
         combined_table_formatted = combined_table_raw.copy().applymap(lambda x: f"{x:.1f}%" if x > 0 else "0.0%")
-        
+
+        # Input section for averages
+        st.sidebar.header("Average Inputs")
+        avg_floors = st.sidebar.number_input("Average Floors per Building", min_value=0.0, step=0.1)
+        avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=0.0, step=0.1)
+        avg_litres_per_person = st.sidebar.number_input("Average Litres per Person per Day", min_value=0.0, step=0.1)
+
+        # Display total cubic meters needed if averages are provided
+        if avg_floors > 0 and avg_people_per_family > 0 and avg_litres_per_person > 0:
+            # Calculate total buildings with legal or illegal connections
+            total_buildings = len(filtered_df[filtered_df['User Type'].isin(['Legal', 'Illegal'])])
+            total_people = total_buildings * avg_floors * avg_people_per_family
+            total_cumecs_needed = total_people * avg_litres_per_person / 1000
+
+            # Calculate water consumption per zone
+            filtered_df['People'] = avg_floors * avg_people_per_family
+            filtered_df['Cubic Metres'] = filtered_df['People'] * avg_litres_per_person / 1000
+
+            # Summarize water consumption per zone
+            water_per_zone = filtered_df[filtered_df['User Type'].isin(['Legal', 'Illegal'])].groupby('Zone')['Cubic Metres'].sum().reset_index()
+            water_per_zone['Percentage'] = (water_per_zone['Cubic Metres'] / total_cumecs_needed) * 100
+            water_per_zone['Percentage'] = water_per_zone['Percentage'].apply(lambda x: f"{x:.1f}%")
+
         # Use Streamlit's tabs to separate sections
         tab1, tab2, tab3 = st.tabs(["Tables", "Graph", "Map"])
 
@@ -44,31 +66,7 @@ if uploaded_file:
             st.write("### User Type Percentages (Overall and Per Zone)")
             st.dataframe(combined_table_formatted)
 
-            # Input section for averages
-            st.sidebar.header("Average Inputs")
-            avg_floors = st.sidebar.number_input("Average Floors per Building", min_value=0.0, step=0.1)
-            avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=0.0, step=0.1)
-            avg_litres_per_person = st.sidebar.number_input("Average Litres per Person per Day", min_value=0.0, step=0.1)
-
-            # Display total cubic meters needed if averages are provided
             if avg_floors > 0 and avg_people_per_family > 0 and avg_litres_per_person > 0:
-                # Calculate total buildings with legal or illegal connections
-                total_buildings = len(filtered_df[filtered_df['User Type'].isin(['Legal', 'Illegal'])])
-                total_people = total_buildings * avg_floors * avg_people_per_family
-                total_cumecs_needed = total_people * avg_litres_per_person / 1000
-
-                # Calculate water consumption per zone
-                filtered_df['People'] = avg_floors * avg_people_per_family
-                filtered_df['Cubic Metres'] = filtered_df['People'] * avg_litres_per_person / 1000
-
-                # Check if the calculation worked as expected
-                st.write("### Debugging: Displaying Data for Water Consumption Calculation")
-                st.dataframe(filtered_df[['Zone', 'People', 'Cubic Metres']].head())
-
-                water_per_zone = filtered_df[filtered_df['User Type'].isin(['Legal', 'Illegal'])].groupby('Zone')['Cubic Metres'].sum().reset_index()
-                water_per_zone['Percentage'] = (water_per_zone['Cubic Metres'] / total_cumecs_needed) * 100
-                water_per_zone['Percentage'] = water_per_zone['Percentage'].apply(lambda x: f"{x:.1f}%")
-
                 st.write(f"### Total cubic metres needed per day: {total_cumecs_needed:.2f}")
                 st.write("### Water Consumption per Zone")
                 st.dataframe(water_per_zone)
