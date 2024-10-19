@@ -1,8 +1,7 @@
 import streamlit as st
 import pandas as pd
-import folium
-from folium.plugins import MarkerCluster
-from streamlit_folium import st_folium
+import plotly.express as px
+import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 
 # Set up the Streamlit page with custom title and layout
@@ -66,7 +65,6 @@ if uploaded_file:
 
         with tab1:
             st.markdown("### 📊 User Type Percentages (Overall and Per Zone)")
-            # Add proper styling with black text
             styled_combined_table = combined_table_formatted.style.set_properties(**{
                 'background-color': '#f5f5f5',
                 'color': 'black',
@@ -77,14 +75,12 @@ if uploaded_file:
             if avg_floors > 0 and avg_people_per_family > 0 and avg_litres_per_person > 0:
                 st.markdown(f"### 💧 Total Cubic Metres Needed per Day: **{total_cumecs_needed:.2f}**")
                 st.markdown("### 🏢 Water Consumption per Zone")
-                # Add styling to the water consumption table with black text
                 styled_water_per_zone = water_per_zone.style.set_properties(**{
                     'background-color': '#f0f0f0',
                     'color': 'black',
                     'border-color': '#cccccc'
                 })
                 st.dataframe(styled_water_per_zone)
-        
 
         with tab2:
             st.markdown("### 📈 User Type Percentages Overview")
@@ -106,18 +102,26 @@ if uploaded_file:
         with tab3:
             st.markdown("### 🗺️ Map of Building Locations with Satellite View")
             category = st.sidebar.selectbox("Choose a characteristic to display on the map", options=['Zone', 'Status', 'User Type'], index=0)
-            unique_values = df[category].unique()
-            color_palette = ['red', 'blue', 'green', 'purple', 'orange', 'darkred', 'lightred', 'beige', 'darkblue', 'darkgreen', 'cadetblue', 'darkpurple', 'pink', 'lightblue', 'lightgreen', 'gray', 'black', 'lightgray']
-            color_dict = {value: color_palette[i % len(color_palette)] for i, value in enumerate(unique_values)}
 
-            map_center = [df['Y'].mean(), df['X'].mean()]
-            my_map = folium.Map(location=map_center, zoom_start=9, tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', attr='ESRI World Imagery')
+            # Create a Plotly map with scatter_mapbox
+            fig = px.scatter_mapbox(
+                df,
+                lat='Y',
+                lon='X',
+                color=category,
+                hover_name='ID',
+                hover_data={'Zone': True, 'Status': True},
+                color_discrete_sequence=px.colors.qualitative.Safe,
+                zoom=9,
+                height=500
+            )
 
-            for _, row in df.iterrows():
-                circle_color = color_dict.get(row[category], 'gray')
-                folium.CircleMarker(location=[row['Y'], row['X']], radius=4, color=circle_color, fill=True, fill_color=circle_color, fill_opacity=0.7, popup=f"ID: {row['ID']}, Zone: {row['Zone']}, Status: {row['Status']}").add_to(my_map)
+            fig.update_layout(
+                mapbox_style="satellite",
+                margin={"r": 0, "t": 0, "l": 0, "b": 0}
+            )
 
-            st_data = st_folium(my_map, width=700, height=500)
+            st.plotly_chart(fig, use_container_width=True)
 
     else:
         st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', or 'Status'.")
