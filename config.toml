@@ -1,0 +1,8 @@
+# .streamlit/config.toml
+
+[theme]
+primaryColor = "#4CAF50"  # A bright green or any other preferred primary color
+backgroundColor = "#FFFFFF"  # White background for the whole app
+secondaryBackgroundColor = "#F0F0F0"  # Light grey background for sections
+textColor = "#000000"  # Black text for contrast
+font = "sans serif"  # Optional, you can specify a font if preferred
