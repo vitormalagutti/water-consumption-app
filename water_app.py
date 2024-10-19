@@ -25,19 +25,19 @@ if uploaded_file:
 
         # Calculate overall percentages of each user type
         user_counts = df['User Type'].value_counts(normalize=True) * 100
-        user_counts = user_counts.apply(lambda x: f"{x:.1f}%")  # Format with percentage and 1 decimal place
 
         # Calculate percentages per zone
         user_per_zone = df.groupby('Zone')['User Type'].value_counts(normalize=True).unstack().fillna(0) * 100
-        user_per_zone = user_per_zone.applymap(lambda x: f"{x:.1f}%" if x > 0 else "0.0%")  # Format with percentage and 1 decimal place
 
-        # Combine the overall and per-zone percentages into a single table
-        combined_table = user_per_zone.copy()
-        combined_table.loc['Overall'] = df['User Type'].value_counts(normalize=True) * 100
-        combined_table.loc['Overall'] = combined_table.loc['Overall'].apply(lambda x: f"{x:.1f}%")
+        # Combine the overall and per-zone percentages into a single table (raw for plotting)
+        combined_table_raw = user_per_zone.copy()
+        combined_table_raw.loc['Overall'] = user_counts
+
+        # Create a formatted version of the combined table for display
+        combined_table_formatted = combined_table_raw.copy().applymap(lambda x: f"{x:.1f}%" if x > 0 else "0.0%")
         
         st.write("### User Type Percentages (Overall and Per Zone)")
-        st.dataframe(combined_table)
+        st.dataframe(combined_table_formatted)
 
         # Input section for averages
         st.sidebar.header("Average Inputs")
@@ -104,7 +104,7 @@ if uploaded_file:
         # Plot User Type Percentages
         st.write("### User Type Percentages Overview")
         fig, ax = plt.subplots(figsize=(10, 6))
-        combined_table.drop('Overall').plot(kind='bar', stacked=True, ax=ax)
+        combined_table_raw.drop('Overall').plot(kind='bar', stacked=True, ax=ax)
         ax.set_ylabel('Percentage')
         ax.set_title('User Type Percentages by Zone')
         st.pyplot(fig)
