@@ -66,12 +66,25 @@ if uploaded_file:
 
         with tab1:
             st.markdown("### 📊 User Type Percentages (Overall and Per Zone)")
-            st.dataframe(combined_table_formatted.style.set_properties(**{'background-color': '#f5f5f5'}))
+            # Add proper styling with black text
+            styled_combined_table = combined_table_formatted.style.set_properties(**{
+                'background-color': '#f5f5f5',
+                'color': 'black',
+                'border-color': '#cccccc'
+            })
+            st.dataframe(styled_combined_table)
 
             if avg_floors > 0 and avg_people_per_family > 0 and avg_litres_per_person > 0:
                 st.markdown(f"### 💧 Total Cubic Metres Needed per Day: **{total_cumecs_needed:.2f}**")
                 st.markdown("### 🏢 Water Consumption per Zone")
-                st.dataframe(water_per_zone.style.set_properties(**{'background-color': '#f0f0f0'}))
+                # Add styling to the water consumption table with black text
+                styled_water_per_zone = water_per_zone.style.set_properties(**{
+                    'background-color': '#f0f0f0',
+                    'color': 'black',
+                    'border-color': '#cccccc'
+                })
+                st.dataframe(styled_water_per_zone)
+        
 
         with tab2:
             st.markdown("### 📈 User Type Percentages Overview")
