@@ -113,7 +113,7 @@ if uploaded_file:
                     popup=f"ID: {row['ID']}, Zone: {row['Zone']}, Status: {row['Status']}"
                 ).add_to(my_map)
 
-            # Display the map
+            # Display the map within the tab
             st.write("### Map of Building Locations with Satellite View")
             st_data = st_folium(my_map, width=700, height=500)
 
