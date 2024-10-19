@@ -31,17 +31,26 @@ if uploaded_file:
         unique_values = df[category].unique()
         color_palette = [
             'red', 'blue', 'green', 'purple', 'orange', 'darkred', 'lightred', 'beige', 'darkblue',
-            'darkgreen', 'cadetblue', 'darkpurple', 'white', 'pink', 'lightblue', 'lightgreen',
+            'darkgreen', 'cadetblue', 'darkpurple', 'pink', 'lightblue', 'lightgreen',
             'gray', 'black', 'lightgray'
         ]
         color_dict = {value: color_palette[i % len(color_palette)] for i, value in enumerate(unique_values)}
 
-        # Display total litres needed if averages are provided
+        # Display total cubic meters needed if averages are provided
         if avg_floors > 0 and avg_people_per_family > 0 and avg_litres_per_person > 0:
             total_buildings = len(df)
             total_people = total_buildings * avg_floors * avg_people_per_family
-            total_litres_needed = total_people * avg_litres_per_person
-            st.write(f"### Total litres needed per day: {total_litres_needed:.2f}")
+            total_cumecs_needed = total_people * avg_litres_per_person / 1000
+
+            # Calculate water consumption per zone
+            df['People'] = avg_floors * avg_people_per_family
+            df['Cubic Metres'] = df['People'] * avg_litres_per_person / 1000
+            water_per_zone = df.groupby('Zone')['Cubic Metres'].sum().reset_index()
+            water_per_zone['Percentage'] = (water_per_zone['Cubic Metres'] / total_cumecs_needed) * 100
+
+            st.write(f"### Total cubic metres needed per day: {total_cumecs_needed:.2f}")
+            st.write("### Water Consumption per Zone")
+            st.dataframe(water_per_zone)
 
         # Create a folium map centered around the average coordinates of the data with satellite basemap
         map_center = [df['Y'].mean(), df['X'].mean()]
@@ -52,13 +61,17 @@ if uploaded_file:
             attr='ESRI World Imagery'
         )
 
-        # Add markers for each point with a different color based on the selected category
+        # Add markers for each point with a CircleMarker and smaller size
         for _, row in df.iterrows():
-            marker_color = color_dict.get(row[category], 'gray')  # Use 'gray' as default if no match
-            folium.Marker(
+            circle_color = color_dict.get(row[category], 'gray')  # Use 'gray' as default if no match
+            folium.CircleMarker(
                 location=[row['Y'], row['X']],
-                popup=f"ID: {row['ID']}, Zone: {row['Zone']}, Status: {row['Status']}",
-                icon=folium.Icon(color=marker_color)
+                radius=5,  # This defines the size of the dot; you can adjust this as needed
+                color=circle_color,
+                fill=True,
+                fill_color=circle_color,
+                fill_opacity=0.7,
+                popup=f"ID: {row['ID']}, Zone: {row['Zone']}, Status: {row['Status']}"
             ).add_to(my_map)
 
         # Add a legend to the map for the selected category
@@ -75,7 +88,7 @@ if uploaded_file:
         my_map.get_root().html.add_child(folium.Element(legend_html))
 
         # Display the map
-        st.write("### Map of Building Locations with Satellite View")
+        st.write("### Map of Building Locations with Satellite View and Legend")
         st_data = st_folium(my_map, width=700, height=500)
 
     else:
