@@ -27,8 +27,14 @@ if uploaded_file:
         # Let the user choose which column to use for categorization
         category = st.sidebar.selectbox("Choose a characteristic to display on the map", options=['Zone', 'Status'])
 
-        # Get unique values for the chosen category
+        # Assign a color for each unique value in the chosen category
         unique_values = df[category].unique()
+        color_palette = [
+            'red', 'blue', 'green', 'purple', 'orange', 'darkred', 'lightred', 'beige', 'darkblue',
+            'darkgreen', 'cadetblue', 'darkpurple', 'white', 'pink', 'lightblue', 'lightgreen',
+            'gray', 'black', 'lightgray'
+        ]
+        color_dict = {value: color_palette[i % len(color_palette)] for i, value in enumerate(unique_values)}
 
         # Display total litres needed if averages are provided
         if avg_floors > 0 and avg_people_per_family > 0 and avg_litres_per_person > 0:
@@ -37,27 +43,40 @@ if uploaded_file:
             total_litres_needed = total_people * avg_litres_per_person
             st.write(f"### Total litres needed per day: {total_litres_needed:.2f}")
 
-        # Generate multiple maps based on selected characteristic
-        for value in unique_values:
-            st.write(f"### Map for {category}: {value}")
+        # Create a folium map centered around the average coordinates of the data with satellite basemap
+        map_center = [df['Y'].mean(), df['X'].mean()]
+        my_map = folium.Map(
+            location=map_center, 
+            zoom_start=12,
+            tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            attr='ESRI World Imagery'
+        )
 
-            # Filter data for the current category value
-            filtered_df = df[df[category] == value]
+        # Add markers for each point with a different color based on the selected category
+        for _, row in df.iterrows():
+            marker_color = color_dict.get(row[category], 'gray')  # Use 'gray' as default if no match
+            folium.Marker(
+                location=[row['Y'], row['X']],
+                popup=f"ID: {row['ID']}, Zone: {row['Zone']}, Status: {row['Status']}",
+                icon=folium.Icon(color=marker_color)
+            ).add_to(my_map)
 
-            # Create a folium map centered around the average coordinates of the filtered data
-            map_center = [filtered_df['Y'].mean(), filtered_df['X'].mean()]
-            my_map = folium.Map(location=map_center, zoom_start=12)
-            
-            # Add markers for each point in the filtered data
-            marker_cluster = MarkerCluster().add_to(my_map)
-            for _, row in filtered_df.iterrows():
-                folium.Marker(
-                    location=[row['Y'], row['X']],
-                    popup=f"ID: {row['ID']}, Zone: {row['Zone']}, Status: {row['Status']}"
-                ).add_to(marker_cluster)
+        # Add a legend to the map for the selected category
+        legend_html = f'''
+            <div style="position: fixed; 
+                        bottom: 50px; left: 50px; width: 150px; height: {25 * len(unique_values)}px; 
+                        border:2px solid grey; z-index:9999; font-size:14px;
+                        background-color:white; padding: 10px;">
+            <h4 style="margin-bottom:10px;">{category} Legend</h4>
+            '''
+        for value, color in color_dict.items():
+            legend_html += f'<i style="background:{color}; width:15px; height:15px; float:left; margin-right:5px;"></i>{value}<br>'
+        legend_html += '</div>'
+        my_map.get_root().html.add_child(folium.Element(legend_html))
 
-            # Display the map
-            st_data = st_folium(my_map, width=700, height=500)
+        # Display the map
+        st.write("### Map of Building Locations with Satellite View")
+        st_data = st_folium(my_map, width=700, height=500)
 
     else:
         st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', or 'Status'.")
