@@ -1,23 +1,10 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 
-# Set up the Streamlit page with custom title and layout and white background
+# Set up the Streamlit page with custom title and layout
 st.set_page_config(page_title="Water Consumption Visualization", layout="wide")
-
-# Apply custom CSS to set the background color to white
-st.markdown(
-    """
-    <style>
-    body {
-        background-color: white;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 # Main Title with description
 st.title("🌊 Water Consumption and Building Visualization")
@@ -59,7 +46,7 @@ if uploaded_file:
         avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=1.0, step=1.0, value=5.0)
         avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=1000, step=10, value=150)
 
-        # Display total cubic meters needed if averages are provided
+        # Calculate water consumption per zone and overall consumption
         if avg_floors > 0 and avg_people_per_family > 0 and avg_litres_per_person > 0:
             total_buildings = len(filtered_df[filtered_df['User Type'].isin(['Legal', 'Illegal'])])
             total_people = total_buildings * avg_floors * avg_people_per_family
@@ -115,32 +102,31 @@ if uploaded_file:
             st.markdown("### 🗺️ Map of Building Locations with Satellite View")
             category = st.sidebar.selectbox("Choose a characteristic to display on the map", options=['Zone', 'Status', 'User Type'], index=0)
 
-            # Create a unique list of zone values to avoid legend stretching
-            unique_zones = df['Zone'].unique()
+            # Check for empty coordinates to avoid rendering issues
+            if df[['X', 'Y']].isnull().any().any():
+                st.error("Some coordinates are missing. Please ensure all points have valid latitude and longitude values.")
+            else:
+                # Assume that the coordinates are in WGS84 format
+                st.markdown("**Note**: Coordinates are assumed to be in WGS84 (latitude/longitude).")
 
-            # Assume that the coordinates are in WGS84 format
-            st.markdown("**Note**: Coordinates are assumed to be in WGS84 (latitude/longitude).")
+                # Create a Plotly map with scatter_mapbox and a satellite basemap
+                fig = px.scatter_mapbox(
+                    df,
+                    lat='Y',
+                    lon='X',
+                    color=category,
+                    hover_name='ID',
+                    hover_data={'Zone': True, 'Status': True},
+                    zoom=9,
+                    height=500
+                )
 
-            # Create a Plotly map with scatter_mapbox and a satellite basemap
-            fig = px.scatter_mapbox(
-                df,
-                lat='Y',
-                lon='X',
-                color=category,
-                hover_name='ID',
-                hover_data={'Zone': True, 'Status': True},
-                category_orders={category: unique_zones.tolist()},
-                color_discrete_sequence=px.colors.qualitative.Safe,
-                zoom=9,
-                height=500
-            )
+                fig.update_layout(
+                    mapbox_style="satellite-streets",
+                    margin={"r": 0, "t": 0, "l": 0, "b": 0}
+                )
 
-            fig.update_layout(
-                mapbox_style="satellite",
-                margin={"r": 0, "t": 0, "l": 0, "b": 0}
-            )
-
-            st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True)
 
     else:
         st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', or 'Status'.")
