@@ -60,6 +60,11 @@ if uploaded_file:
                 # Calculate water consumption per zone
                 filtered_df['People'] = avg_floors * avg_people_per_family
                 filtered_df['Cubic Metres'] = filtered_df['People'] * avg_litres_per_person / 1000
+
+                # Check if the calculation worked as expected
+                st.write("### Debugging: Displaying Data for Water Consumption Calculation")
+                st.dataframe(filtered_df[['Zone', 'People', 'Cubic Metres']].head())
+
                 water_per_zone = filtered_df[filtered_df['User Type'].isin(['Legal', 'Illegal'])].groupby('Zone')['Cubic Metres'].sum().reset_index()
                 water_per_zone['Percentage'] = (water_per_zone['Cubic Metres'] / total_cumecs_needed) * 100
                 water_per_zone['Percentage'] = water_per_zone['Percentage'].apply(lambda x: f"{x:.1f}%")
@@ -76,19 +81,17 @@ if uploaded_file:
             ax.set_title('User Type Percentages by Zone')
             st.pyplot(fig)
 
-           # Plot Water Consumption Variation per Zone
+            # Plot Water Consumption Variation per Zone
             st.write("### Water Consumption Variation per Zone")
-        if 'Cubic Metres' in water_per_zone.columns:
-             fig, ax = plt.subplots(figsize=(10, 6))
-             water_per_zone['Cubic Metres'] = pd.to_numeric(water_per_zone['Cubic Metres'], errors='coerce')
-             water_per_zone.plot(x='Zone', y='Cubic Metres', kind='bar', ax=ax, color='skyblue')
-             ax.set_ylabel('Cubic Metres')
-             ax.set_title('Water Consumption by Zone')
-             st.pyplot(fig)
-    
-        else:
+            if 'Cubic Metres' in water_per_zone.columns:
+                fig, ax = plt.subplots(figsize=(10, 6))
+                water_per_zone['Cubic Metres'] = pd.to_numeric(water_per_zone['Cubic Metres'], errors='coerce')
+                water_per_zone.plot(x='Zone', y='Cubic Metres', kind='bar', ax=ax, color='skyblue')
+                ax.set_ylabel('Cubic Metres')
+                ax.set_title('Water Consumption by Zone')
+                st.pyplot(fig)
+            else:
                 st.error("The 'Cubic Metres' column is missing in the water_per_zone DataFrame.")
-
 
         with tab3:
             # Let the user choose which column to use for categorization
