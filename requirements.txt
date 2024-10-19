@@ -3,3 +3,4 @@ pandas
 folium
 matplotlib
 plotly
+geopandas
