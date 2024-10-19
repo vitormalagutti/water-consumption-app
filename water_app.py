@@ -76,13 +76,19 @@ if uploaded_file:
             ax.set_title('User Type Percentages by Zone')
             st.pyplot(fig)
 
-            # Plot Water Consumption Variation per Zone
+           # Plot Water Consumption Variation per Zone
             st.write("### Water Consumption Variation per Zone")
-            fig, ax = plt.subplots(figsize=(10, 6))
-            water_per_zone.plot(x='Zone', y='Cubic Metres', kind='bar', ax=ax, color='skyblue')
-            ax.set_ylabel('Cubic Metres')
-            ax.set_title('Water Consumption by Zone')
-            st.pyplot(fig)
+          if 'Cubic Metres' in water_per_zone.columns:
+             fig, ax = plt.subplots(figsize=(10, 6))
+             water_per_zone['Cubic Metres'] = pd.to_numeric(water_per_zone['Cubic Metres'], errors='coerce')
+             water_per_zone.plot(x='Zone', y='Cubic Metres', kind='bar', ax=ax, color='skyblue')
+             ax.set_ylabel('Cubic Metres')
+             ax.set_title('Water Consumption by Zone')
+             st.pyplot(fig)
+    
+        else:
+                st.error("The 'Cubic Metres' column is missing in the water_per_zone DataFrame.")
+
 
         with tab3:
             # Let the user choose which column to use for categorization
