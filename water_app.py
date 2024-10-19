@@ -65,6 +65,20 @@ if uploaded_file:
             st.pyplot(fig)
 
         with tab2:
+            # Calculate water consumption per zone and overall consumption (for monthly values)
+            filtered_df['Cubic Metres'] = filtered_df['Population'] * avg_litres_per_person / 1000 * 30
+
+            # Group water consumption data per zone
+            water_per_zone = filtered_df.groupby('Zone').agg({
+                'Cubic Metres': 'sum',
+                'Population': 'sum'
+            }).reset_index()
+
+            # Add a row for total values across all zones
+            total_row = pd.DataFrame([['Total', water_per_zone['Cubic Metres'].sum(), water_per_zone['Population'].sum()]],
+                                     columns=water_per_zone.columns)
+            water_per_zone = pd.concat([water_per_zone, total_row], ignore_index=True)
+
             st.markdown("### 💧 Water Consumption per Zone (Monthly)")
             st.dataframe(water_per_zone)
 
