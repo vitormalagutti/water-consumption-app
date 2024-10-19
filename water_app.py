@@ -36,43 +36,30 @@ if uploaded_file:
         avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=1.0, step=1.0, value=5.0)
         avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=1000, step=10, value=150)
 
-        # Calculate estimated population using the original calculation logic
+        # Calculate population based on the number of buildings, average floors, and people per family
+        total_population = len(filtered_df) * avg_floors * avg_people_per_family
         filtered_df['Population'] = avg_floors * avg_people_per_family
 
-        # Group and sum up the population by Zone and User Type
+        # Calculate percentages of legal, illegal, and non-users per zone
         user_summary = filtered_df.pivot_table(values='Population', index='Zone', columns='User Type', aggfunc='sum', fill_value=0)
         user_summary['Total Population'] = user_summary.sum(axis=1)
 
-        # Round population values to the nearest hundreds
-        user_summary = user_summary.round(-2)
+        for user_type in ['Legal', 'Illegal', 'Non-user']:
+            user_summary[f'{user_type} %'] = (user_summary[user_type] / user_summary['Total Population']) * 100
 
-        # Calculate water consumption per zone and overall consumption (for monthly values)
-        if avg_floors > 0 and avg_people_per_family > 0 and avg_litres_per_person > 0:
-            total_buildings = len(filtered_df[filtered_df['User Type'].isin(['Legal', 'Illegal'])])
-            total_people = total_buildings * avg_floors * avg_people_per_family
-            total_cumecs_needed = total_people * avg_litres_per_person / 1000 * 30  # Monthly consumption
-
-            filtered_df['People'] = avg_floors * avg_people_per_family
-            filtered_df['Cubic Metres'] = filtered_df['People'] * avg_litres_per_person / 1000 * 30
-
-            water_per_zone = filtered_df[filtered_df['User Type'].isin(['Legal', 'Illegal'])].groupby('Zone').agg({
-                'Cubic Metres': 'sum',
-                'People': 'sum'
-            }).rename(columns={'People': 'Estimated Population'}).reset_index()
-            total_row = pd.DataFrame([['Total', water_per_zone['Cubic Metres'].sum(), water_per_zone['Estimated Population'].sum()]],
-                                     columns=water_per_zone.columns)
-            water_per_zone = pd.concat([water_per_zone, total_row], ignore_index=True)
+        user_summary = user_summary.round(1)
+        overall_summary = user_summary[['Total Population', 'Legal %', 'Illegal %', 'Non-user %']].copy()
 
         # Streamlit tabs for organized visualization
         tab1, tab2, tab3 = st.tabs(["📊 Network Users Summary", "💧 Water Demand Model", "🗺️ Data Visualization"])
 
         with tab1:
             st.markdown("### 📊 User Type Summary with Estimated Population")
-            st.dataframe(user_summary)
+            st.dataframe(overall_summary)
 
             st.markdown("### 📈 Population by User Type")
             fig, ax = plt.subplots(figsize=(10, 4))
-            user_summary.plot(kind='bar', y=['Total Population', 'Legal', 'Illegal', 'Non-user'], ax=ax)
+            user_summary[['Total Population', 'Legal', 'Illegal', 'Non-user']].plot(kind='bar', ax=ax)
             ax.set_ylabel('Population')
             ax.set_title('Population Distribution by Zone and User Type')
             st.pyplot(fig)
