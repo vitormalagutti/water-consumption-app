@@ -14,8 +14,6 @@ uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
 if uploaded_file:
     # Read the CSV file
     df = pd.read_csv(uploaded_file)
-    st.write("### Uploaded Data Preview")
-    st.dataframe(df.head())
 
     # Check for required columns
     if 'X' in df.columns and 'Y' in df.columns and 'Zone' in df.columns and 'Status' in df.columns:
@@ -46,15 +44,6 @@ if uploaded_file:
             st.write("### User Type Percentages (Overall and Per Zone)")
             st.dataframe(combined_table_formatted)
 
-        with tab2:
-            st.write("### User Type Percentages Overview")
-            fig, ax = plt.subplots(figsize=(10, 6))
-            combined_table_raw.drop('Overall').plot(kind='bar', stacked=True, ax=ax)
-            ax.set_ylabel('Percentage')
-            ax.set_title('User Type Percentages by Zone')
-            st.pyplot(fig)
-
-        with tab3:
             # Input section for averages
             st.sidebar.header("Average Inputs")
             avg_floors = st.sidebar.number_input("Average Floors per Building", min_value=0.0, step=0.1)
@@ -79,6 +68,23 @@ if uploaded_file:
                 st.write("### Water Consumption per Zone")
                 st.dataframe(water_per_zone)
 
+        with tab2:
+            st.write("### User Type Percentages Overview")
+            fig, ax = plt.subplots(figsize=(10, 6))
+            combined_table_raw.drop('Overall').plot(kind='bar', stacked=True, ax=ax)
+            ax.set_ylabel('Percentage')
+            ax.set_title('User Type Percentages by Zone')
+            st.pyplot(fig)
+
+            # Plot Water Consumption Variation per Zone
+            st.write("### Water Consumption Variation per Zone")
+            fig, ax = plt.subplots(figsize=(10, 6))
+            water_per_zone.plot(x='Zone', y='Cubic Metres', kind='bar', ax=ax, color='skyblue')
+            ax.set_ylabel('Cubic Metres')
+            ax.set_title('Water Consumption by Zone')
+            st.pyplot(fig)
+
+        with tab3:
             # Let the user choose which column to use for categorization
             category = st.sidebar.selectbox("Choose a characteristic to display on the map", options=['Zone', 'Status', 'User Type'])
 
