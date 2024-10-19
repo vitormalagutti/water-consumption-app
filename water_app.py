@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import matplotlib.pyplot as plt
+import geopandas as gpd
+from shapely.geometry import Point
 
 # Set up the Streamlit page with custom title and layout
 st.set_page_config(page_title="Water Consumption Visualization", layout="wide")
@@ -27,106 +29,95 @@ if uploaded_file:
         # Filter out rows with "No Data" in User Type for percentage calculations
         filtered_df = df[df['User Type'] != 'No Data']
 
-        # Calculate overall percentages of each user type (excluding "No Data")
-        user_counts = filtered_df['User Type'].value_counts(normalize=True) * 100
-
-        # Calculate percentages per zone (excluding "No Data")
-        user_per_zone = filtered_df.groupby('Zone')['User Type'].value_counts(normalize=True).unstack().fillna(0) * 100
-
-        # Combine the overall and per-zone percentages into a single table (raw for plotting)
-        combined_table_raw = user_per_zone.copy()
-        combined_table_raw.loc['Overall'] = user_counts
-
-        # Create a formatted version of the combined table for display
-        combined_table_formatted = combined_table_raw.copy().applymap(lambda x: f"{x:.1f}%" if x > 0 else "0.0%")
-
         # Sidebar inputs section with sliders only for the average litres per person
         st.sidebar.header("🔧 Average Inputs")
         avg_floors = st.sidebar.number_input("Average Floors per Building", min_value=0.0, step=0.1, value=1.0)
         avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=1.0, step=1.0, value=5.0)
         avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=1000, step=10, value=150)
 
-        # Calculate water consumption per zone and overall consumption
+        # Calculate estimated population and round it to the nearest hundreds
+        filtered_df['Estimated Population'] = (filtered_df['User Type'].isin(['Legal', 'Illegal'])) * (avg_floors * avg_people_per_family)
+        filtered_df['Estimated Population'] = filtered_df['Estimated Population'].round(-2)
+
+        # Calculate water consumption per zone and overall consumption (for monthly values)
         if avg_floors > 0 and avg_people_per_family > 0 and avg_litres_per_person > 0:
             total_buildings = len(filtered_df[filtered_df['User Type'].isin(['Legal', 'Illegal'])])
             total_people = total_buildings * avg_floors * avg_people_per_family
-            total_cumecs_needed = total_people * avg_litres_per_person / 1000
+            total_cumecs_needed = total_people * avg_litres_per_person / 1000 * 30  # Monthly consumption
 
             filtered_df['People'] = avg_floors * avg_people_per_family
-            filtered_df['Cubic Metres'] = filtered_df['People'] * avg_litres_per_person / 1000
+            filtered_df['Cubic Metres'] = filtered_df['People'] * avg_litres_per_person / 1000 * 30
 
-            water_per_zone = filtered_df[filtered_df['User Type'].isin(['Legal', 'Illegal'])].groupby('Zone')['Cubic Metres'].sum().reset_index()
-            water_per_zone['Percentage'] = (water_per_zone['Cubic Metres'] / total_cumecs_needed) * 100
-            water_per_zone['Percentage'] = water_per_zone['Percentage'].apply(lambda x: f"{x:.1f}%")
+            water_per_zone = filtered_df[filtered_df['User Type'].isin(['Legal', 'Illegal'])].groupby('Zone').agg({
+                'Cubic Metres': 'sum',
+                'Estimated Population': 'sum'
+            }).reset_index()
+            total_row = pd.DataFrame([['Total', water_per_zone['Cubic Metres'].sum(), water_per_zone['Estimated Population'].sum()]],
+                                     columns=water_per_zone.columns)
+            water_per_zone = pd.concat([water_per_zone, total_row], ignore_index=True)
 
         # Streamlit tabs for organized visualization
-        tab1, tab2, tab3 = st.tabs(["📊 Tables", "📈 Graph", "🗺️ Map"])
+        tab1, tab2, tab3 = st.tabs(["📊 Network Users Summary", "💧 Water Demand Model", "🗺️ Data Visualization"])
 
         with tab1:
-            st.markdown("### 📊 User Type Percentages (Overall and Per Zone)")
-            styled_combined_table = combined_table_formatted.style.set_properties(**{
-                'background-color': '#f5f5f5',
-                'color': 'black',
-                'border-color': '#cccccc'
-            })
-            st.dataframe(styled_combined_table)
+            st.markdown("### 📊 User Type Summary with Estimated Population")
+            combined_table = filtered_df.groupby('Zone')['Estimated Population'].sum().reset_index().rename(columns={'Estimated Population': 'Total Population'})
+            combined_table['Legal'] = filtered_df[filtered_df['User Type'] == 'Legal'].groupby('Zone')['Estimated Population'].sum()
+            combined_table['Illegal'] = filtered_df[filtered_df['User Type'] == 'Illegal'].groupby('Zone')['Estimated Population'].sum()
+            combined_table['Non-user'] = filtered_df[filtered_df['User Type'] == 'Non-user'].groupby('Zone')['Estimated Population'].sum()
+            combined_table = combined_table.fillna(0)
 
-            if avg_floors > 0 and avg_people_per_family > 0 and avg_litres_per_person > 0:
-                st.markdown(f"### 💧 Total Cubic Metres Needed per Day: **{total_cumecs_needed:.2f}**")
-                st.markdown("### 🏢 Water Consumption per Zone")
-                styled_water_per_zone = water_per_zone.style.set_properties(**{
-                    'background-color': '#f0f0f0',
-                    'color': 'black',
-                    'border-color': '#cccccc'
-                })
-                st.dataframe(styled_water_per_zone)
+            st.dataframe(combined_table)
 
-        with tab2:
-            st.markdown("### 📈 User Type Percentages Overview")
-            fig, ax = plt.subplots(figsize=(10, 6))
-            combined_table_raw.drop('Overall').plot(kind='bar', stacked=True, ax=ax, color=['#FF9999', '#66B2FF', '#99FF99'])
-            ax.set_ylabel('Percentage')
-            ax.set_title('User Type Percentages by Zone')
+            st.markdown("### 📈 Population by User Type")
+            fig, ax = plt.subplots(figsize=(10, 4))
+            combined_table.plot(kind='bar', x='Zone', y=['Total Population', 'Legal', 'Illegal', 'Non-user'], ax=ax)
+            ax.set_ylabel('Population')
+            ax.set_title('Population Distribution by Zone and User Type')
             st.pyplot(fig)
 
-            st.markdown("### 💧 Water Consumption Variation per Zone")
-            if 'Cubic Metres' in water_per_zone.columns:
-                fig, ax = plt.subplots(figsize=(10, 6))
-                water_per_zone['Cubic Metres'] = pd.to_numeric(water_per_zone['Cubic Metres'], errors='coerce')
-                water_per_zone.plot(x='Zone', y='Cubic Metres', kind='bar', ax=ax, color='#87CEEB')
-                ax.set_ylabel('Cubic Metres')
-                ax.set_title('Water Consumption by Zone')
-                st.pyplot(fig)
+        with tab2:
+            st.markdown("### 💧 Water Consumption per Zone (Monthly)")
+            st.dataframe(water_per_zone)
+
+            st.markdown("### 📉 Monthly Water Consumption Variation by Zone")
+            fig, ax = plt.subplots(figsize=(10, 4))
+            water_per_zone.plot(x='Zone', y='Cubic Metres', kind='bar', ax=ax, color='#87CEEB')
+            ax.set_ylabel('Cubic Metres')
+            ax.set_title('Monthly Water Consumption by Zone')
+            st.pyplot(fig)
 
         with tab3:
-            st.markdown("### 🗺️ Map of Building Locations with Satellite View")
-            category = st.sidebar.selectbox("Choose a characteristic to display on the map", options=['Zone', 'Status', 'User Type'], index=0)
+            st.markdown("### 🗺️ Map and Heatmaps of Building Locations")
 
-            # Check for empty coordinates to avoid rendering issues
-            if df[['X', 'Y']].isnull().any().any():
-                st.error("Some coordinates are missing. Please ensure all points have valid latitude and longitude values.")
-            else:
-                # Assume that the coordinates are in WGS84 format
-                st.markdown("**Note**: Coordinates are assumed to be in WGS84 (latitude/longitude).")
+            # Create GeoDataFrame from the DataFrame
+            gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
+            gdf = gdf.set_crs(epsg=4326)
 
-                # Create a Plotly map with scatter_mapbox and a satellite basemap
-                fig = px.scatter_mapbox(
-                    df,
-                    lat='Y',
-                    lon='X',
-                    color=category,
-                    hover_name='ID',
-                    hover_data={'Zone': True, 'Status': True},
-                    zoom=9,
-                    height=500
-                )
+            # Display the GeoDataFrame on a map with a satellite basemap
+            st.markdown("#### 🗺️ Map of Building Locations with Satellite Basemap")
+            fig, ax = plt.subplots(figsize=(10, 6))
+            gdf.plot(ax=ax, color='blue', markersize=5, alpha=0.6, legend=True)
+            ctx.add_basemap(ax, source=ctx.providers.Esri.WorldImagery)  # Satellite basemap
+            ax.set_title("Building Locations on Satellite Map")
+            st.pyplot(fig)
 
-                fig.update_layout(
-                    mapbox_style="satellite-streets",
-                    margin={"r": 0, "t": 0, "l": 0, "b": 0}
-                )
+            # Create a heatmap for total buildings
+            st.markdown("#### 🔥 Heatmap of Total Buildings")
+            fig, ax = plt.subplots(figsize=(10, 6))
+            gdf.plot(ax=ax, color='red', alpha=0.5, markersize=20)
+            ctx.add_basemap(ax, source=ctx.providers.Esri.WorldImagery)
+            ax.set_title("Heatmap of Total Buildings")
+            st.pyplot(fig)
 
-                st.plotly_chart(fig, use_container_width=True)
+            # Create a heatmap for illegal connections
+            st.markdown("#### 🔥 Heatmap of Illegal Connections")
+            illegal_gdf = gdf[gdf['User Type'] == 'Illegal']
+            fig, ax = plt.subplots(figsize=(10, 6))
+            illegal_gdf.plot(ax=ax, color='orange', alpha=0.5, markersize=20)
+            ctx.add_basemap(ax, source=ctx.providers.Esri.WorldImagery)
+            ax.set_title("Heatmap of Illegal Connections")
+            st.pyplot(fig)
 
     else:
         st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', or 'Status'.")
