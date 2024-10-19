@@ -36,9 +36,15 @@ if uploaded_file:
         avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=1.0, step=1.0, value=5.0)
         avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=1000, step=10, value=150)
 
-        # Calculate estimated population and round it to the nearest hundreds
-        filtered_df['Estimated Population'] = (filtered_df['User Type'].isin(['Legal', 'Illegal'])) * (avg_floors * avg_people_per_family)
-        filtered_df['Estimated Population'] = filtered_df['Estimated Population'].round(-2)
+        # Calculate estimated population using the original calculation logic
+        filtered_df['Population'] = avg_floors * avg_people_per_family
+
+        # Group and sum up the population by Zone and User Type
+        user_summary = filtered_df.pivot_table(values='Population', index='Zone', columns='User Type', aggfunc='sum', fill_value=0)
+        user_summary['Total Population'] = user_summary.sum(axis=1)
+
+        # Round population values to the nearest hundreds
+        user_summary = user_summary.round(-2)
 
         # Calculate water consumption per zone and overall consumption (for monthly values)
         if avg_floors > 0 and avg_people_per_family > 0 and avg_litres_per_person > 0:
@@ -51,8 +57,8 @@ if uploaded_file:
 
             water_per_zone = filtered_df[filtered_df['User Type'].isin(['Legal', 'Illegal'])].groupby('Zone').agg({
                 'Cubic Metres': 'sum',
-                'Estimated Population': 'sum'
-            }).reset_index()
+                'People': 'sum'
+            }).rename(columns={'People': 'Estimated Population'}).reset_index()
             total_row = pd.DataFrame([['Total', water_per_zone['Cubic Metres'].sum(), water_per_zone['Estimated Population'].sum()]],
                                      columns=water_per_zone.columns)
             water_per_zone = pd.concat([water_per_zone, total_row], ignore_index=True)
@@ -62,17 +68,11 @@ if uploaded_file:
 
         with tab1:
             st.markdown("### 📊 User Type Summary with Estimated Population")
-            combined_table = filtered_df.groupby('Zone')['Estimated Population'].sum().reset_index().rename(columns={'Estimated Population': 'Total Population'})
-            combined_table['Legal'] = filtered_df[filtered_df['User Type'] == 'Legal'].groupby('Zone')['Estimated Population'].sum()
-            combined_table['Illegal'] = filtered_df[filtered_df['User Type'] == 'Illegal'].groupby('Zone')['Estimated Population'].sum()
-            combined_table['Non-user'] = filtered_df[filtered_df['User Type'] == 'Non-user'].groupby('Zone')['Estimated Population'].sum()
-            combined_table = combined_table.fillna(0)
-
-            st.dataframe(combined_table)
+            st.dataframe(user_summary)
 
             st.markdown("### 📈 Population by User Type")
             fig, ax = plt.subplots(figsize=(10, 4))
-            combined_table.plot(kind='bar', x='Zone', y=['Total Population', 'Legal', 'Illegal', 'Non-user'], ax=ax)
+            user_summary.plot(kind='bar', y=['Total Population', 'Legal', 'Illegal', 'Non-user'], ax=ax)
             ax.set_ylabel('Population')
             ax.set_title('Population Distribution by Zone and User Type')
             st.pyplot(fig)
