@@ -215,7 +215,7 @@ if uploaded_file:
             location=[gdf['Y'].mean(), gdf['X'].mean()],
             zoom_start=15,
             width='800px',
-            height='130%'
+            height='10%'
         )
         folium.TileLayer(
             tiles='https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
