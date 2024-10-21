@@ -112,7 +112,7 @@ if uploaded_file:
 
         map_zoom = 15
         map_width = 900 # Set the desired width in pixels
-        map_height = 11000 # Set the desired height in pixels
+        map_height = 1100 # Set the desired height in pixels
 
         # Plotting a Scatter Map using Plotly
         st.markdown("#### 🗺️ Map of Building Locations with Plotly")
