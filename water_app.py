@@ -161,7 +161,7 @@ if uploaded_file:
         lat="Y",
         lon="X",
         color="User Type",
-        size="Population",  # Adjust based on a relevant column
+        size=None,  # Adjust based on a relevant column
         size_max=15,
         opacity=0.4,  # Set a lower opacity for overlapping points to blend
         zoom=10,
