@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import geopandas as gpd
 import folium
 import pydeck as pdk
+from keplergl import KeplerGl
 from shapely.geometry import Point
 from streamlit_folium import folium_static
 from folium.plugins import HeatMap
@@ -154,6 +155,26 @@ if uploaded_file:
 
 
 
+
+
+
+        # Ensure the DataFrame contains the necessary columns
+        required_columns = ["X", "Y", "Zone", "Status"]
+        if all(col in df.columns for col in required_columns):
+            # Rename columns for easier recognition in Kepler
+            df = df.rename(columns={"X": "longitude", "Y": "latitude"})
+
+            # Prepare KeplerGL map
+            kepler_map = KeplerGl(height=600)
+
+            # Add the data to the KeplerGL map
+            kepler_map.add_data(data=df, name="Water Consumption Data")
+
+            # Save map as an HTML file to display in Streamlit
+            kepler_map.save_to_html(file_name="kepler_map.html")
+
+            # Display the saved KeplerGL map in Streamlit
+            st.components.v1.html(open("kepler_map.html", "r").read(), height=600)
 
 
 
