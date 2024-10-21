@@ -147,11 +147,7 @@ if uploaded_file:
         kepler_map = KeplerGl(height=600, config=config1)
         kepler_map.add_data(data=df, name="Water Consumption Data")
         keplergl_static(kepler_map)
-        # kepler_map.save_to_html(file_name="kepler_map_dynamic.html")
-    
 
-        # Display the saved KeplerGL map in Streamlit
-#        st.components.v1.html(open("kepler_map_dynamic.html", "r").read(), height=600)
 
         # Set up the Folium map with Google Satellite layer
         m = folium.Map(
