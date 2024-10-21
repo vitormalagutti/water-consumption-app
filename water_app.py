@@ -127,11 +127,11 @@ if uploaded_file:
             title="Building Locations by User Type"
         )
 
-            # Update the layout to adjust the heatmap size
+        # Update the layout to adjust the heatmap size
         fig_scatter.update_layout(
-                width=map_width, 
-                height=map_height  
-            )
+            width=map_width, 
+            height=map_height  
+        )
 
         # Display the scatter map in Streamlit
         st.plotly_chart(fig_scatter)
