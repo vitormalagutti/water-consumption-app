@@ -340,11 +340,11 @@ if uploaded_file:
                                 "label": "Building Locations",
                                 "color": [30, 144, 255],  # Color of points
                                 "columns": {
-                                    "lat": "latitude",
-                                    "lng": "longitude"
+                                    "lat": "Y",
+                                    "lng": "X"
                                 },
                                 "visConfig": {
-                                    "radius": 5,
+                                    "radius": 0.1,
                                     "opacity": 0.8
                                 }
                             }
