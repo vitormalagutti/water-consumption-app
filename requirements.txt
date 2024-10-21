@@ -7,4 +7,3 @@ matplotlib
 shapely
 folium
 keplergl
-json
