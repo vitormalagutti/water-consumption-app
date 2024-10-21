@@ -218,8 +218,7 @@ if uploaded_file:
                                 "visConfig": {
                                     "radius": 5,
                                     "opacity": 0.8
-                                },
-                                "isVisible" : True
+                                }
                             }
                         },
                         {
@@ -244,7 +243,8 @@ if uploaded_file:
                                     }
                                 }
                             }
-                        }
+                        },
+                                "isVisible" : True
                     ]
                 }
             }
