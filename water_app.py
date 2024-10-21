@@ -137,8 +137,8 @@ if uploaded_file:
         
         st.write(config1)
 
-#        kepler_map = KeplerGl(height=600, config=config1)
-#        kepler_map.add_data(data=df, name="Water Consumption Data")
+        kepler_map = KeplerGl(height=600, config=config1)
+        kepler_map.add_data(data=df, name="Water Consumption Data")
 #       kepler_map.save_to_html(file_name="kepler_map_dynamic.html")
     
 
