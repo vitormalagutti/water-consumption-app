@@ -147,6 +147,7 @@ if uploaded_file:
         center=dict(lat=gdf['Y'].mean(), lon=gdf['X'].mean()),
         zoom=map_zoom,
         mapbox_style="carto-positron",
+        color_continuous_scale="Viridis",
         title="Heatmap of Total Buildings"
     )
         # Update the layout to adjust the heatmap size
