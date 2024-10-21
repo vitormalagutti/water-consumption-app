@@ -214,7 +214,7 @@ if uploaded_file:
         m = folium.Map(
             location=[center_lat, center_lon],
             zoom_start=15,
-            width='800px',
+            width='1000px',
             height='100%'
         )
         folium.TileLayer(
