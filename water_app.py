@@ -295,7 +295,7 @@ if uploaded_file:
 
             # Apply the if condition for y-axis limits
             if avg_litres_per_person < 200:
-                ax.set_ylim(0, 250)  # Set y-axis limits for avg_litres_per_person < 160
+                ax.set_ylim(50, 300)  # Set y-axis limits for avg_litres_per_person < 160
             elif avg_litres_per_person < 260:
                 ax.set_ylim(150, 350)  # Set y-axis limits for avg_litres_per_person < 260
             else:
