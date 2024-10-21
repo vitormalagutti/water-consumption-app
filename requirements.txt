@@ -6,3 +6,4 @@ contextily
 matplotlib
 shapely
 folium
+keplergl
