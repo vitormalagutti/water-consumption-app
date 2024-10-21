@@ -144,7 +144,7 @@ if uploaded_file:
 
         r = pdk.Deck(
             map_style="mapbox://styles/mapbox/satellite-v9",
-            layers=[layer],
+            layers=[gdf],
             initial_view_state=view_state,
             tooltip={"text": "{User Type}"}
         )
