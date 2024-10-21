@@ -124,27 +124,66 @@ if uploaded_file:
         gdf = gdf.set_crs(epsg=4326)
 
 
+
         # Ensure the DataFrame contains the necessary columns
         required_columns = ["X", "Y", "Zone", "Status"]
         if all(col in df.columns for col in required_columns):
             # Rename columns for easier recognition in Kepler
             df = df.rename(columns={"X": "longitude", "Y": "latitude"})
 
-            # Prepare KeplerGL map
-            kepler_map = KeplerGl(height=600)
+            # Calculate center of the uploaded data
+            center_lat = df["latitude"].mean()
+            center_lon = df["longitude"].mean()
+
+            # Set a reasonable zoom level based on data spread (you can customize this logic as needed)
+            # Example: Calculate the range of latitudes and longitudes and use it to determine the zoom
+            lat_range = df["latitude"].max() - df["latitude"].min()
+            lon_range = df["longitude"].max() - df["longitude"].min()
+            zoom = 12 if max(lat_range, lon_range) < 1 else 10
+
+            # Create a dynamic configuration for KeplerGL
+            dynamic_config = {
+                "mapState": {
+                    "bearing": 0,
+                    "latitude": center_lat,
+                    "longitude": center_lon,
+                    "pitch": 0,
+                    "zoom": zoom
+                },
+                "mapStyle": {
+                    "styleType": "satellite"  # You can also use "dark" or other KeplerGL styles
+                },
+                "visState": {
+                    "layers": [
+                        {
+                            "id": "building_layer",
+                            "type": "point",
+                            "config": {
+                                "color": [30, 144, 255],
+                                "size": 5
+                            }
+                        }
+                    ]
+                }
+            }
+
+            # Convert configuration to JSON string
+            config_json = json.dumps(dynamic_config)
+
+            # Prepare KeplerGL map with the dynamically generated configuration
+            kepler_map = KeplerGl(height=600, config=config_json)
 
             # Add the data to the KeplerGL map
             kepler_map.add_data(data=df, name="Water Consumption Data")
 
             # Save map as an HTML file to display in Streamlit
-            kepler_map.save_to_html(file_name="kepler_map.html")
+            kepler_map.save_to_html(file_name="kepler_map_dynamic.html")
 
             # Display the saved KeplerGL map in Streamlit
-            st.components.v1.html(open("kepler_map.html", "r").read(), height=600)
+            st.components.v1.html(open("kepler_map_dynamic.html", "r").read(), height=600)
 
-
-
-
+        else:
+            st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', or 'Status'.")
 
 
 
