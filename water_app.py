@@ -281,8 +281,8 @@ if uploaded_file:
         
         with col1:
              st.markdown("### Monthly Water Consumption")
-            # Display the table with calculated values
-            st.dataframe(df_factors)
+                # Display the table with calculated values
+             st.dataframe(df_factors)
 
         with col2:
             # Plot a graph of monthly water consumption
