@@ -169,16 +169,16 @@ if uploaded_file:
         df_plotly = pd.DataFrame(gdf.drop(columns="geometry"))
 
         # Plotting a Scatter Map using Plotly
-        #st.markdown()
+        st.markdown("#### 🗺️ Map of Building Locations with Plotly")
         fig_scatter = px.scatter_mapbox(
             df_plotly,
             lat="Y",
             lon="X",
             color="User Type",
             zoom=15,
-            name= "#### 🗺️ Map of Building Locations with Plotly",
             mapbox_style="carto-positron",
             hover_name="Zone",
+            title="#### 🗺️ Map of Building Locations with Plotly"
         )
 
         # Update the layout to adjust the map size
