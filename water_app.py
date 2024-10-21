@@ -7,6 +7,7 @@ import geopandas as gpd
 from shapely.geometry import Point
 import folium
 from streamlit_folium import folium_static
+from folium.plugins import HeatMap
 from branca.element import Template, MacroElement
 
 
@@ -137,6 +138,16 @@ if uploaded_file:
                 fill_opacity=0.6,
                 popup=f"Zone: {row['Zone']}, User Type: {row['User Type']}"
             ).add_to(m)
+
+        # Create and add a heatmap for all building locations
+        st.markdown("#### 🔥 Heatmap of All Building Locations")
+        heat_data = [[row['Y'], row['X']] for idx, row in gdf.iterrows()]
+        HeatMap(heat_data, radius=15).add_to(m)
+
+        # Create and add a heatmap for illegal connections
+        st.markdown("#### 🔥 Heatmap of Illegal Connections")
+        heat_data_illegal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Illegal'].iterrows()]
+        HeatMap(heat_data_illegal, radius=15, gradient={0.4: 'blue', 0.65: 'lime', 1: 'red'}).add_to(m)
 
 
         # Add a custom legend to the map
