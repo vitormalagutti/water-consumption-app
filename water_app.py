@@ -256,7 +256,8 @@ if uploaded_file:
                                         "type": "sequential",
                                         "category": "Uber",
                                         "colors": ["#5A1846", "#900C3F", "#C70039", "#FF5733", "#FFC300"]
-                                    }
+                                    },
+                                    "isVisible" : True
                                 }
                             }
                         }
