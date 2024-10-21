@@ -53,6 +53,13 @@ if uploaded_file:
     avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=1.0, step=1.0, value=5.0)
     avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=500, step=10, value=150)
 
+    # Choose which heatmap to display
+    st.sidebar.header("🔍 Heatmap Options")
+    heatmap_type = st.sidebar.selectbox(
+        "Choose a heatmap to display:",
+        ["All Buildings", "Illegal Connections", "Legal Connections", "Non-Users"]
+    )
+
     # Calculate population based on the number of buildings, average floors, and people per family
     total_population = len(filtered_df) * avg_floors * avg_people_per_family
     filtered_df['Population'] = avg_floors * avg_people_per_family
@@ -138,11 +145,6 @@ if uploaded_file:
         # Display the scatter map in Streamlit
         st.plotly_chart(fig_scatter)
 
-
-        # Create GeoDataFrame from the DataFrame
-        gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
-        gdf = gdf.set_crs(epsg=4326)
-
         # Convert GeoDataFrame to DataFrame for Folium
         df_plotly = pd.DataFrame(gdf.drop(columns="geometry"))
 
@@ -158,47 +160,35 @@ if uploaded_file:
             control=True
         ).add_to(m)
 
-        # Add the building locations to the map
-        for idx, row in df.iterrows():
-            folium.CircleMarker(
-                location=[row['Y'], row['X']],
-                radius=3,
-                color='blue',
-                fill=True,
-                fill_opacity=0.6,
-                popup=f"Zone: {row['Zone']}, User Type: {row['User Type']}"
-            ).add_to(m)
+        # Create heatmaps based on selection
+        if heatmap_type == "All Buildings":
+            st.markdown("#### 🔥 Heatmap of All Building Locations")
+            heat_data = [[row['Y'], row['X']] for idx, row in gdf.iterrows()]
+            HeatMap(heat_data, radius=15).add_to(m)
 
-        # Create and add a heatmap for all building locations
-        st.markdown("#### 🔥 Heatmap of All Building Locations")
-        heat_data = [[row['Y'], row['X']] for idx, row in gdf.iterrows()]
-        HeatMap(heat_data, radius=15).add_to(m)
+        elif heatmap_type == "Illegal Connections":
+            st.markdown("#### 🔥 Heatmap of Illegal Connections")
+            heat_data_illegal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Illegal'].iterrows()]
+            HeatMap(heat_data_illegal, radius=15, gradient={0.4: 'blue', 0.65: 'lime', 1: 'red'}).add_to(m)
 
-        # Create and add a heatmap for illegal connections
-        st.markdown("#### 🔥 Heatmap of Illegal Connections")
-        heat_data_illegal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Illegal'].iterrows()]
-        HeatMap(heat_data_illegal, radius=15, gradient={0.4: 'blue', 0.65: 'lime', 1: 'red'}).add_to(m)
+        elif heatmap_type == "Legal Connections":
+            st.markdown("#### 🔥 Heatmap of Legal Connections")
+            heat_data_legal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Legal'].iterrows()]
+            HeatMap(heat_data_legal, radius=15, gradient={0.4: 'blue', 0.65: 'lime', 1: 'red'}).add_to(m)
 
+        elif heatmap_type == "Non-Users":
+            st.markdown("#### 🔥 Heatmap of Non-Users")
+            heat_data_non_users = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Non-user'].iterrows()]
+            HeatMap(heat_data_non_users, radius=15, gradient={0.4: 'blue', 0.65: 'lime', 1: 'red'}).add_to(m)
 
-        # Add a custom legend to the map
-        legend_html = '''
-        <div style="position: fixed; 
-                    bottom: 50px; left: 50px; width: 150px; height: 110px; 
-                    background-color: white; border:2px solid grey; z-index:9999; font-size:14px;
-                    padding: 10px;">
-            <b>Legend</b><br>
-            <i style="background:blue; width: 10px; height: 10px; float: left; margin-right: 5px;"></i> Building Locations<br>
-            <i style="background:#FF5733; width: 10px; height: 10px; float: left; margin-right: 5px;"></i> Illegal Connections<br>
-            <i style="background:#2ECC71; width: 10px; height: 10px; float: left; margin-right: 5px;"></i> Legal Connections<br>
-            <i style="background:#F1C40F; width: 10px; height: 10px; float: left; margin-right: 5px;"></i> Non-Users<br>
-        </div>
-        '''
-
-        legend = MacroElement()
-        legend._template = Template(legend_html)
-        m.get_root().add_child(legend)
-
-
+        # Overlay specific building type with higher transparency
+        for idx, row in gdf.iterrows():
+            if heatmap_type == "All Buildings" or row['User Type'].lower() in heatmap_type.lower():
+                folium.CircleMarker(
+                    location=[row['Y'], row['X']],
+                    radius=3,
+                    color='black'
+       
         # Add a layer control panel
         folium.LayerControl().add_to(m)
 
@@ -207,4 +197,7 @@ if uploaded_file:
 
 else:
     st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', or 'Status'.")
+
+
+
 
