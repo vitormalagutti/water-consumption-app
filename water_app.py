@@ -233,15 +233,15 @@ if uploaded_file:
         elif heatmap_type == "Illegal Connections":
             st.markdown("#### 🔥 Heatmap of Illegal Connections")
             heat_data_illegal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Illegal'].iterrows()]
-            HeatMap(heat_data_illegal, radius=15, gradient={0.4: 'blue', 0.65: 'lime', 1: 'red'}).add_to(m)
+            HeatMap(heat_data_illegal, radius=15).add_to(m)
         elif heatmap_type == "Legal Connections":
             st.markdown("#### 🔥 Heatmap of Legal Connections")
             heat_data_legal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Legal'].iterrows()]
-            HeatMap(heat_data_legal, radius=15, gradient={0.4: 'blue', 0.65: 'lime', 1: 'red'}).add_to(m)
+            HeatMap(heat_data_legal, radius=15).add_to(m)
         elif heatmap_type == "Non-Users":
             st.markdown("#### 🔥 Heatmap of Non-Users")
             heat_data_non_users = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Non-user'].iterrows()]
-            HeatMap(heat_data_non_users, radius=15, gradient={0.4: 'blue', 0.65: 'lime', 1: 'red'}).add_to(m)
+            HeatMap(heat_data_non_users, radius=15).add_to(m)
 
         # Add a layer control panel
         folium.LayerControl().add_to(m)
