@@ -13,8 +13,6 @@ from streamlit_folium import folium_static
 from folium.plugins import HeatMap
 from branca.element import Template, MacroElement
 
-
-
 # Set up the Streamlit page with custom title and layout
 st.set_page_config(page_title="Water Consumption Visualization", layout="wide")
 
@@ -33,16 +31,11 @@ if uploaded_file:
     # Define the expected columns
     expected_columns = ["X", "Y", "Zone", "Status"]
 
-    # Identify the columns that are in the CSV but also in the expected list
-    valid_columns = [col for col in df.columns if col in expected_columns]
-
-    # Select only the valid columns
-    df = df[valid_columns]
-
-    # Ensure all expected columns are present, even if some are missing in the input file
-    missing_columns = [col for col in expected_columns if col not in df.columns]
-    for col in missing_columns:
-        df[col] = None  # Assign a default value or handle as required
+    # Select valid columns and fill missing ones with default values
+    df = df[[col for col in df.columns if col in expected_columns]]
+    for col in expected_columns:
+        if col not in df.columns:
+            df[col] = None
 
     # Step 1: Categorize Status into "legal", "illegal", and "non-user"
     df['User Type'] = df['Status'].apply(lambda x: 'Legal' if x == 'water meter' else ('Illegal' if x == 'illegal connection' else ('Non-user' if x == 'non-user' else 'No Data')))
@@ -119,86 +112,62 @@ if uploaded_file:
     with tab3:
         st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
 
-
-        # Create a GeoDataFrame from the DataFrame (if needed for processing)
+        # Create a GeoDataFrame for processing
         gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
         gdf = gdf.set_crs(epsg=4326)
 
+        # Calculate the center of the uploaded data
+        center_lat, center_lon = gdf["Y"].mean(), gdf["X"].mean()
 
+        # Determine a reasonable zoom level based on data spread
+        lat_range = gdf["Y"].max() - gdf["Y"].min()
+        lon_range = gdf["X"].max() - gdf["X"].min()
+        zoom = 12 if max(lat_range, lon_range) < 1 else 10
 
-        # Ensure the DataFrame contains the necessary columns
-        required_columns = ["X", "Y", "Zone", "Status"]
-        if all(col in df.columns for col in required_columns):
-            # Rename columns for easier recognition in Kepler
-            df = df.rename(columns={"X": "longitude", "Y": "latitude"})
-
-            # Calculate center of the uploaded data
-            center_lat = df["latitude"].mean()
-            center_lon = df["longitude"].mean()
-
-            # Set a reasonable zoom level based on data spread (you can customize this logic as needed)
-            # Example: Calculate the range of latitudes and longitudes and use it to determine the zoom
-            lat_range = df["latitude"].max() - df["latitude"].min()
-            lon_range = df["longitude"].max() - df["longitude"].min()
-            zoom = 12 if max(lat_range, lon_range) < 1 else 10
-
-            # Create a dynamic configuration for KeplerGL
-            dynamic_config = {
-                "mapState": {
-                    "bearing": 0,
-                    "latitude": center_lat,
-                    "longitude": center_lon,
-                    "pitch": 0,
-                    "zoom": zoom
-                },
-                "mapStyle": {
-                    "styleType": "satellite"  # You can also use "dark" or other KeplerGL styles
-                },
-                "visState": {
-                    "layers": [
-                        {
-                            "id": "building_layer",
-                            "type": "point",
-                            "config": {
-                                "color": [30, 144, 255],
-                                "size": 5
-                            }
+        # Create a dynamic configuration for KeplerGL
+        dynamic_config = {
+            "mapState": {
+                "bearing": 0,
+                "latitude": center_lat,
+                "longitude": center_lon,
+                "pitch": 0,
+                "zoom": zoom
+            },
+            "mapStyle": {
+                "styleType": "satellite"
+            },
+            "visState": {
+                "layers": [
+                    {
+                        "id": "building_layer",
+                        "type": "point",
+                        "config": {
+                            "color": [30, 144, 255],
+                            "size": 5
                         }
-                    ]
-                }
+                    }
+                ]
             }
+        }
 
-            # Convert configuration to JSON string
-            config_json = json.dumps(dynamic_config)
+        # Convert configuration to JSON string
+        config_json = json.dumps(dynamic_config)
 
-            # Prepare KeplerGL map with the dynamically generated configuration
-            kepler_map = KeplerGl(height=600, config=config_json)
+        # Prepare KeplerGL map with the dynamically generated configuration
+        kepler_map = KeplerGl(height=600, config=config_json)
+        kepler_map.add_data(data=df, name="Water Consumption Data")
+        kepler_map.save_to_html(file_name="kepler_map_dynamic.html")
 
-            # Add the data to the KeplerGL map
-            kepler_map.add_data(data=df, name="Water Consumption Data")
-
-            # Save map as an HTML file to display in Streamlit
-            kepler_map.save_to_html(file_name="kepler_map_dynamic.html")
-
-            # Display the saved KeplerGL map in Streamlit
-            st.components.v1.html(open("kepler_map_dynamic.html", "r").read(), height=600)
-
-        else:
-            st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', or 'Status'.")
-
-
-
-
-
+        # Display the saved KeplerGL map in Streamlit
+        st.components.v1.html(open("kepler_map_dynamic.html", "r").read(), height=600)
 
         # Set up the Folium map with Google Satellite layer
         m = folium.Map(
-            location=[gdf['Y'].mean(), gdf['X'].mean()], 
-            zoom_start=15,  # Set your desired zoom level (higher numbers zoom in)
-            width='800px',  # Set map width as a percentage or pixels
-            height='130%'  # Set map height as a percentage or pixels
+            location=[gdf['Y'].mean(), gdf['X'].mean()],
+            zoom_start=15,
+            width='800px',
+            height='130%'
         )
-        # Add Google Satellite Tiles
         folium.TileLayer(
             tiles='https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
             attr='Google Satellite',
@@ -212,17 +181,14 @@ if uploaded_file:
             st.markdown("#### 🔥 Heatmap of All Building Locations")
             heat_data = [[row['Y'], row['X']] for idx, row in gdf.iterrows()]
             HeatMap(heat_data, radius=15).add_to(m)
-
         elif heatmap_type == "Illegal Connections":
             st.markdown("#### 🔥 Heatmap of Illegal Connections")
             heat_data_illegal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Illegal'].iterrows()]
             HeatMap(heat_data_illegal, radius=15, gradient={0.4: 'blue', 0.65: 'lime', 1: 'red'}).add_to(m)
-
         elif heatmap_type == "Legal Connections":
             st.markdown("#### 🔥 Heatmap of Legal Connections")
             heat_data_legal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Legal'].iterrows()]
             HeatMap(heat_data_legal, radius=15, gradient={0.4: 'blue', 0.65: 'lime', 1: 'red'}).add_to(m)
-
         elif heatmap_type == "Non-Users":
             st.markdown("#### 🔥 Heatmap of Non-Users")
             heat_data_non_users = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Non-user'].iterrows()]
@@ -234,10 +200,5 @@ if uploaded_file:
         # Display the Folium map in Streamlit
         folium_static(m)
 
-
 else:
     st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', or 'Status'.")
-
-
-
-
