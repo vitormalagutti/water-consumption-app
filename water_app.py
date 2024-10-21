@@ -40,6 +40,19 @@ if uploaded_file:
         if col not in df.columns:
             df[col] = None
 
+
+    # Seazonality factors
+    month_factors = {
+        'Month': ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+        'Month_Number': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        'Factor': [0.07, 0.07, 0.07, 0.08, 0.09, 0.09, 0.10, 0.10, 0.10, 0.08, 0.07, 0.07]
+    }
+
+    # Create a DataFrame for the month factors
+    df_factors = pd.DataFrame(month_factors)
+
+
+
     # Step 1: Categorize Status into "legal", "illegal", and "non-user"
     df['User Type'] = df['Status'].apply(lambda x: 'Legal' if x == 'water meter' else ('Illegal' if x == 'illegal connection' else ('Non-user' if x == 'non-user' else 'No Data')))
 
@@ -248,6 +261,29 @@ if uploaded_file:
 
         # Display the Folium map in Streamlit
         folium_static(m)
+
+    with tab4:
+        st.markdown("### 📅 Monthly Water Consumption Calculation")
+
+        # You can use the variable avg_litres_per_person here, which was input in the sidebar
+        avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=500, step=10, value=150)
+        
+        # Calculate monthly water consumption based on factors
+        df_factors['Monthly_Consumption'] = df_factors['Factor'] * avg_litres_per_person * 12
+
+        # Display the table with calculated values
+        st.dataframe(df_factors)
+
+        # Plot a graph of monthly water consumption
+        st.markdown("### 📈 Monthly Water Consumption Distribution")
+        fig, ax = plt.subplots()
+        ax.plot(df_factors['Month'], df_factors['Monthly_Consumption'], marker='o', color='b')
+        ax.set_ylabel('Monthly Water Consumption')
+        ax.set_title('Monthly Water Consumption Distribution')
+        ax.grid(True)
+
+        # Display the plot
+        st.pyplot(fig)
 
 else:
     st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', or 'Status'.")
