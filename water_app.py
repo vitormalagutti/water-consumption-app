@@ -189,22 +189,6 @@ if uploaded_file:
         lat_range = gdf["Y"].max() - gdf["Y"].min()
         lon_range = gdf["X"].max() - gdf["X"].min()
         zoom = 12 if max(lat_range, lon_range) < 1 else 10
-
-        # Create a dynamic configuration for KeplerGL
-        # Define a valid dynamic configuration for KeplerGL
-        config1 = {
-            'version': 'v1',
-            'config': {
-            'mapState': {
-                'latitude': center_lat,
-                'longitude': center_lon,
-                'zoom': 14
-            },
-            "mapStyle": {
-                "styleType": "satellite"
-            },
-
-            }}
         
         # Create a dynamic configuration for KeplerGL
         config_heatmap = {
@@ -357,7 +341,7 @@ if uploaded_file:
             if heatmap_type == "All Buildings":
                 st.markdown("#### 🔥 Heatmap of All Building Locations")
                 kepler_map = KeplerGl(height=800, config=config_grid)
-                kepler_map.add_data(data=heat_data, name="Water Consumption Data")
+                kepler_map.add_data(data=gdf, name="Water Consumption Data")
                 keplergl_static(kepler_map)
 
             elif heatmap_type == "Illegal Connections":
@@ -369,16 +353,16 @@ if uploaded_file:
 
             elif heatmap_type == "Legal Connections":
                 st.markdown("#### 🔥 Heatmap of Legal Connections")
-                gdf_illegal = gdf[gdf['User Type'] == 'Legal']
+                gdf_legal = gdf[gdf['User Type'] == 'Legal']
                 kepler_map = KeplerGl(height=800, config=config_grid)
-                kepler_map.add_data(data=heat_data_legal, name="Water Consumption Data")
+                kepler_map.add_data(data=gdf_legal, name="Water Consumption Data")
                 keplergl_static(kepler_map)
                 
             elif heatmap_type == "Non-Users":
                 st.markdown("#### 🔥 Heatmap of Non-Users")
-                gdf_illegal = gdf[gdf['User Type'] == 'Non-user']
+                gdf_non_user = gdf[gdf['User Type'] == 'Non-user']
                 kepler_map = KeplerGl(height=800, config=config_grid)
-                kepler_map.add_data(data=heat_data_non_users, name="Water Consumption Data")
+                kepler_map.add_data(data=gdf_non_user, name="Water Consumption Data")
                 keplergl_static(kepler_map)
    
 
