@@ -138,8 +138,8 @@ if uploaded_file:
 
         # Update the layout to adjust the map size
         fig_scatter.update_layout(
-            width=700,  # Set the desired width in pixels
-            height=1000  # Set the desired height in pixels
+            width=800,  # Set the desired width in pixels
+            height=900  # Set the desired height in pixels
         )
 
         # Display the scatter map in Streamlit
@@ -152,8 +152,8 @@ if uploaded_file:
         m = folium.Map(
             location=[gdf['Y'].mean(), gdf['X'].mean()], 
             zoom_start=14,  # Set your desired zoom level (higher numbers zoom in)
-            width='100%',  # Set map width as a percentage or pixels
-            height='1100px'  # Set map height as a percentage or pixels
+            width='800px',  # Set map width as a percentage or pixels
+            height='900px'  # Set map height as a percentage or pixels
         )
         # Add Google Satellite Tiles
         folium.TileLayer(
