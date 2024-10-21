@@ -111,8 +111,8 @@ if uploaded_file:
         df_plotly = pd.DataFrame(gdf.drop(columns="geometry"))
 
         map_zoom = 15
-        map_width = 700 # Set the desired width in pixels
-        map_height = 800 # Set the desired height in pixels
+        map_width = 900 # Set the desired width in pixels
+        map_height = 11000 # Set the desired height in pixels
 
         # Plotting a Scatter Map using Plotly
         st.markdown("#### 🗺️ Map of Building Locations with Plotly")
