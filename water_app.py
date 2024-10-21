@@ -244,7 +244,7 @@ if uploaded_file:
                                 }
                             }
                         },
-                                "isVisible" : True
+                        "isVisible" : True
                     ]
                 }
             }
