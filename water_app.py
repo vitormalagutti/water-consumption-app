@@ -130,7 +130,7 @@ if uploaded_file:
             lat="Y",
             lon="X",
             color="User Type",
-            zoom=14,
+            zoom=15,
             mapbox_style="carto-positron",
             hover_name="Zone",
             title="Building Locations by User Type"
@@ -152,7 +152,7 @@ if uploaded_file:
         m = folium.Map(
             location=[gdf['Y'].mean(), gdf['X'].mean()], 
             zoom_start=15,  # Set your desired zoom level (higher numbers zoom in)
-            width='100px',  # Set map width as a percentage or pixels
+            width='800px',  # Set map width as a percentage or pixels
             height='130%'  # Set map height as a percentage or pixels
         )
         # Add Google Satellite Tiles
