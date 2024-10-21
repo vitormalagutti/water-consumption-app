@@ -190,10 +190,10 @@ if uploaded_file:
             if heatmap_type == "All Buildings" or row['User Type'].lower() in heatmap_type.lower():
                 folium.CircleMarker(
                     location=[row['Y'], row['X']],
-                    radius=2,
-                    color='black',
+                    radius=1,
+                    color='grey',
                     fill=True,
-                    fill_opacity=0.01  # Higher transparency for markers
+                    fill_opacity=1  # Higher transparency for markers
                 ).add_to(m)
 
         # Add a layer control panel
