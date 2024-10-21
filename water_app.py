@@ -128,7 +128,7 @@ if uploaded_file:
             "ScatterplotLayer",  # Use "ScatterplotLayer" to show individual points
             data=gdf,
             get_position=["X", "Y"],
-            get_radius=50,  # Radius of points in meters
+            get_radius=5,  # Radius of points in meters
             get_color=[255, 0, 0, 140],  # Color of the points in RGBA format
             pickable=True
         )
@@ -137,7 +137,7 @@ if uploaded_file:
         view_state = pdk.ViewState(
             latitude=df["Y"].mean(),
             longitude=df["X"].mean(),
-            zoom=12,  # Adjust zoom level as needed
+            zoom=15,  # Adjust zoom level as needed
             pitch=50
         )
 
