@@ -120,33 +120,7 @@ if uploaded_file:
         gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
         gdf = gdf.set_crs(epsg=4326)
 
-        # Convert GeoDataFrame to DataFrame for Plotly
-        df_plotly = pd.DataFrame(gdf.drop(columns="geometry"))
 
-        # Plotting a Scatter Map using Plotly
-        st.markdown("#### 🗺️ Map of Building Locations with Plotly")
-        fig_scatter = px.scatter_mapbox(
-            df_plotly,
-            lat="Y",
-            lon="X",
-            color="User Type",
-            zoom=15,
-            mapbox_style="carto-positron",
-            hover_name="Zone",
-            title="Building Locations by User Type"
-        )
-
-        # Update the layout to adjust the map size
-        fig_scatter.update_layout(
-            width=800,  # Set the desired width in pixels
-            height=900  # Set the desired height in pixels
-        )
-
-        # Display the scatter map in Streamlit
-        st.plotly_chart(fig_scatter)
-
-        # Convert GeoDataFrame to DataFrame for Folium
-        df_plotly = pd.DataFrame(gdf.drop(columns="geometry"))
 
         # Set up the Folium map with Google Satellite layer
         m = folium.Map(
@@ -190,6 +164,31 @@ if uploaded_file:
 
         # Display the Folium map in Streamlit
         folium_static(m)
+
+                # Convert GeoDataFrame to DataFrame for Plotly
+        df_plotly = pd.DataFrame(gdf.drop(columns="geometry"))
+
+        # Plotting a Scatter Map using Plotly
+        st.markdown("#### 🗺️ Map of Building Locations with Plotly")
+        fig_scatter = px.scatter_mapbox(
+            df_plotly,
+            lat="Y",
+            lon="X",
+            color="User Type",
+            zoom=15,
+            mapbox_style="carto-positron",
+            hover_name="Zone",
+            title="Building Locations by User Type"
+        )
+
+        # Update the layout to adjust the map size
+        fig_scatter.update_layout(
+            width=800,  # Set the desired width in pixels
+            height=900  # Set the desired height in pixels
+        )
+
+        # Display the scatter map in Streamlit
+        st.plotly_chart(fig_scatter)
 
 else:
     st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', or 'Status'.")
