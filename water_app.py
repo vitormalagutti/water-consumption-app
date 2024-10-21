@@ -87,7 +87,7 @@ if uploaded_file:
     overall_summary = user_summary[['Total Population', 'Legal %', 'Illegal %', 'Non-user %']].copy()
 
     # Streamlit tabs for organized visualization
-    tab1, tab2, tab3 = st.tabs(["📊 Network Users Summary", "💧 Water Demand Model", "🗺️ Data Visualization"])
+    tab1, tab2, tab3, tab4 = st.tabs(["📊 Network Users Summary", "💧 Water Demand Model", "🗺️ Data Visualization", "📅 Seazonal Water Distribution"])
 
     with tab1:
         st.markdown("### 📊 User Type Summary with Estimated Population")
