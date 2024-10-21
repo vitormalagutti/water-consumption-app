@@ -122,7 +122,7 @@ if uploaded_file:
             lon="X",
             color="User Type",
             zoom=map_zoom,
-            mapbox_style="carto-positron",
+            mapbox_style="satellite",
             hover_name="Zone",
             title="Building Locations by User Type"
         )
