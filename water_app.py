@@ -152,7 +152,7 @@ if uploaded_file:
         m = folium.Map(
             location=[gdf['Y'].mean(), gdf['X'].mean()], 
             zoom_start=15,  # Set your desired zoom level (higher numbers zoom in)
-            width='800px',  # Set map width as a percentage or pixels
+            width='1000px',  # Set map width as a percentage or pixels
             height='100%'  # Set map height as a percentage or pixels
         )
         # Add Google Satellite Tiles
@@ -184,17 +184,6 @@ if uploaded_file:
             st.markdown("#### 🔥 Heatmap of Non-Users")
             heat_data_non_users = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Non-user'].iterrows()]
             HeatMap(heat_data_non_users, radius=15, gradient={0.4: 'blue', 0.65: 'lime', 1: 'red'}).add_to(m)
- 
-        # Overlay specific building type with higher transparency
-        for idx, row in gdf.iterrows():
-            if heatmap_type == "All Buildings" or row['User Type'].lower() in heatmap_type.lower():
-                folium.CircleMarker(
-                    location=[row['Y'], row['X']],
-                    radius=1,
-                    color='grey',
-                    fill=True,
-                    fill_opacity=1  # Higher transparency for markers
-                ).add_to(m)
 
         # Add a layer control panel
         folium.LayerControl().add_to(m)
