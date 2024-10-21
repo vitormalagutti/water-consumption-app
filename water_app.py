@@ -135,7 +135,7 @@ if uploaded_file:
                 'zoom': 9
             }}}
         
-        st.write(dynamic_config)
+        st.write(config1)
 
 #        kepler_map = KeplerGl(height=600, config=config1)
 #        kepler_map.add_data(data=df, name="Water Consumption Data")
