@@ -146,7 +146,7 @@ if uploaded_file:
             radius=8,
             center=dict(lat=gdf['Y'].mean(), lon=gdf['X'].mean()),
             zoom=map_zoom,
-            mapbox_style="carto-positron",
+            mapbox_style="satellite-streets",
             color_continuous_scale="Viridis",
             title="Heatmap of Total Buildings"
         )
