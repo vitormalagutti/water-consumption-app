@@ -169,7 +169,7 @@ if uploaded_file:
                                     "lng": "longitude"
                                 },
                                 "visConfig": {
-                                    "radius": 10,
+                                    "radius": 5,
                                     "opacity": 0.8
                                 }
                             }
@@ -185,7 +185,7 @@ if uploaded_file:
                                     "lng": "longitude"
                                 },
                                 "visConfig": {
-                                    "radius": 30,  # Radius of influence for the heatmap
+                                    "radius": 10,  # Radius of influence for the heatmap
                                     "intensity": 1,  # Intensity of the heatmap
                                     "opacity": 0.5,  # Opacity of the heatmap
                                     "colorRange": {
