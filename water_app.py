@@ -136,15 +136,76 @@ if uploaded_file:
                 'latitude': center_lat,
                 'longitude': center_lon,
                 'zoom': 14
-            },"mapStyle": {
+            },
+            "mapStyle": {
                 "styleType": "satellite"
-                },
+            },
+
             }}
         
+        # Create a dynamic configuration for KeplerGL
+        config_heatmap = {
+            'version': 'v1',
+            'config': {
+                'mapState': {
+                    'latitude': center_lat,
+                    'longitude': center_lon,
+                    'zoom': 14
+                },
+                "mapStyle": {
+                    "styleType": "satellite"
+                },
+                "visState": {
+                    "layers": [
+                        {
+                            "id": "building_layer",
+                            "type": "point",  # Keep your existing point layer
+                            "config": {
+                                "dataId": "Water Consumption Data",
+                                "label": "Building Locations",
+                                "color": [30, 144, 255],  # Color of points
+                                "columns": {
+                                    "lat": "latitude",
+                                    "lng": "longitude"
+                                },
+                                "visConfig": {
+                                    "radius": 10,
+                                    "opacity": 0.8
+                                }
+                            }
+                        },
+                        {
+                            "id": "heatmap_layer",
+                            "type": "heatmap",  # Define the heatmap layer
+                            "config": {
+                                "dataId": "Water Consumption Data",
+                                "label": "Heatmap",
+                                "columns": {
+                                    "lat": "latitude",
+                                    "lng": "longitude"
+                                },
+                                "visConfig": {
+                                    "radius": 30,  # Radius of influence for the heatmap
+                                    "intensity": 1,  # Intensity of the heatmap
+                                    "opacity": 0.5,  # Opacity of the heatmap
+                                    "colorRange": {
+                                        "name": "Global Warming",
+                                        "type": "sequential",
+                                        "category": "Uber",
+                                        "colors": ["#5A1846", "#900C3F", "#C70039", "#FF5733", "#FFC300"]
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
         # Rename for easier recognition in Kepler
         df = df.rename(columns={"X": "longitude", "Y": "latitude"})
 
-        kepler_map = KeplerGl(height=800, config=config1)
+        kepler_map = KeplerGl(height=800, config=config_heatmap)
         kepler_map.add_data(data=df, name="Water Consumption Data")
         keplergl_static(kepler_map)
 
