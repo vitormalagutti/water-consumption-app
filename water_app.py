@@ -319,6 +319,7 @@ if uploaded_file:
             folium_static(m)
         
         with col2:
+            test = 100 / 1000
             config_grid = {
             'version': 'v1',
             'config': {
@@ -344,10 +345,10 @@ if uploaded_file:
                                     "lng": "X"
                                 },
                                 "visConfig": {
-                                    "radius": 0.1,
+                                    "radius": test,
                                     "opacity": 0.8,
-                                    "coverage":0.1
-                                }
+                                },
+                                "isVisible" : True
                             }
                         }]}}}
 
