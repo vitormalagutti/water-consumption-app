@@ -266,7 +266,7 @@ if uploaded_file:
         st.markdown("### 📅 Monthly Water Consumption Calculation")
 
         # You can use the variable avg_litres_per_person here, which was input in the sidebar
-        avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=500, step=10, value=150)
+        # avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=500, step=10, value=150)
         
         # Calculate monthly water consumption based on factors
         df_factors['Monthly_Consumption'] = df_factors['Factor'] * avg_litres_per_person * 12
