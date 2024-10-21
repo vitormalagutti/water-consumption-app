@@ -1,4 +1,5 @@
 import streamlit as st
+import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.io as pio
@@ -267,7 +268,7 @@ if uploaded_file:
         variation_factor = 1
 
         # Calculate monthly water consumption based on factors
-        df_factors['Factor_updated'] = (1 - variation_factor) * mean(df_factors["Factor"]) + variation_factor * df_factors["Factor"]
+        df_factors['Factor_updated'] = (1 - variation_factor) * np.mean(df_factors["Factor"]) + variation_factor * df_factors["Factor"]
         df_factors['Monthly Daily Consumption - l/p/d'] = round(df_factors['Factor_updated'] * avg_litres_per_person * 12)
         df_factors["Total Monthly Consumption - m3"] = round(df_factors['Monthly Daily Consumption - l/p/d'] * sum(user_summary["Total Population"]) / 1000, -2)
         
