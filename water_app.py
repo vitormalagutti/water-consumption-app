@@ -7,6 +7,7 @@ import geopandas as gpd
 from shapely.geometry import Point
 import folium
 from streamlit_folium import folium_static
+from branca.element import Template, MacroElement
 
 
 
@@ -151,7 +152,7 @@ if uploaded_file:
             <i style="background:#F1C40F; width: 10px; height: 10px; float: left; margin-right: 5px;"></i> Non-Users<br>
         </div>
         '''
-        
+
         legend = MacroElement()
         legend._template = Template(legend_html)
         m.get_root().add_child(legend)
