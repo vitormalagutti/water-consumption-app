@@ -45,7 +45,7 @@ if uploaded_file:
     st.sidebar.header("🔧 Average Inputs")
     avg_floors = st.sidebar.number_input("Average Floors per Building", min_value=0.0, step=0.1, value=1.0)
     avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=1.0, step=1.0, value=5.0)
-    avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=1000, step=10, value=150)
+    avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=500, step=10, value=150)
 
     # Calculate population based on the number of buildings, average floors, and people per family
     total_population = len(filtered_df) * avg_floors * avg_people_per_family
@@ -110,7 +110,7 @@ if uploaded_file:
     # Convert GeoDataFrame to DataFrame for Plotly
     df_plotly = pd.DataFrame(gdf.drop(columns="geometry"))
 
-    map_zoom = 14
+    map_zoom = 16
     map_width = 700 # Set the desired width in pixels
     map_height = 700 # Set the desired height in pixels
 
