@@ -107,6 +107,10 @@ if uploaded_file:
     with tab3:
         st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
 
+        # Create GeoDataFrame from the DataFrame
+        gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
+        gdf = gdf.set_crs(epsg=4326)
+
         # Convert GeoDataFrame to DataFrame for Folium
         df_plotly = pd.DataFrame(gdf.drop(columns="geometry"))
 
