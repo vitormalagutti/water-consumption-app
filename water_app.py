@@ -33,7 +33,7 @@ if uploaded_file:
     df = pd.read_csv(uploaded_file)
 
     # Define the expected columns
-    expected_columns = ["X", "Y", "Zone", "Status"]
+    expected_columns = ["X", "Y", "Zone", "Sushi", "Status"]
 
     # Select valid columns and fill missing ones with default values
     df = df[[col for col in df.columns if col in expected_columns]]
@@ -242,7 +242,7 @@ if uploaded_file:
                                         "colors": ["#5A1846", "#900C3F", "#C70039", "#FF5733", "#FFC300"]
                                     }
                                 },
-                        "isVisible" : True
+                            "isVisible" : True
                             }
                         }
                     ]
