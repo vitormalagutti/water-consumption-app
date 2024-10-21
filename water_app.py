@@ -1,9 +1,13 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import plotly.io as pio
 import matplotlib.pyplot as plt
 import geopandas as gpd
 from shapely.geometry import Point
+import folium
+from streamlit_folium import folium_static
+
 
 
 # Set up the Streamlit page with custom title and layout
@@ -101,92 +105,39 @@ if uploaded_file:
         st.pyplot(fig)
 
     with tab3:
-        st.markdown("### 🗺️ Interactive Maps with Plotly")
+        st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
 
-        # Create a GeoDataFrame from the DataFrame (if needed for processing)
-        gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
-        gdf = gdf.set_crs(epsg=4326)
-
-        # Convert GeoDataFrame to DataFrame for Plotly
+        # Convert GeoDataFrame to DataFrame for Folium
         df_plotly = pd.DataFrame(gdf.drop(columns="geometry"))
 
-        map_zoom = 15
-        map_width = 900 # Set the desired width in pixels
-        map_height = 1100 # Set the desired height in pixels
+        # Set up the Folium map with Google Satellite layer
+        m = folium.Map(location=[df_plotly['Y'].mean(), df_plotly['X'].mean()], zoom_start=12)
 
-        # Plotting a Scatter Map using Plotly
-        st.markdown("#### 🗺️ Map of Building Locations with Plotly")
-        fig_scatter = px.scatter_mapbox(
-            df_plotly,
-            lat="Y",
-            lon="X",
-            color="User Type",
-            zoom=map_zoom,
-            mapbox_style="satellite",
-            hover_name="Zone",
-            title="Building Locations by User Type"
-        )
+        # Add Google Satellite Tiles
+        folium.TileLayer(
+            tiles='https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+            attr='Google Satellite',
+            name='Google Satellite',
+            overlay=False,
+            control=True
+        ).add_to(m)
 
-        # Update the layout to adjust the heatmap size
-        fig_scatter.update_layout(
-            width=map_width, 
-            height=map_height  
-        )
+        # Add the building locations to the map
+        for idx, row in df.iterrows():
+            folium.CircleMarker(
+                location=[row['Y'], row['X']],
+                radius=3,
+                color='blue',
+                fill=True,
+                fill_opacity=0.6,
+                popup=f"Zone: {row['Zone']}, User Type: {row['User Type']}"
+            ).add_to(m)
 
-        # Display the scatter map in Streamlit
-        st.plotly_chart(fig_scatter)
+        # Add a layer control panel
+        folium.LayerControl().add_to(m)
 
-        # Create a heatmap using Plotly Express
-        st.markdown("#### 🔥 Heatmap of Total Buildings with Plotly")
-        fig_heatmap = px.density_mapbox(
-            df_plotly,
-            lat="Y",
-            lon="X",
-            z=None,  # You can use 'Population' or other intensity columns if needed
-            radius=8,
-            center=dict(lat=gdf['Y'].mean(), lon=gdf['X'].mean()),
-            zoom=map_zoom,
-            mapbox_style="satellite-streets",
-            color_continuous_scale="Viridis",
-            title="Heatmap of Total Buildings"
-        )
-            # Update the layout to adjust the heatmap size
-        fig_heatmap.update_layout(
-            width=map_width, 
-            height=map_height  
-            )
-        
-
-        
-        # Display the heatmap in Streamlit
-        st.plotly_chart(fig_heatmap)
-
-        # Create a heatmap for illegal connections using Plotly Express
-        st.markdown("#### 🔥 Heatmap of Illegal Connections with Plotly")
-        df_illegal = df_plotly[df_plotly["User Type"] == "Illegal"]
-
-        if not df_illegal.empty:  # Ensure there's data to plot
-            fig_heatmap_illegal = px.density_mapbox(
-                df_illegal,
-                lat="Y",
-                lon="X",
-                z=None,  # Can use another column for intensity if needed
-                radius=10,
-                center=dict(lat=gdf['Y'].mean(), lon=gdf['X'].mean()),
-                zoom=map_zoom,
-                mapbox_style="carto-positron",
-                color_continuous_scale="Inferno",
-                title="Heatmap of Illegal Connections"
-            )
-
-            # Update the layout to adjust the heatmap size
-            fig_heatmap_illegal.update_layout(
-                width=map_width, 
-                height=map_height  
-            )
-        
-            # Display the illegal connections heatmap in Streamlit
-            st.plotly_chart(fig_heatmap_illegal)
+        # Display the Folium map in Streamlit
+        folium_static(m)
 
 else:
     st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', or 'Status'.")
