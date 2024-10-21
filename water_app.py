@@ -43,8 +43,7 @@ if uploaded_file:
 
     # Seazonality factors
     month_factors = {
-        'Month': ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
-        'Month_Number': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        'Month': ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dez'],
         'Factor': [0.07, 0.07, 0.07, 0.08, 0.09, 0.09, 0.10, 0.10, 0.10, 0.08, 0.07, 0.07]
     }
 
@@ -266,15 +265,16 @@ if uploaded_file:
         st.markdown("### 📅 Monthly Water Consumption Calculation")
         
         # Calculate monthly water consumption based on factors
-        df_factors['Monthly_Consumption'] = df_factors['Factor'] * avg_litres_per_person * 12
-
+        df_factors['Monthly Daily Consumption'] = df_factors['Factor'] * avg_litres_per_person * 12
+        df_factors["Total Monthly Consumption"] = df_factors['Monthly Daily Consumption'] * sum(user_summary["Total Population"])
+        
         # Display the table with calculated values
         st.dataframe(df_factors)
 
         # Plot a graph of monthly water consumption
         st.markdown("### 📈 Monthly Water Consumption Distribution")
         fig, ax = plt.subplots(figsize=(10,4))
-        ax.plot(df_factors['Month'], df_factors['Monthly_Consumption'], marker='o', color='b')
+        ax.plot(df_factors['Month'], df_factors['Monthly Daily Consumption'], marker='o', color='b')
         ax.set_ylabel('Monthly Water Consumption')
         ax.set_title('Monthly Water Consumption Distribution')
         ax.grid(True)
