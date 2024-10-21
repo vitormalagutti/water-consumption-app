@@ -289,7 +289,7 @@ if uploaded_file:
             ax.plot(df_factors['Month'], df_factors['Monthly Daily Consumption - l/p/d'], marker='o', color='b')
             ax.set_ylabel('Monthly Water Consumption (l/p/d)')
             ax.set_title('Monthly Water Consumption Distribution')
-            ax.sex_ylim(50,300)
+            ax.set_ylim(50,300)
             ax.grid(True)
 
             # Display the plot
