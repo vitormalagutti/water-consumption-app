@@ -193,7 +193,7 @@ if uploaded_file:
                     radius=1,
                     color='black',
                     fill=True,
-                    fill_opacity=1  # Higher transparency for markers
+                    fill_opacity=10  # Higher transparency for markers
                 ).add_to(m)
 
         # Add a layer control panel
