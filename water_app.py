@@ -36,7 +36,7 @@ if uploaded_file:
         df[col] = None  # Assign a default value or handle as required
 
     # Step 1: Categorize Status into "legal", "illegal", and "non-user"
-    df['User Type'] = df['Status'].apply(lambda x: 'Legal' if x == 'water meter' else ('Illegal' if x == 'illegal connection' else ('Non-user' if x == 'non user' else 'No Data')))
+    df['User Type'] = df['Status'].apply(lambda x: 'Legal' if x == 'water meter' else ('Illegal' if x == 'illegal connection' else ('Non-user' if x == 'non-user' else 'No Data')))
 
     # Filter out rows with "No Data" in User Type for percentage calculations
     filtered_df = df[df['User Type'] != 'No Data']
