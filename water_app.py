@@ -123,22 +123,21 @@ if uploaded_file:
         gdf = gdf.set_crs(epsg=4326)
 
 
-        # Define a Pydeck Layer
+        # Define a Pydeck Layer for Points instead of Heatmap
         layer = pdk.Layer(
-            "HeatmapLayer",
+            "ScatterplotLayer",  # Use "ScatterplotLayer" to show individual points
             data=gdf,
             get_position=["X", "Y"],
-            aggregation='MEAN',
-            radius=200,
-            opacity=0.6,
-            get_weight='[User Type]'  # Replace with appropriate column if needed
+            get_radius=50,  # Radius of points in meters
+            get_color=[255, 0, 0, 140],  # Color of the points in RGBA format
+            pickable=True
         )
 
         # Set up the Pydeck map
         view_state = pdk.ViewState(
             latitude=df["Y"].mean(),
             longitude=df["X"].mean(),
-            zoom=10,
+            zoom=12,  # Adjust zoom level as needed
             pitch=50
         )
 
@@ -146,9 +145,10 @@ if uploaded_file:
             map_style="mapbox://styles/mapbox/satellite-v9",
             layers=[layer],
             initial_view_state=view_state,
-            tooltip={"text": "{User Type}"}
+            tooltip={"text": "Zone: {Zone}\nUser Type: {User Type}"}
         )
 
+    
         # Display the Pydeck map in Streamlit
         st.pydeck_chart(r)
 
