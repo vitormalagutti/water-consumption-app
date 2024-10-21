@@ -135,30 +135,6 @@ if uploaded_file:
                 'zoom': 9
             }}}
         
-        config2 = {
-            "mapState": {
-                "bearing": 0,
-                "latitude": center_lat,
-                "longitude": center_lon,
-                "pitch": 0,
-                "zoom": zoom
-            },
-            "mapStyle": {
-                "styleType": "satellite"
-            },
-            "visState": {
-                "layers": [
-                    {
-                        "id": "building_layer",
-                        "type": "point",
-                        "config": {
-                            "color": [30, 144, 255],
-                            "size": 5
-                        }
-                    }
-                ]
-            }
-        }
 
         kepler_map = KeplerGl(height=600, config=config1)
         kepler_map.add_data(data=df, name="Water Consumption Data")
