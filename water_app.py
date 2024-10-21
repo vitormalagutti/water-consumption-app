@@ -126,7 +126,7 @@ if uploaded_file:
         # Define a Pydeck Layer
         layer = pdk.Layer(
             "HeatmapLayer",
-            data=df,
+            data=gdf,
             get_position=["X", "Y"],
             aggregation='MEAN',
             radius=200,
@@ -144,7 +144,7 @@ if uploaded_file:
 
         r = pdk.Deck(
             map_style="mapbox://styles/mapbox/satellite-v9",
-            layers=[gdf],
+            layers=[layer],
             initial_view_state=view_state,
             tooltip={"text": "{User Type}"}
         )
