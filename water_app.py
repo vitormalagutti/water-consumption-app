@@ -24,6 +24,16 @@ if uploaded_file:
     # Check for required columns
     if 'X' in df.columns and 'Y' in df.columns and 'Zone' in df.columns and 'Status' in df.columns:
         
+        # Define the expected columns
+        expected_columns = ["X", "Y", "Zone", "Status"]
+
+        # Identify the columns that are in the CSV but also in the expected list
+        valid_columns = [col for col in df.columns if col in expected_columns]
+
+        # Select only the valid columns
+        df = df[valid_columns]
+
+
         # Step 1: Categorize Status into "legal", "illegal", and "non-user"
         df['User Type'] = df['Status'].apply(lambda x: 'Legal' if x == 'water meter' else ('Illegal' if x == 'illegal connection' else ('Non-user' if x == 'non user' else 'No Data')))
 
