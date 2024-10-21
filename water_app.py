@@ -156,6 +156,28 @@ if uploaded_file:
         height=map_height  
         )
     
+    fig_scatter = px.scatter_mapbox(
+        df_plotly,
+        lat="Y",
+        lon="X",
+        color="User Type",
+        size="Population",  # Adjust based on a relevant column
+        size_max=15,
+        opacity=0.4,  # Set a lower opacity for overlapping points to blend
+        zoom=10,
+        mapbox_style="carto-positron",
+        title="Scatter Plot with Transparency"
+    )
+
+    # Update the layout to adjust the map size
+    fig_scatter.update_layout(
+        width=800,  # Set the desired width in pixels
+        height=600  # Set the desired height in pixels
+    )
+
+    # Display the scatter map in Streamlit
+    st.plotly_chart(fig_scatter)
+
     # Display the heatmap in Streamlit
     st.plotly_chart(fig_heatmap)
 
