@@ -176,7 +176,7 @@ if uploaded_file:
             lon="X",
             color="User Type",
             zoom=15,
-            name= "#### 🗺️ Map of Building Locations with Plotly"
+            name= "#### 🗺️ Map of Building Locations with Plotly",
             mapbox_style="carto-positron",
             hover_name="Zone",
         )
