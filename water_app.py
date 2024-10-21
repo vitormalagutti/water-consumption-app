@@ -269,6 +269,8 @@ if uploaded_file:
         variation_factor = st.slider("Adjust Variation of Factors (0 = Equal, 1 = Normal, 2 = Amplified)", min_value=0.0, max_value=2.0, step=0.1, value=1.0)
 
 
+
+
         # Calculate monthly water consumption based on factors
         df_factors['Factor_updated'] = (1 - variation_factor) * np.mean(df_factors["Factor"]) + variation_factor * df_factors["Factor"]
         df_factors['Monthly Daily Consumption - l/p/d'] = round(df_factors['Factor_updated'] * avg_litres_per_person * 12)
@@ -289,12 +291,19 @@ if uploaded_file:
             ax.plot(df_factors['Month'], df_factors['Monthly Daily Consumption - l/p/d'], marker='o', color='b')
             ax.set_ylabel('Monthly Water Consumption (l/p/d)')
             ax.set_title('Monthly Water Consumption Distribution')
-            ax.set_ylim(50,300)
             ax.grid(True)
+
+            # Apply the if condition for y-axis limits
+            if avg_litres_per_person < 160:
+                ax.set_ylim(0, 250)  # Set y-axis limits for avg_litres_per_person < 160
+            elif avg_litres_per_person < 260:
+                ax.set_ylim(150, 350)  # Set y-axis limits for avg_litres_per_person < 260
+            else:
+                ax.set_ylim(250, 500)  # Set y-axis limits for avg_litres_per_person >= 260
 
             # Display the plot
             st.pyplot(fig)
-            
+
 
 
 else:
