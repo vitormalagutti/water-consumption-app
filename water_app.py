@@ -191,9 +191,9 @@ if uploaded_file:
                 folium.CircleMarker(
                     location=[row['Y'], row['X']],
                     radius=1,
-                    color='grey',
+                    color='black',
                     fill=True,
-                    fill_opacity=1  # Higher transparency for markers
+                    fill_opacity=0.9  # Higher transparency for markers
                 ).add_to(m)
 
         # Add a layer control panel
