@@ -265,7 +265,7 @@ if uploaded_file:
         st.markdown("### 📅 Monthly Water Consumption Calculation")
         
         # Calculate monthly water consumption based on factors
-        df_factors['Monthly Daily Consumption - l/p/d'] = df_factors['Factor'] * avg_litres_per_person * 12
+        df_factors['Monthly Daily Consumption - l/p/d'] = round(df_factors['Factor'] * avg_litres_per_person * 12)
         df_factors["Total Monthly Consumption - m3"] = round(df_factors['Monthly Daily Consumption - l/p/d'] * sum(user_summary["Total Population"]) / 1000, -2)
         
         # Create columns for side-by-side layout
