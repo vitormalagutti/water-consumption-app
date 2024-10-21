@@ -151,7 +151,7 @@ if uploaded_file:
         # Set up the Folium map with Google Satellite layer
         m = folium.Map(
             location=[gdf['Y'].mean(), gdf['X'].mean()], 
-            zoom_start=14,  # Set your desired zoom level (higher numbers zoom in)
+            zoom_start=18,  # Set your desired zoom level (higher numbers zoom in)
             width='100%',  # Set map width as a percentage or pixels
             height='1000px'  # Set map height as a percentage or pixels
         )
@@ -190,10 +190,10 @@ if uploaded_file:
             if heatmap_type == "All Buildings" or row['User Type'].lower() in heatmap_type.lower():
                 folium.CircleMarker(
                     location=[row['Y'], row['X']],
-                    radius=3,
+                    radius=2,
                     color='black',
                     fill=True,
-                    fill_opacity=0.6  # Higher transparency for markers
+                    fill_opacity=0.3  # Higher transparency for markers
                 ).add_to(m)
 
         # Add a layer control panel
