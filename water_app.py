@@ -20,6 +20,8 @@ st.set_page_config(page_title="Water Consumption Visualization", layout="wide")
 # Main Title with description
 st.title("🌊 Water Consumption and Building Visualization")
 st.markdown("This app visualizes water consumption and building information, with breakdowns by zone and user type. Use the sidebar to provide average consumption details and view interactive maps, graphs, and tables.")
+st.markdown("Please upload a .csv file with the specific columns' names X, Y, Zone, and Status")
+
 
 # File upload section with icon
 st.markdown("### 📂 Upload Your Data File")
@@ -134,9 +136,11 @@ if uploaded_file:
                 'latitude': center_lat,
                 'longitude': center_lon,
                 'zoom': 9
-            }}}
-        
-        st.write(config1)
+            },"mapStyle": {
+                "styleType": "satellite"
+                },
+            }}
+
 
         kepler_map = KeplerGl(height=600, config=config1)
         kepler_map.add_data(data=df, name="Water Consumption Data")
