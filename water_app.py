@@ -169,13 +169,14 @@ if uploaded_file:
         df_plotly = pd.DataFrame(gdf.drop(columns="geometry"))
 
         # Plotting a Scatter Map using Plotly
-        st.markdown("#### 🗺️ Map of Building Locations with Plotly")
+        #st.markdown()
         fig_scatter = px.scatter_mapbox(
             df_plotly,
             lat="Y",
             lon="X",
             color="User Type",
             zoom=15,
+            name= "#### 🗺️ Map of Building Locations with Plotly"
             mapbox_style="carto-positron",
             hover_name="Zone",
         )
