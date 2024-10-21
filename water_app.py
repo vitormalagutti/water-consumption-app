@@ -126,19 +126,20 @@ if uploaded_file:
 
         # Create a dynamic configuration for KeplerGL
         # Define a valid dynamic configuration for KeplerGL
-       # config1 = {
-#            'version': 'v1',
- #           'config': {
-  #          'mapState': {
-   #             'latitude': center_lat,
-    #            'longitude': center_lon,
-     #           'zoom': 9
-      #      }}}
+        config1 = {
+            'version': 'v1',
+            'config': {
+            'mapState': {
+                'latitude': center_lat,
+                'longitude': center_lon,
+                'zoom': 9
+            }}}
         
+        st.write(dynamic_config)
 
 #        kepler_map = KeplerGl(height=600, config=config1)
 #        kepler_map.add_data(data=df, name="Water Consumption Data")
- #       kepler_map.save_to_html(file_name="kepler_map_dynamic.html")
+#       kepler_map.save_to_html(file_name="kepler_map_dynamic.html")
     
 
         # Display the saved KeplerGL map in Streamlit
