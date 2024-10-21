@@ -234,7 +234,8 @@ if uploaded_file:
                                 "visConfig": {
                                     "radius": 5,
                                     "opacity": 0.8
-                                }
+                                },
+                                "isVisible" : True
                             }
                         },
                         {
@@ -257,8 +258,7 @@ if uploaded_file:
                                         "category": "Uber",
                                         "colors": ["#5A1846", "#900C3F", "#C70039", "#FF5733", "#FFC300"]
                                     }
-                                },
-                                "isVisible" : True
+                                }
                             }
                         }
                     ]
