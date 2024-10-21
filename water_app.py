@@ -178,7 +178,6 @@ if uploaded_file:
             zoom=15,
             mapbox_style="carto-positron",
             hover_name="Zone",
-            title="Building Locations by User Type"
         )
 
         # Update the layout to adjust the map size
