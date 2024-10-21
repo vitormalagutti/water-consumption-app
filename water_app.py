@@ -52,7 +52,6 @@ if uploaded_file:
     avg_floors = st.sidebar.number_input("Average Floors per Building", min_value=0.0, step=0.1, value=1.0)
     avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=1.0, step=1.0, value=5.0)
     avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=500, step=10, value=150)
-
     # Choose which heatmap to display
     st.sidebar.header("🔍 Heatmap Options")
     heatmap_type = st.sidebar.selectbox(
@@ -60,29 +59,35 @@ if uploaded_file:
         ["All Buildings", "Illegal Connections", "Legal Connections", "Non-Users"]
     )
 
-
-
     # Calculate total population using the full DataFrame (df), aggregated by Zone and DMA
     df['Population'] = avg_floors * avg_people_per_family
-    total_population_by_zone = df.groupby('Zone')['Population'].sum()
+    total_population_by_zone = df.groupby('Zone')['Population'].sum() if 'Zone' in df.columns else None
     total_population_by_dma = df.groupby('DMA')['Population'].sum() if 'DMA' in df.columns else None
 
     # Calculate percentages for legal, illegal, and non-users per Zone
-    filtered_df['Population'] = avg_floors * avg_people_per_family
-    user_summary_zone = filtered_df.pivot_table(
-        values='Population',
-        index='Zone',
-        columns='User Type',
-        aggfunc='sum',
-        fill_value=0
-    )
-    user_summary_zone['Total Population'] = total_population_by_zone
+    if 'Zone' in filtered_df.columns:
+        filtered_df['Population'] = avg_floors * avg_people_per_family
+        user_summary_zone = filtered_df.pivot_table(
+            values='Population',
+            index='Zone',
+            columns='User Type',
+            aggfunc='sum',
+            fill_value=0
+        )
+        user_summary_zone['Total Population'] = total_population_by_zone
 
-    for user_type in ['Legal', 'Illegal', 'Non-user']:
-        user_summary_zone[f'{user_type} %'] = (user_summary_zone[user_type] / user_summary_zone['Total Population']) * 100
+        for user_type in ['Legal', 'Illegal', 'Non-user']:
+            user_summary_zone[f'{user_type} %'] = (user_summary_zone[user_type] / user_summary_zone['Total Population']) * 100
 
-    user_summary_zone = user_summary_zone.round(1)
-    overall_summary_zone = user_summary_zone[['Total Population', 'Legal %', 'Illegal %', 'Non-user %']].copy()
+        user_summary_zone = user_summary_zone.round(1)
+        overall_summary_zone = user_summary_zone[['Total Population', 'Legal %', 'Illegal %', 'Non-user %']].copy()
+
+    # Add a final row with the sum of all Zones
+        total_population_all_zones = user_summary_zone['Total Population'].sum()
+        legal_sum_zone = user_summary_zone['Legal %'].mean()
+        illegal_sum_zone = user_summary_zone['Illegal %'].mean()
+        non_user_sum_zone = user_summary_zone['Non-user %'].mean()
+        overall_summary_zone.loc['Total'] = [total_population_all_zones, legal_sum_zone, illegal_sum_zone, non_user_sum_zone]
 
     # Calculate percentages for legal, illegal, and non-users per DMA (if 'DMA' column exists)
     if 'DMA' in filtered_df.columns:
@@ -102,8 +107,16 @@ if uploaded_file:
         overall_summary_dma = user_summary_dma[['Total Population', 'Legal %', 'Illegal %', 'Non-user %']].copy()
 
     # Combine "overall" input with the sum of everything for both Zone and DMA
-    overall_population_zone = total_population_by_zone.sum()
+    overall_population_zone = total_population_by_zone.sum() if total_population_by_zone is not None else 0
     overall_population_dma = total_population_by_dma.sum() if total_population_by_dma is not None else 0
+
+     # Add a final row with the sum of all DMAs
+    total_population_all_dmas = user_summary_dma['Total Population'].sum()
+    legal_sum_dma = user_summary_dma['Legal %'].mean()
+    illegal_sum_dma = user_summary_dma['Illegal %'].mean()
+    non_user_sum_dma = user_summary_dma['Non-user %'].mean()
+    overall_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
+
 
     # Streamlit tabs for organized visualization
     tab1, tab2, tab3, tab4 = st.tabs(["📊 Network Users Summary", "📅 Seazonal Water Distribution", "💧 Water Demand Model", "🗺️ Data Visualization"])
