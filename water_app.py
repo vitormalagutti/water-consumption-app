@@ -4,7 +4,7 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 import geopandas as gpd
 from shapely.geometry import Point
-import contextily as ctx  # Import contextily for basemap support
+
 
 # Set up the Streamlit page with custom title and layout
 st.set_page_config(page_title="Water Consumption Visualization", layout="wide")
@@ -101,36 +101,67 @@ if uploaded_file:
         st.pyplot(fig)
 
     with tab3:
-        st.markdown("### 🗺️ Map and Heatmaps of Building Locations")
+         st.markdown("### 🗺️ Interactive Maps with Plotly")
 
-        # Create GeoDataFrame from the DataFrame
-        gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
-        gdf = gdf.set_crs(epsg=4326)
+    # Create a GeoDataFrame from the DataFrame (if needed for processing)
+    gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
+    gdf = gdf.set_crs(epsg=4326)
 
-        # Display the GeoDataFrame on a map with a satellite basemap
-        st.markdown("#### 🗺️ Map of Building Locations with Satellite Basemap")
-        fig, ax = plt.subplots(figsize=(10, 6))
-        gdf.plot(ax=ax, color='blue', markersize=5, alpha=0.6, legend=True)
-        ctx.add_basemap(ax, source=ctx.providers.Esri.WorldImagery)  # Satellite basemap
-        ax.set_title("Building Locations on Satellite Map")
-        st.pyplot(fig)
+    # Convert GeoDataFrame to DataFrame for Plotly
+    df_plotly = pd.DataFrame(gdf.drop(columns="geometry"))
 
-        # Create a heatmap for total buildings
-        st.markdown("#### 🔥 Heatmap of Total Buildings")
-        fig, ax = plt.subplots(figsize=(10, 6))
-        gdf.plot(ax=ax, color='red', alpha=0.5, markersize=20)
-        ctx.add_basemap(ax, source=ctx.providers.Esri.WorldImagery)
-        ax.set_title("Heatmap of Total Buildings")
-        st.pyplot(fig)
+    # Plotting a Scatter Map using Plotly
+    st.markdown("#### 🗺️ Map of Building Locations with Plotly")
+    fig_scatter = px.scatter_mapbox(
+        df_plotly,
+        lat="Y",
+        lon="X",
+        color="User Type",
+        zoom=10,
+        mapbox_style="carto-positron",
+        hover_name="Zone",
+        title="Building Locations by User Type"
+    )
 
-        # Create a heatmap for illegal connections
-        st.markdown("#### 🔥 Heatmap of Illegal Connections")
-        illegal_gdf = gdf[gdf['User Type'] == 'Illegal']
-        fig, ax = plt.subplots(figsize=(10, 6))
-        illegal_gdf.plot(ax=ax, color='orange', alpha=0.5, markersize=20)
-        ctx.add_basemap(ax, source=ctx.providers.Esri.WorldImagery)
-        ax.set_title("Heatmap of Illegal Connections")
-        st.pyplot(fig)
+    # Display the scatter map in Streamlit
+    st.plotly_chart(fig_scatter)
+
+    # Create a heatmap using Plotly Express
+    st.markdown("#### 🔥 Heatmap of Total Buildings with Plotly")
+    fig_heatmap = px.density_mapbox(
+        df_plotly,
+        lat="Y",
+        lon="X",
+        z=None,  # You can use 'Population' or other intensity columns if needed
+        radius=15,
+        center=dict(lat=gdf['Y'].mean(), lon=gdf['X'].mean()),
+        zoom=10,
+        mapbox_style="carto-positron",
+        title="Heatmap of Total Buildings"
+    )
+
+    # Display the heatmap in Streamlit
+    st.plotly_chart(fig_heatmap)
+
+    # Create a heatmap for illegal connections using Plotly Express
+    st.markdown("#### 🔥 Heatmap of Illegal Connections with Plotly")
+    df_illegal = df_plotly[df_plotly["User Type"] == "Illegal"]
+
+    if not df_illegal.empty:  # Ensure there's data to plot
+        fig_heatmap_illegal = px.density_mapbox(
+            df_illegal,
+            lat="Y",
+            lon="X",
+            z=None,  # Can use another column for intensity if needed
+            radius=15,
+            center=dict(lat=gdf['Y'].mean(), lon=gdf['X'].mean()),
+            zoom=10,
+            mapbox_style="carto-positron",
+            title="Heatmap of Illegal Connections"
+        )
+
+        # Display the illegal connections heatmap in Streamlit
+        st.plotly_chart(fig_heatmap_illegal)
 
 else:
     st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', or 'Status'.")
