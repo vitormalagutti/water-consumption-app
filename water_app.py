@@ -125,6 +125,7 @@ if uploaded_file:
         zoom = 12 if max(lat_range, lon_range) < 1 else 10
 
         # Create a dynamic configuration for KeplerGL
+        # Define a valid dynamic configuration for KeplerGL
         dynamic_config = {
             "mapState": {
                 "bearing": 0,
@@ -149,6 +150,14 @@ if uploaded_file:
                 ]
             }
         }
+
+        # Verify that dynamic_config is indeed a dictionary
+        if isinstance(dynamic_config, dict):
+            kepler_map = KeplerGl(height=600, config=dynamic_config)
+            kepler_map.add_data(data=df, name="Water Consumption Data")
+            kepler_map.save_to_html(file_name="kepler_map_dynamic.html")
+        else:
+            st.error("Invalid configuration: Please provide a dictionary for the config parameter.")
 
         # Prepare KeplerGL map with the dynamically generated configuration
         kepler_map = KeplerGl(height=600, config=dynamic_config)
