@@ -110,6 +110,8 @@ if uploaded_file:
     # Convert GeoDataFrame to DataFrame for Plotly
     df_plotly = pd.DataFrame(gdf.drop(columns="geometry"))
 
+    map_zoom = 7
+
     # Plotting a Scatter Map using Plotly
     st.markdown("#### 🗺️ Map of Building Locations with Plotly")
     fig_scatter = px.scatter_mapbox(
@@ -117,7 +119,7 @@ if uploaded_file:
         lat="Y",
         lon="X",
         color="User Type",
-        zoom=10,
+        zoom=map_zoom,
         mapbox_style="carto-positron",
         hover_name="Zone",
         title="Building Locations by User Type"
@@ -135,7 +137,7 @@ if uploaded_file:
         z=None,  # You can use 'Population' or other intensity columns if needed
         radius=15,
         center=dict(lat=gdf['Y'].mean(), lon=gdf['X'].mean()),
-        zoom=10,
+        zoom=map_zoom,
         mapbox_style="carto-positron",
         title="Heatmap of Total Buildings"
     )
@@ -155,7 +157,7 @@ if uploaded_file:
             z=None,  # Can use another column for intensity if needed
             radius=15,
             center=dict(lat=gdf['Y'].mean(), lon=gdf['X'].mean()),
-            zoom=10,
+            zoom=map_zoom,
             mapbox_style="carto-positron",
             title="Heatmap of Illegal Connections"
         )
