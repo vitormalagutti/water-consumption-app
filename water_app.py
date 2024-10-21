@@ -128,7 +128,7 @@ if uploaded_file:
     )
 
         # Update the layout to adjust the heatmap size
-    fig_heatmap_illegal.update_layout(
+    fig_scatter.update_layout(
             width=map_width, 
             height=map_height  
         )
@@ -150,10 +150,11 @@ if uploaded_file:
         title="Heatmap of Total Buildings"
     )
         # Update the layout to adjust the heatmap size
-    fig_heatmap_illegal.update_layout(
+    fig_heatmap.update_layout(
         width=map_width, 
         height=map_height  
         )
+    
     # Display the heatmap in Streamlit
     st.plotly_chart(fig_heatmap)
 
