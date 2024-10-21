@@ -265,7 +265,9 @@ if uploaded_file:
     with tab4:
         st.markdown("### 📅 Monthly Water Consumption Calculation")
         
-        variation_factor = 1
+        # Slider to adjust the factors' variation (0 = all equal, 1 = current, 2 = amplified)
+        variation_factor = st.slider("Adjust Variation of Factors (0 = Equal, 1 = Normal, 2 = Amplified)", min_value=0.0, max_value=2.0, step=0.1, value=1.0)
+
 
         # Calculate monthly water consumption based on factors
         df_factors['Factor_updated'] = (1 - variation_factor) * np.mean(df_factors["Factor"]) + variation_factor * df_factors["Factor"]
