@@ -177,7 +177,7 @@ if uploaded_file:
 
     with tab4:
         st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
-
+        
         # Create a GeoDataFrame for processing
         gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
         gdf = gdf.set_crs(epsg=4326)
@@ -272,7 +272,6 @@ if uploaded_file:
         kepler_map.add_data(data=df, name="Water Consumption Data")
         keplergl_static(kepler_map)
 
-
         # Set up the Folium map with Google Satellite layer
         m = folium.Map(
             location=[center_lat, center_lon],
@@ -288,30 +287,97 @@ if uploaded_file:
             control=True
         ).add_to(m)
 
-        # Create heatmaps based on selection
-        if heatmap_type == "All Buildings":
-            st.markdown("#### 🔥 Heatmap of All Building Locations")
-            heat_data = [[row['Y'], row['X']] for idx, row in gdf.iterrows()]
-            HeatMap(heat_data, radius=15).add_to(m)
-        elif heatmap_type == "Illegal Connections":
-            st.markdown("#### 🔥 Heatmap of Illegal Connections")
-            heat_data_illegal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Illegal'].iterrows()]
-            HeatMap(heat_data_illegal, radius=15).add_to(m)
-        elif heatmap_type == "Legal Connections":
-            st.markdown("#### 🔥 Heatmap of Legal Connections")
-            heat_data_legal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Legal'].iterrows()]
-            HeatMap(heat_data_legal, radius=15).add_to(m)
-        elif heatmap_type == "Non-Users":
-            st.markdown("#### 🔥 Heatmap of Non-Users")
-            heat_data_non_users = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Non-user'].iterrows()]
-            HeatMap(heat_data_non_users, radius=15).add_to(m)
+        # Create columns for side-by-side layout
+        col1, col2 = st.columns(2)
+        with col1:
 
-        # Add a layer control panel
-        folium.LayerControl().add_to(m)
+            # Create heatmaps based on selection
+            if heatmap_type == "All Buildings":
+                st.markdown("#### 🔥 Heatmap of All Building Locations")
+                heat_data = [[row['Y'], row['X']] for idx, row in gdf.iterrows()]
+                HeatMap(heat_data, radius=15).add_to(m)
 
-        # Display the Folium map in Streamlit
-        folium_static(m)
+            elif heatmap_type == "Illegal Connections":
+                st.markdown("#### 🔥 Heatmap of Illegal Connections")
+                heat_data_illegal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Illegal'].iterrows()]
+                HeatMap(heat_data_illegal, radius=15).add_to(m)
 
+            elif heatmap_type == "Legal Connections":
+                st.markdown("#### 🔥 Heatmap of Legal Connections")
+                heat_data_legal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Legal'].iterrows()]
+                HeatMap(heat_data_legal, radius=15).add_to(m)
+                
+            elif heatmap_type == "Non-Users":
+                st.markdown("#### 🔥 Heatmap of Non-Users")
+                heat_data_non_users = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Non-user'].iterrows()]
+                HeatMap(heat_data_non_users, radius=15).add_to(m)
+
+            # Add a layer control panel
+            folium.LayerControl().add_to(m)
+
+            # Display the Folium map in Streamlit
+            folium_static(m)
+        
+        with col2:
+            config_heatmap = {
+            'version': 'v1',
+            'config': {
+                'mapState': {
+                    'latitude': center_lat,
+                    'longitude': center_lon,
+                    'zoom': 14
+                },
+                "mapStyle": {
+                    "styleType": "satellite"
+                },
+                "visState": {
+                    "layers": [
+                        {
+                            "id": "building_layer",
+                            "type": "grid",  
+                            "config": {
+                                "dataId": "Water Consumption Data",
+                                "label": "Building Locations",
+                                "color": [30, 144, 255],  # Color of points
+                                "columns": {
+                                    "lat": "latitude",
+                                    "lng": "longitude"
+                                },
+                                "visConfig": {
+                                    "radius": 5,
+                                    "opacity": 0.8
+                                }
+                            }
+                        }]}}}
+
+            # Create heatmaps based on selection
+            if heatmap_type == "All Buildings":
+                st.markdown("#### 🔥 Heatmap of All Building Locations")
+                heat_data = [[row['Y'], row['X']] for idx, row in gdf.iterrows()]
+                kepler_map = KeplerGl(height=800, config=config_heatmap)
+                kepler_map.add_data(data=heat_data, name="Water Consumption Data")
+                keplergl_static(kepler_map)
+
+            elif heatmap_type == "Illegal Connections":
+                st.markdown("#### 🔥 Heatmap of Illegal Connections")
+                heat_data_illegal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Illegal'].iterrows()]
+                kepler_map = KeplerGl(height=800, config=config_heatmap)
+                kepler_map.add_data(data=heat_data_illegal, name="Water Consumption Data")
+                keplergl_static(kepler_map)
+
+            elif heatmap_type == "Legal Connections":
+                st.markdown("#### 🔥 Heatmap of Legal Connections")
+                heat_data_legal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Legal'].iterrows()]
+                kepler_map = KeplerGl(height=800, config=config_heatmap)
+                kepler_map.add_data(data=heat_data_legal, name="Water Consumption Data")
+                keplergl_static(kepler_map)
+                
+            elif heatmap_type == "Non-Users":
+                st.markdown("#### 🔥 Heatmap of Non-Users")
+                heat_data_non_users = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Non-user'].iterrows()]
+                kepler_map = KeplerGl(height=800, config=config_heatmap)
+                kepler_map.add_data(data=heat_data_non_users, name="Water Consumption Data")
+                keplergl_static(kepler_map)
    
 
 else:
