@@ -212,10 +212,10 @@ if uploaded_file:
 
         # Set up the Folium map with Google Satellite layer
         m = folium.Map(
-            location=[gdf['Y'].mean(), gdf['X'].mean()],
+            location=[center_lat, center_lon],
             zoom_start=15,
             width='800px',
-            height='10%'
+            height='200%'
         )
         folium.TileLayer(
             tiles='https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
