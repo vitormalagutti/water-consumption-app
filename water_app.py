@@ -264,8 +264,8 @@ if uploaded_file:
 
     with tab4:
         st.markdown("### 📅 Monthly Water Consumption Calculation")
-        
-        st.markdown("## Seasonal Variation Factor")        
+
+        st.markdown("#### Seasonal Variation Factor")        
         # Slider to adjust the factors' variation (0 = all equal, 1 = current, 2 = amplified)
         variation_factor = st.slider("Adjust Variation of Factors (0 = Equal, 1 = Normal, 2 = Amplified)", min_value=0.0, max_value=2.0, step=0.1, value=1.0)
 
