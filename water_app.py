@@ -151,7 +151,7 @@ if uploaded_file:
         # Set up the Folium map with Google Satellite layer
         m = folium.Map(
             location=[gdf['Y'].mean(), gdf['X'].mean()], 
-            zoom_start=14,  # Set your desired zoom level (higher numbers zoom in)
+            zoom_start=15,  # Set your desired zoom level (higher numbers zoom in)
             width='800px',  # Set map width as a percentage or pixels
             height='100%'  # Set map height as a percentage or pixels
         )
@@ -193,7 +193,7 @@ if uploaded_file:
                     radius=2,
                     color='black',
                     fill=True,
-                    fill_opacity=0.3  # Higher transparency for markers
+                    fill_opacity=0.01  # Higher transparency for markers
                 ).add_to(m)
 
         # Add a layer control panel
