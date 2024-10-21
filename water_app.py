@@ -151,9 +151,9 @@ if uploaded_file:
         # Set up the Folium map with Google Satellite layer
         m = folium.Map(
             location=[gdf['Y'].mean(), gdf['X'].mean()], 
-            zoom_start=18,  # Set your desired zoom level (higher numbers zoom in)
+            zoom_start=14,  # Set your desired zoom level (higher numbers zoom in)
             width='100%',  # Set map width as a percentage or pixels
-            height='1000px'  # Set map height as a percentage or pixels
+            height='1100px'  # Set map height as a percentage or pixels
         )
         # Add Google Satellite Tiles
         folium.TileLayer(
