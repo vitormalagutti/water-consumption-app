@@ -138,8 +138,8 @@ if uploaded_file:
 
         # Update the layout to adjust the map size
         fig_scatter.update_layout(
-            width=800,  # Set the desired width in pixels
-            height=600  # Set the desired height in pixels
+            width=700,  # Set the desired width in pixels
+            height=1000  # Set the desired height in pixels
         )
 
         # Display the scatter map in Streamlit
@@ -149,8 +149,12 @@ if uploaded_file:
         df_plotly = pd.DataFrame(gdf.drop(columns="geometry"))
 
         # Set up the Folium map with Google Satellite layer
-        m = folium.Map(location=[df_plotly['Y'].mean(), df_plotly['X'].mean()], zoom_start=12)
-
+        m = folium.Map(
+            location=[gdf['Y'].mean(), gdf['X'].mean()], 
+            zoom_start=14,  # Set your desired zoom level (higher numbers zoom in)
+            width='100%',  # Set map width as a percentage or pixels
+            height='1000px'  # Set map height as a percentage or pixels
+        )
         # Add Google Satellite Tiles
         folium.TileLayer(
             tiles='https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
@@ -180,16 +184,18 @@ if uploaded_file:
             st.markdown("#### 🔥 Heatmap of Non-Users")
             heat_data_non_users = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Non-user'].iterrows()]
             HeatMap(heat_data_non_users, radius=15, gradient={0.4: 'blue', 0.65: 'lime', 1: 'red'}).add_to(m)
-
+ 
         # Overlay specific building type with higher transparency
         for idx, row in gdf.iterrows():
             if heatmap_type == "All Buildings" or row['User Type'].lower() in heatmap_type.lower():
                 folium.CircleMarker(
                     location=[row['Y'], row['X']],
                     radius=3,
-                    color='black'
-                )
-                
+                    color='black',
+                    fill=True,
+                    fill_opacity=0.6  # Higher transparency for markers
+                ).add_to(m)
+
         # Add a layer control panel
         folium.LayerControl().add_to(m)
 
