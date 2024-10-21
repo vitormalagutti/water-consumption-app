@@ -111,6 +111,8 @@ if uploaded_file:
     df_plotly = pd.DataFrame(gdf.drop(columns="geometry"))
 
     map_zoom = 14
+    map_width = 500 # Set the desired width in pixels
+    map_height = 500 # Set the desired height in pixels
 
     # Plotting a Scatter Map using Plotly
     st.markdown("#### 🗺️ Map of Building Locations with Plotly")
@@ -124,6 +126,12 @@ if uploaded_file:
         hover_name="Zone",
         title="Building Locations by User Type"
     )
+
+        # Update the layout to adjust the heatmap size
+    fig_heatmap_illegal.update_layout(
+            width=map_width, 
+            height=map_height  
+        )
 
     # Display the scatter map in Streamlit
     st.plotly_chart(fig_scatter)
@@ -141,7 +149,11 @@ if uploaded_file:
         mapbox_style="carto-positron",
         title="Heatmap of Total Buildings"
     )
-
+        # Update the layout to adjust the heatmap size
+    fig_heatmap_illegal.update_layout(
+        width=map_width, 
+        height=map_height  
+        )
     # Display the heatmap in Streamlit
     st.plotly_chart(fig_heatmap)
 
@@ -162,6 +174,12 @@ if uploaded_file:
             title="Heatmap of Illegal Connections"
         )
 
+        # Update the layout to adjust the heatmap size
+        fig_heatmap_illegal.update_layout(
+            width=map_width, 
+            height=map_height  
+        )
+    
         # Display the illegal connections heatmap in Streamlit
         st.plotly_chart(fig_heatmap_illegal)
 
