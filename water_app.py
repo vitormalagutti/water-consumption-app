@@ -188,7 +188,8 @@ if uploaded_file:
                     location=[row['Y'], row['X']],
                     radius=3,
                     color='black'
-       
+                )
+                
         # Add a layer control panel
         folium.LayerControl().add_to(m)
 
