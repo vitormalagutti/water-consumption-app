@@ -144,9 +144,11 @@ if uploaded_file:
             # Display the plot
             st.pyplot(fig)
 
-
-
     with tab3:
+        # Create columns for side-by-side layout
+        col1, col2 = st.columns(2)
+        
+           
         # Calculate water consumption per zone and overall consumption (for monthly values)
         filtered_df['Cubic Metres'] = filtered_df['Population'] * avg_litres_per_person / 1000 * 30
 
@@ -158,18 +160,20 @@ if uploaded_file:
 
         # Add a row for total values across all zones
         total_row = pd.DataFrame([['Total', water_per_zone['Cubic Metres'].sum(), water_per_zone['Population'].sum()]],
-                                 columns=water_per_zone.columns)
-        water_per_zone = pd.concat([water_per_zone, total_row], ignore_index=True)
+                                 columns=water_per_zone.columns)        
+        water_per_zone = pd.concat([water_per_zone, total_row], ignore_index=True)  
 
-        st.markdown("### 💧 Water Consumption per Zone (Monthly)")
-        st.dataframe(water_per_zone)
+        with col1:
+            st.markdown("### 💧 Water Consumption per Zone (Monthly)")
+            st.dataframe(water_per_zone)
 
-        st.markdown("### 📉 Monthly Water Consumption Variation by Zone")
-        fig, ax = plt.subplots(figsize=(10, 4))
-        water_per_zone.plot(x='Zone', y='Cubic Metres', kind='bar', ax=ax, color='#87CEEB')
-        ax.set_ylabel('Cubic Metres')
-        ax.set_title('Monthly Water Consumption by Zone')
-        st.pyplot(fig)
+        with col2:
+            st.markdown("### 📉 Monthly Water Consumption Variation by Zone")
+            fig, ax = plt.subplots(figsize=(10, 4))
+            water_per_zone.plot(x='Zone', y='Cubic Metres', kind='bar', ax=ax, color='#87CEEB')
+            ax.set_ylabel('Cubic Metres')
+            ax.set_title('Monthly Water Consumption by Zone')
+            st.pyplot(fig)
 
     with tab4:
         st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
