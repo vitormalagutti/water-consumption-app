@@ -143,7 +143,7 @@ if uploaded_file:
         lat="Y",
         lon="X",
         z=None,  # You can use 'Population' or other intensity columns if needed
-        radius=5,
+        radius=10,
         center=dict(lat=gdf['Y'].mean(), lon=gdf['X'].mean()),
         zoom=map_zoom,
         mapbox_style="carto-positron",
@@ -169,10 +169,11 @@ if uploaded_file:
             lat="Y",
             lon="X",
             z=None,  # Can use another column for intensity if needed
-            radius=15,
+            radius=10,
             center=dict(lat=gdf['Y'].mean(), lon=gdf['X'].mean()),
             zoom=map_zoom,
             mapbox_style="carto-positron",
+            color_continuous_scale="Inferno",
             title="Heatmap of Illegal Connections"
         )
 
