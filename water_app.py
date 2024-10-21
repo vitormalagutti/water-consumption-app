@@ -142,7 +142,7 @@ if uploaded_file:
     
 
         # Display the saved KeplerGL map in Streamlit
-        st.components.v1.html(open("kepler_map_dynamic.html", "r").read(), height=600)
+#        st.components.v1.html(open("kepler_map_dynamic.html", "r").read(), height=600)
 
         # Set up the Folium map with Google Satellite layer
         m = folium.Map(
