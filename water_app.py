@@ -12,6 +12,7 @@ from shapely.geometry import Point
 from streamlit_folium import folium_static
 from folium.plugins import HeatMap
 from branca.element import Template, MacroElement
+from streamlit_keplergl import keplergl_static
 
 # Set up the Streamlit page with custom title and layout
 st.set_page_config(page_title="Water Consumption Visualization", layout="wide")
@@ -139,7 +140,7 @@ if uploaded_file:
 
         kepler_map = KeplerGl(height=600, config=config1)
         kepler_map.add_data(data=df, name="Water Consumption Data")
-        kepler_map
+        keplergl_static(kepler_map)
         # kepler_map.save_to_html(file_name="kepler_map_dynamic.html")
     
 
