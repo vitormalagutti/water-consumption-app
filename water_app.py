@@ -264,9 +264,6 @@ if uploaded_file:
 
     with tab4:
         st.markdown("### 📅 Monthly Water Consumption Calculation")
-
-        # You can use the variable avg_litres_per_person here, which was input in the sidebar
-        # avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=500, step=10, value=150)
         
         # Calculate monthly water consumption based on factors
         df_factors['Monthly_Consumption'] = df_factors['Factor'] * avg_litres_per_person * 12
@@ -276,7 +273,7 @@ if uploaded_file:
 
         # Plot a graph of monthly water consumption
         st.markdown("### 📈 Monthly Water Consumption Distribution")
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(10,4))
         ax.plot(df_factors['Month'], df_factors['Monthly_Consumption'], marker='o', color='b')
         ax.set_ylabel('Monthly Water Consumption')
         ax.set_title('Monthly Water Consumption Distribution')
