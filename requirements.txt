@@ -9,6 +9,7 @@ pydeck      # for Pydeck visualizations (Plotly wrapper)
 keplergl    # for KeplerGL visualizations
 shapely     # for geometric operations
 branca      # for Folium HTML/CSS control elements
+streamlit_keplergl
 
 # Additional packages that might be required
 numpy     # for numerical operations
