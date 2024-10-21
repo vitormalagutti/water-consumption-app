@@ -101,92 +101,92 @@ if uploaded_file:
         st.pyplot(fig)
 
     with tab3:
-         st.markdown("### 🗺️ Interactive Maps with Plotly")
+        st.markdown("### 🗺️ Interactive Maps with Plotly")
 
-    # Create a GeoDataFrame from the DataFrame (if needed for processing)
-    gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
-    gdf = gdf.set_crs(epsg=4326)
+        # Create a GeoDataFrame from the DataFrame (if needed for processing)
+        gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
+        gdf = gdf.set_crs(epsg=4326)
 
-    # Convert GeoDataFrame to DataFrame for Plotly
-    df_plotly = pd.DataFrame(gdf.drop(columns="geometry"))
+        # Convert GeoDataFrame to DataFrame for Plotly
+        df_plotly = pd.DataFrame(gdf.drop(columns="geometry"))
 
-    map_zoom = 15
-    map_width = 700 # Set the desired width in pixels
-    map_height = 800 # Set the desired height in pixels
+        map_zoom = 15
+        map_width = 700 # Set the desired width in pixels
+        map_height = 800 # Set the desired height in pixels
 
-    # Plotting a Scatter Map using Plotly
-    st.markdown("#### 🗺️ Map of Building Locations with Plotly")
-    fig_scatter = px.scatter_mapbox(
-        df_plotly,
-        lat="Y",
-        lon="X",
-        color="User Type",
-        zoom=map_zoom,
-        mapbox_style="carto-positron",
-        hover_name="Zone",
-        title="Building Locations by User Type"
-    )
-
-        # Update the layout to adjust the heatmap size
-    fig_scatter.update_layout(
-            width=map_width, 
-            height=map_height  
-        )
-
-    # Display the scatter map in Streamlit
-    st.plotly_chart(fig_scatter)
-
-    # Create a heatmap using Plotly Express
-    st.markdown("#### 🔥 Heatmap of Total Buildings with Plotly")
-    fig_heatmap = px.density_mapbox(
-        df_plotly,
-        lat="Y",
-        lon="X",
-        z=None,  # You can use 'Population' or other intensity columns if needed
-        radius=8,
-        center=dict(lat=gdf['Y'].mean(), lon=gdf['X'].mean()),
-        zoom=map_zoom,
-        mapbox_style="carto-positron",
-        color_continuous_scale="Viridis",
-        title="Heatmap of Total Buildings"
-    )
-        # Update the layout to adjust the heatmap size
-    fig_heatmap.update_layout(
-        width=map_width, 
-        height=map_height  
-        )
-    
-
-    
-    # Display the heatmap in Streamlit
-    st.plotly_chart(fig_heatmap)
-
-    # Create a heatmap for illegal connections using Plotly Express
-    st.markdown("#### 🔥 Heatmap of Illegal Connections with Plotly")
-    df_illegal = df_plotly[df_plotly["User Type"] == "Illegal"]
-
-    if not df_illegal.empty:  # Ensure there's data to plot
-        fig_heatmap_illegal = px.density_mapbox(
-            df_illegal,
+        # Plotting a Scatter Map using Plotly
+        st.markdown("#### 🗺️ Map of Building Locations with Plotly")
+        fig_scatter = px.scatter_mapbox(
+            df_plotly,
             lat="Y",
             lon="X",
-            z=None,  # Can use another column for intensity if needed
-            radius=10,
+            color="User Type",
+            zoom=map_zoom,
+            mapbox_style="carto-positron",
+            hover_name="Zone",
+            title="Building Locations by User Type"
+        )
+
+            # Update the layout to adjust the heatmap size
+        fig_scatter.update_layout(
+                width=map_width, 
+                height=map_height  
+            )
+
+        # Display the scatter map in Streamlit
+        st.plotly_chart(fig_scatter)
+
+        # Create a heatmap using Plotly Express
+        st.markdown("#### 🔥 Heatmap of Total Buildings with Plotly")
+        fig_heatmap = px.density_mapbox(
+            df_plotly,
+            lat="Y",
+            lon="X",
+            z=None,  # You can use 'Population' or other intensity columns if needed
+            radius=8,
             center=dict(lat=gdf['Y'].mean(), lon=gdf['X'].mean()),
             zoom=map_zoom,
             mapbox_style="carto-positron",
-            color_continuous_scale="Inferno",
-            title="Heatmap of Illegal Connections"
+            color_continuous_scale="Viridis",
+            title="Heatmap of Total Buildings"
         )
-
-        # Update the layout to adjust the heatmap size
-        fig_heatmap_illegal.update_layout(
+            # Update the layout to adjust the heatmap size
+        fig_heatmap.update_layout(
             width=map_width, 
             height=map_height  
-        )
-    
-        # Display the illegal connections heatmap in Streamlit
-        st.plotly_chart(fig_heatmap_illegal)
+            )
+        
+
+        
+        # Display the heatmap in Streamlit
+        st.plotly_chart(fig_heatmap)
+
+        # Create a heatmap for illegal connections using Plotly Express
+        st.markdown("#### 🔥 Heatmap of Illegal Connections with Plotly")
+        df_illegal = df_plotly[df_plotly["User Type"] == "Illegal"]
+
+        if not df_illegal.empty:  # Ensure there's data to plot
+            fig_heatmap_illegal = px.density_mapbox(
+                df_illegal,
+                lat="Y",
+                lon="X",
+                z=None,  # Can use another column for intensity if needed
+                radius=10,
+                center=dict(lat=gdf['Y'].mean(), lon=gdf['X'].mean()),
+                zoom=map_zoom,
+                mapbox_style="carto-positron",
+                color_continuous_scale="Inferno",
+                title="Heatmap of Illegal Connections"
+            )
+
+            # Update the layout to adjust the heatmap size
+            fig_heatmap_illegal.update_layout(
+                width=map_width, 
+                height=map_height  
+            )
+        
+            # Display the illegal connections heatmap in Streamlit
+            st.plotly_chart(fig_heatmap_illegal)
 
 else:
     st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', or 'Status'.")
