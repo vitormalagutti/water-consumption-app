@@ -5,3 +5,4 @@ plotly
 contextily
 matplotlib
 shapely
+folium
