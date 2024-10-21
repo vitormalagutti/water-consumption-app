@@ -294,12 +294,12 @@ if uploaded_file:
             ax.grid(True)
 
             # Apply the if condition for y-axis limits
-            if avg_litres_per_person < 160:
+            if avg_litres_per_person < 200:
                 ax.set_ylim(0, 250)  # Set y-axis limits for avg_litres_per_person < 160
             elif avg_litres_per_person < 260:
                 ax.set_ylim(150, 350)  # Set y-axis limits for avg_litres_per_person < 260
             else:
-                ax.set_ylim(250, 500)  # Set y-axis limits for avg_litres_per_person >= 260
+                ax.set_ylim(250, 600)  # Set y-axis limits for avg_litres_per_person >= 260
 
             # Display the plot
             st.pyplot(fig)
