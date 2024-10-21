@@ -353,28 +353,27 @@ if uploaded_file:
             # Create heatmaps based on selection
             if heatmap_type == "All Buildings":
                 st.markdown("#### 🔥 Heatmap of All Building Locations")
-                heat_data = [[row['Y'], row['X']] for idx, row in gdf.iterrows()]
                 kepler_map = KeplerGl(height=800, config=config_grid)
                 kepler_map.add_data(data=heat_data, name="Water Consumption Data")
                 keplergl_static(kepler_map)
 
             elif heatmap_type == "Illegal Connections":
                 st.markdown("#### 🔥 Heatmap of Illegal Connections")
-                heat_data_illegal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Illegal'].iterrows()]
+                gdf_illegal = gdf[gdf['User Type'] == 'Illegal'] 
                 kepler_map = KeplerGl(height=800, config=config_grid)
-                kepler_map.add_data(data=heat_data_illegal, name="Water Consumption Data")
+                kepler_map.add_data(data=gdf_illegal, name="Water Consumption Data")
                 keplergl_static(kepler_map)
 
             elif heatmap_type == "Legal Connections":
                 st.markdown("#### 🔥 Heatmap of Legal Connections")
-                heat_data_legal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Legal'].iterrows()]
+                gdf_illegal = gdf[gdf['User Type'] == 'Legal']
                 kepler_map = KeplerGl(height=800, config=config_grid)
                 kepler_map.add_data(data=heat_data_legal, name="Water Consumption Data")
                 keplergl_static(kepler_map)
                 
             elif heatmap_type == "Non-Users":
                 st.markdown("#### 🔥 Heatmap of Non-Users")
-                heat_data_non_users = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Non-user'].iterrows()]
+                gdf_illegal = gdf[gdf['User Type'] == 'Non-user']
                 kepler_map = KeplerGl(height=800, config=config_grid)
                 kepler_map.add_data(data=heat_data_non_users, name="Water Consumption Data")
                 keplergl_static(kepler_map)
