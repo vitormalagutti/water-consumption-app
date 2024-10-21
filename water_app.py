@@ -127,13 +127,13 @@ if uploaded_file:
         # Create a dynamic configuration for KeplerGL
         # Define a valid dynamic configuration for KeplerGL
        # config1 = {
-            'version': 'v1',
-            'config': {
-            'mapState': {
-                'latitude': center_lat,
-                'longitude': center_lon,
-                'zoom': 9
-            }}}
+#            'version': 'v1',
+ #           'config': {
+  #          'mapState': {
+   #             'latitude': center_lat,
+    #            'longitude': center_lon,
+     #           'zoom': 9
+      #      }}}
         
 
 #        kepler_map = KeplerGl(height=600, config=config1)
