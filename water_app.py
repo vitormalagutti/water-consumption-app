@@ -144,7 +144,7 @@ if uploaded_file:
         # Rename for easier recognition in Kepler
         df = df.rename(columns={"X": "longitude", "Y": "latitude"})
 
-        kepler_map = KeplerGl(height=600, config=config1)
+        kepler_map = KeplerGl(height=800, config=config1)
         kepler_map.add_data(data=df, name="Water Consumption Data")
         keplergl_static(kepler_map)
 
