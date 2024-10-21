@@ -150,11 +150,8 @@ if uploaded_file:
             }
         }
 
-        # Convert configuration to JSON string
-        config_json = json.dumps(dynamic_config)
-
         # Prepare KeplerGL map with the dynamically generated configuration
-        kepler_map = KeplerGl(height=600, config=config_json)
+        kepler_map = KeplerGl(height=600, config=dynamic_config)
         kepler_map.add_data(data=df, name="Water Consumption Data")
         kepler_map.save_to_html(file_name="kepler_map_dynamic.html")
 
