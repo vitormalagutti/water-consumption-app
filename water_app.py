@@ -273,7 +273,7 @@ if uploaded_file:
 
         # Plot a graph of monthly water consumption
         st.markdown("### 📈 Monthly Water Consumption Distribution (l/p/d)")
-        fig, ax = plt.subplots(figsize=(10,4))
+        fig, ax = plt.subplots(figsize=(8,4))
         ax.plot(df_factors['Month'], df_factors['Monthly Daily Consumption - l/p/d'], marker='o', color='b')
         ax.set_ylabel('Monthly Water Consumption (l/p/d)')
         ax.set_title('Monthly Water Consumption Distribution')
