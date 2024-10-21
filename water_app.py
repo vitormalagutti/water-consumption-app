@@ -344,8 +344,9 @@ if uploaded_file:
                                     "lng": "X"
                                 },
                                 "visConfig": {
-                                    "radius": 3,
-                                    "opacity": 0.8
+                                    "radius": 200,
+                                    "opacity": 0.8,
+                                    "coverage":0.1
                                 }
                             }
                         }]}}}
