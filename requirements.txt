@@ -1,9 +1,14 @@
-streamlit
-pandas
-geopandas
-plotly
-contextily
-matplotlib
-shapely
-folium
-keplergl
+streamlit==1.23.0  # or your current version of Streamlit
+pandas==2.1.1      # or the latest compatible version
+plotly==5.15.0     # for Plotly visualizations
+matplotlib==3.8.0  # for Matplotlib visualizations
+geopandas==0.14.0  # for handling GeoDataFrames
+folium==0.14.0     # for Folium maps
+streamlit-folium==0.12.0  # to integrate Folium with Streamlit
+pydeck==0.8.0      # for Pydeck visualizations (Plotly wrapper)
+keplergl==0.3.2    # for KeplerGL visualizations
+shapely==2.0.1     # for geometric operations
+branca==0.6.0      # for Folium HTML/CSS control elements
+
+# Additional packages that might be required
+numpy==1.24.0      # for numerical operations
