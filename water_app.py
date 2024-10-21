@@ -126,7 +126,16 @@ if uploaded_file:
 
         # Create a dynamic configuration for KeplerGL
         # Define a valid dynamic configuration for KeplerGL
-        dynamic_config = {
+        config1 = {
+        'version': 'v1',
+        'config': {
+            'mapState': {
+                'latitude': center_lat,
+                'longitude': center_lon,
+                'zoom': 9
+            }}}
+        
+        config2 = {
             "mapState": {
                 "bearing": 0,
                 "latitude": center_lat,
@@ -152,8 +161,8 @@ if uploaded_file:
         }
 
         # Verify that dynamic_config is indeed a dictionary
-        if isinstance(dynamic_config, dict):
-            kepler_map = KeplerGl(height=600, config=dynamic_config)
+        if isinstance(config1, dict):
+            kepler_map = KeplerGl(height=600, config=config1)
             kepler_map.add_data(data=df, name="Water Consumption Data")
             kepler_map.save_to_html(file_name="kepler_map_dynamic.html")
         else:
