@@ -4,8 +4,9 @@ import plotly.express as px
 import plotly.io as pio
 import matplotlib.pyplot as plt
 import geopandas as gpd
-from shapely.geometry import Point
 import folium
+import pydeck as pdk
+from shapely.geometry import Point
 from streamlit_folium import folium_static
 from folium.plugins import HeatMap
 from branca.element import Template, MacroElement
@@ -116,9 +117,50 @@ if uploaded_file:
     with tab3:
         st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
 
+
         # Create a GeoDataFrame from the DataFrame (if needed for processing)
         gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
         gdf = gdf.set_crs(epsg=4326)
+
+
+        # Define a Pydeck Layer
+        layer = pdk.Layer(
+            "HeatmapLayer",
+            data=df,
+            get_position=["X", "Y"],
+            aggregation='MEAN',
+            radius=200,
+            opacity=0.6,
+            get_weight='[User Type]'  # Replace with appropriate column if needed
+        )
+
+        # Set up the Pydeck map
+        view_state = pdk.ViewState(
+            latitude=df["Y"].mean(),
+            longitude=df["X"].mean(),
+            zoom=10,
+            pitch=50
+        )
+
+        r = pdk.Deck(
+            map_style="mapbox://styles/mapbox/satellite-v9",
+            layers=[layer],
+            initial_view_state=view_state,
+            tooltip={"text": "{User Type}"}
+        )
+
+        # Display the Pydeck map in Streamlit
+        st.pydeck_chart(r)
+
+
+
+
+
+
+
+
+
+
 
 
 
