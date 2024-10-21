@@ -136,19 +136,21 @@ if uploaded_file:
     # Display the scatter map in Streamlit
     st.plotly_chart(fig_scatter)
 
-    # Create a heatmap using Plotly Express
+    # Create a heatmap using Plotly Express with smaller radius and intensity scaling
     st.markdown("#### 🔥 Heatmap of Total Buildings with Plotly")
     fig_heatmap = px.density_mapbox(
         df_plotly,
         lat="Y",
         lon="X",
-        z=None,  # You can use 'Population' or other intensity columns if needed
-        radius=5,
+        z="Population",  # Use the 'Population' column to set the intensity of each point
+        radius=10,  # Adjust the radius for finer heat spots
         center=dict(lat=gdf['Y'].mean(), lon=gdf['X'].mean()),
-        zoom=map_zoom,
+        zoom=10,
         mapbox_style="carto-positron",
+        color_continuous_scale="Viridis",  # Choose a color scale with good contrast
         title="Heatmap of Total Buildings"
     )
+    
         # Update the layout to adjust the heatmap size
     fig_heatmap.update_layout(
         width=map_width, 
