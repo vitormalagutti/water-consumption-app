@@ -87,7 +87,7 @@ if uploaded_file:
     overall_summary = user_summary[['Total Population', 'Legal %', 'Illegal %', 'Non-user %']].copy()
 
     # Streamlit tabs for organized visualization
-    tab1, tab2, tab3, tab4 = st.tabs(["📊 Network Users Summary", "💧 Water Demand Model", "🗺️ Data Visualization", "📅 Seazonal Water Distribution"])
+    tab1, tab2, tab3, tab4 = st.tabs(["📊 Network Users Summary", "📅 Seazonal Water Distribution", "💧 Water Demand Model", "🗺️ Data Visualization"])
 
     with tab1:
         st.markdown("### 📊 User Type Summary with Estimated Population")
@@ -101,6 +101,52 @@ if uploaded_file:
         st.pyplot(fig)
 
     with tab2:
+        st.markdown("### 📅 Monthly Water Consumption Calculation")
+
+        st.markdown("#### Seasonal Variation Factor")        
+        # Slider to adjust the factors' variation (0 = all equal, 1 = current, 2 = amplified)
+        variation_factor = st.slider("Adjust Variation of Factors (0 = No Variation, 1 = Proposed, 2 = Amplified)", min_value=0.0, max_value=2.0, step=0.1, value=1.0)
+
+
+
+
+        # Calculate monthly water consumption based on factors
+        df_factors['Factor - Updated'] = (1 - variation_factor) * np.mean(df_factors["Factor"]) + variation_factor * df_factors["Factor"]
+        df_factors['Monthly Daily Consumption - l/p/d'] = round(df_factors['Factor - Updated'] * avg_litres_per_person * 12)
+        df_factors["Total Monthly Consumption - m3"] = round(df_factors['Monthly Daily Consumption - l/p/d'] * sum(user_summary["Total Population"]) / 1000, -2)
+        
+        # Create columns for side-by-side layout
+        col1, col2 = st.columns(2)
+        
+        with col1:
+             st.markdown("### Monthly Water Consumption")
+                # Display the table with calculated values
+             st.dataframe(df_factors)
+
+        with col2:
+            # Plot a graph of monthly water consumption
+            st.markdown("### Monthly Water Consumption Distribution (l/p/d)")
+
+            fig, ax = plt.subplots(figsize=(8,4))
+            ax.plot(df_factors['Month'], df_factors['Monthly Daily Consumption - l/p/d'], marker='o', color='blue', linewidth=1.0)
+            ax.set_ylabel('Monthly Water Consumption (l/p/d)')
+            ax.set_title('Monthly Water Consumption Distribution')
+            ax.grid(True, linestyle ='-', axis = 'y')
+
+            # Apply the if condition for y-axis limits
+            if avg_litres_per_person < 200:
+                ax.set_ylim(50, 300)  # Set y-axis limits for avg_litres_per_person < 160
+            elif avg_litres_per_person < 280:
+                ax.set_ylim(130, 380)  # Set y-axis limits for avg_litres_per_person < 260
+            else:
+                ax.set_ylim(190, 600)  # Set y-axis limits for avg_litres_per_person >= 260
+
+            # Display the plot
+            st.pyplot(fig)
+
+
+
+    with tab3:
         # Calculate water consumption per zone and overall consumption (for monthly values)
         filtered_df['Cubic Metres'] = filtered_df['Population'] * avg_litres_per_person / 1000 * 30
 
@@ -125,7 +171,7 @@ if uploaded_file:
         ax.set_title('Monthly Water Consumption by Zone')
         st.pyplot(fig)
 
-    with tab3:
+    with tab4:
         st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
 
         # Create a GeoDataFrame for processing
@@ -262,51 +308,7 @@ if uploaded_file:
         # Display the Folium map in Streamlit
         folium_static(m)
 
-    with tab4:
-        st.markdown("### 📅 Monthly Water Consumption Calculation")
-
-        st.markdown("#### Seasonal Variation Factor")        
-        # Slider to adjust the factors' variation (0 = all equal, 1 = current, 2 = amplified)
-        variation_factor = st.slider("Adjust Variation of Factors (0 = No Variation, 1 = Proposed, 2 = Amplified)", min_value=0.0, max_value=2.0, step=0.1, value=1.0)
-
-
-
-
-        # Calculate monthly water consumption based on factors
-        df_factors['Factor - Updated'] = (1 - variation_factor) * np.mean(df_factors["Factor"]) + variation_factor * df_factors["Factor"]
-        df_factors['Monthly Daily Consumption - l/p/d'] = round(df_factors['Factor - Updated'] * avg_litres_per_person * 12)
-        df_factors["Total Monthly Consumption - m3"] = round(df_factors['Monthly Daily Consumption - l/p/d'] * sum(user_summary["Total Population"]) / 1000, -2)
-        
-        # Create columns for side-by-side layout
-        col1, col2 = st.columns(2)
-        
-        with col1:
-             st.markdown("### Monthly Water Consumption")
-                # Display the table with calculated values
-             st.dataframe(df_factors)
-
-        with col2:
-            # Plot a graph of monthly water consumption
-            st.markdown("### Monthly Water Consumption Distribution (l/p/d)")
-
-            fig, ax = plt.subplots(figsize=(8,4))
-            ax.plot(df_factors['Month'], df_factors['Monthly Daily Consumption - l/p/d'], marker='o', color='blue', linewidth=1.0)
-            ax.set_ylabel('Monthly Water Consumption (l/p/d)')
-            ax.set_title('Monthly Water Consumption Distribution')
-            ax.grid(True, linestyle ='-', axis = 'y')
-
-            # Apply the if condition for y-axis limits
-            if avg_litres_per_person < 200:
-                ax.set_ylim(50, 300)  # Set y-axis limits for avg_litres_per_person < 160
-            elif avg_litres_per_person < 280:
-                ax.set_ylim(130, 380)  # Set y-axis limits for avg_litres_per_person < 260
-            else:
-                ax.set_ylim(190, 600)  # Set y-axis limits for avg_litres_per_person >= 260
-
-            # Display the plot
-            st.pyplot(fig)
-
-
+   
 
 else:
     st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', or 'Status'.")
