@@ -280,12 +280,13 @@ if uploaded_file:
         col1, col2 = st.columns(2)
         
         with col1:
+             st.markdown("### Monthly Water Consumption")
             # Display the table with calculated values
             st.dataframe(df_factors)
 
         with col2:
             # Plot a graph of monthly water consumption
-            st.markdown("### 📈 Monthly Water Consumption Distribution (l/p/d)")
+            st.markdown("### Monthly Water Consumption Distribution (l/p/d)")
 
             fig, ax = plt.subplots(figsize=(8,4))
             ax.plot(df_factors['Month'], df_factors['Monthly Daily Consumption - l/p/d'], marker='o', color='blue', linewidth=1.0)
