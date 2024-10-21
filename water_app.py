@@ -291,7 +291,7 @@ if uploaded_file:
             ax.plot(df_factors['Month'], df_factors['Monthly Daily Consumption - l/p/d'], marker='o', color='lightblue',linewidth=1.0)
             ax.set_ylabel('Monthly Water Consumption (l/p/d)')
             ax.set_title('Monthly Water Consumption Distribution')
-            ax.grid(True, linestyle ='-')
+            ax.grid(True, linestyle ='-', axis = 'y')
 
             # Apply the if condition for y-axis limits
             if avg_litres_per_person < 200:
