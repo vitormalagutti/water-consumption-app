@@ -21,7 +21,7 @@ st.set_page_config(page_title="Water Consumption Visualization", layout="wide")
 # Main Title with description
 st.title("🌊 Water Consumption and Building Visualization")
 st.markdown("This app visualizes water consumption and building information, with breakdowns by zone and user type. Use the sidebar to provide average consumption details and view interactive maps, graphs, and tables.")
-st.markdown("Please upload a .csv file with the specific columns' names X, Y, Zone, and Status")
+st.markdown("Please upload a .csv file with the specific columns' names X, Y, Block_Number, Zone, DMA, and Status")
 
 
 # File upload section with icon
@@ -33,25 +33,13 @@ if uploaded_file:
     df = pd.read_csv(uploaded_file)
 
     # Define the expected columns
-    expected_columns = ["X", "Y", "Zone", "Sushi", "Status"]
+    expected_columns = ["X", "Y", "Zone", "Block_Number", "DMA", "Status"]
 
     # Select valid columns and fill missing ones with default values
     df = df[[col for col in df.columns if col in expected_columns]]
     for col in expected_columns:
         if col not in df.columns:
             df[col] = None
-
-
-    # Seazonality factors
-    month_factors = {
-        'Month': ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dez'],
-        'Factor': [0.07, 0.07, 0.07, 0.08, 0.09, 0.09, 0.10, 0.10, 0.10, 0.08, 0.07, 0.07]
-    }
-
-    # Create a DataFrame for the month factors
-    df_factors = pd.DataFrame(month_factors)
-
-
 
     # Step 1: Categorize Status into "legal", "illegal", and "non-user"
     df['User Type'] = df['Status'].apply(lambda x: 'Legal' if x == 'water meter' else ('Illegal' if x == 'illegal connection' else ('Non-user' if x == 'non-user' else 'No Data')))
@@ -72,26 +60,67 @@ if uploaded_file:
         ["All Buildings", "Illegal Connections", "Legal Connections", "Non-Users"]
     )
 
-    # Calculate population based on the number of buildings, average floors, and people per family
-    total_population = len(filtered_df) * avg_floors * avg_people_per_family
+
+
+    # Step 1: Calculate total population using the full DataFrame (df), aggregated by Zone
+    df['Population'] = avg_floors * avg_people_per_family
+    total_population_by_zone = df.groupby('Zone')['Population'].sum()
+
+    # Step 2: Filtered DataFrame for legal, illegal, and non-users percentages
     filtered_df['Population'] = avg_floors * avg_people_per_family
 
-    # Calculate percentages of legal, illegal, and non-users per zone
-    user_summary = filtered_df.pivot_table(values='Population', index='Zone', columns='User Type', aggfunc='sum', fill_value=0)
-    user_summary['Total Population'] = user_summary.sum(axis=1)
+    # Step 3: Calculate total population by DMA (if 'DMA' column exists)
+    if 'DMA' in df.columns:
+        total_population_by_dma = df.groupby('DMA')['Population'].sum()
+
+    # Step 4: Calculate percentages for legal, illegal, and non-users per Zone
+    user_summary_zone = filtered_df.pivot_table(
+        values='Population',
+        index='Zone',
+        columns='User Type',
+        aggfunc='sum',
+        fill_value=0
+    )
+    user_summary_zone['Total Population'] = total_population_by_zone
 
     for user_type in ['Legal', 'Illegal', 'Non-user']:
-        user_summary[f'{user_type} %'] = (user_summary[user_type] / user_summary['Total Population']) * 100
+        user_summary_zone[f'{user_type} %'] = (user_summary_zone[user_type] / user_summary_zone['Total Population']) * 100
 
-    user_summary = user_summary.round(1)
-    overall_summary = user_summary[['Total Population', 'Legal %', 'Illegal %', 'Non-user %']].copy()
+    user_summary_zone = user_summary_zone.round(1)
+    overall_summary_zone = user_summary_zone[['Total Population', 'Legal %', 'Illegal %', 'Non-user %']].copy()
+
+    # Step 5: Calculate percentages for legal, illegal, and non-users per DMA (if 'DMA' column exists)
+    if 'DMA' in filtered_df.columns:
+        user_summary_dma = filtered_df.pivot_table(
+            values='Population',
+            index='DMA',
+            columns='User Type',
+            aggfunc='sum',
+            fill_value=0
+        )
+        user_summary_dma['Total Population'] = total_population_by_dma
+
+        for user_type in ['Legal', 'Illegal', 'Non-user']:
+            user_summary_dma[f'{user_type} %'] = (user_summary_dma[user_type] / user_summary_dma['Total Population']) * 100
+
+        user_summary_dma = user_summary_dma.round(1)
+        overall_summary_dma = user_summary_dma[['Total Population', 'Legal %', 'Illegal %', 'Non-user %']].copy()
+
+
 
     # Streamlit tabs for organized visualization
     tab1, tab2, tab3, tab4 = st.tabs(["📊 Network Users Summary", "📅 Seazonal Water Distribution", "💧 Water Demand Model", "🗺️ Data Visualization"])
 
     with tab1:
+        
         st.markdown("### 📊 User Type Summary with Estimated Population")
-        st.dataframe(overall_summary)
+            # Display the results
+        st.markdown("### 📊 User Type Summary by Zone")
+        st.dataframe(overall_summary_zone)
+
+        if 'DMA' in filtered_df.columns:
+            st.markdown("### 📊 User Type Summary by DMA")
+            st.dataframe(overall_summary_dma)
 
         st.markdown("### 📈 Population by User Type")
         fig, ax = plt.subplots(figsize=(10, 4))
@@ -102,7 +131,15 @@ if uploaded_file:
 
     with tab2:
         st.markdown("### 📅 Monthly Water Consumption Calculation")
-
+        
+        #Seazonality factors
+        month_factors = {
+            'Month': ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dez'],
+            'Factor': [0.07, 0.07, 0.07, 0.08, 0.09, 0.09, 0.10, 0.10, 0.10, 0.08, 0.07, 0.07]
+        }
+        # Create a DataFrame for the month factors
+        df_factors = pd.DataFrame(month_factors)        
+        
         st.markdown("#### Seasonal Variation Factor")        
         # Slider to adjust the factors' variation (0 = all equal, 1 = current, 2 = amplified)
         variation_factor = st.slider("Adjust Variation of Factors (0 = No Variation, 1 = Proposed, 2 = Amplified)", min_value=0.0, max_value=2.0, step=0.1, value=1.0)
