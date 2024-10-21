@@ -266,7 +266,7 @@ if uploaded_file:
         
         # Calculate monthly water consumption based on factors
         df_factors['Monthly Daily Consumption - l/p/d'] = df_factors['Factor'] * avg_litres_per_person * 12
-        df_factors["Total Monthly Consumption - m3"] = df_factors['Monthly Daily Consumption'] * sum(user_summary["Total Population"]) / 1000
+        df_factors["Total Monthly Consumption - m3"] = df_factors['Monthly Daily Consumption - l/p/d'] * sum(user_summary["Total Population"]) / 1000
         
         # Display the table with calculated values
         st.dataframe(df_factors)
