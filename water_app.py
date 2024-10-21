@@ -137,6 +137,26 @@ if uploaded_file:
                 popup=f"Zone: {row['Zone']}, User Type: {row['User Type']}"
             ).add_to(m)
 
+
+        # Add a custom legend to the map
+        legend_html = '''
+        <div style="position: fixed; 
+                    bottom: 50px; left: 50px; width: 150px; height: 110px; 
+                    background-color: white; border:2px solid grey; z-index:9999; font-size:14px;
+                    padding: 10px;">
+            <b>Legend</b><br>
+            <i style="background:blue; width: 10px; height: 10px; float: left; margin-right: 5px;"></i> Building Locations<br>
+            <i style="background:#FF5733; width: 10px; height: 10px; float: left; margin-right: 5px;"></i> Illegal Connections<br>
+            <i style="background:#2ECC71; width: 10px; height: 10px; float: left; margin-right: 5px;"></i> Legal Connections<br>
+            <i style="background:#F1C40F; width: 10px; height: 10px; float: left; margin-right: 5px;"></i> Non-Users<br>
+        </div>
+        '''
+        
+        legend = MacroElement()
+        legend._template = Template(legend_html)
+        m.get_root().add_child(legend)
+
+
         # Add a layer control panel
         folium.LayerControl().add_to(m)
 
