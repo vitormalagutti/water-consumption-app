@@ -265,17 +265,17 @@ if uploaded_file:
         st.markdown("### 📅 Monthly Water Consumption Calculation")
         
         # Calculate monthly water consumption based on factors
-        df_factors['Monthly Daily Consumption'] = df_factors['Factor'] * avg_litres_per_person * 12
-        df_factors["Total Monthly Consumption"] = df_factors['Monthly Daily Consumption'] * sum(user_summary["Total Population"])
+        df_factors['Monthly Daily Consumption - l/p/d'] = df_factors['Factor'] * avg_litres_per_person * 12
+        df_factors["Total Monthly Consumption - m3"] = df_factors['Monthly Daily Consumption'] * sum(user_summary["Total Population"]) / 1000
         
         # Display the table with calculated values
         st.dataframe(df_factors)
 
         # Plot a graph of monthly water consumption
-        st.markdown("### 📈 Monthly Water Consumption Distribution")
+        st.markdown("### 📈 Monthly Water Consumption Distribution (l/p/d)")
         fig, ax = plt.subplots(figsize=(10,4))
-        ax.plot(df_factors['Month'], df_factors['Monthly Daily Consumption'], marker='o', color='b')
-        ax.set_ylabel('Monthly Water Consumption')
+        ax.plot(df_factors['Month'], df_factors['Monthly Daily Consumption - l/p/d'], marker='o', color='b')
+        ax.set_ylabel('Monthly Water Consumption (l/p/d)')
         ax.set_title('Monthly Water Consumption Distribution')
         ax.grid(True)
 
