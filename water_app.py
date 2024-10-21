@@ -297,9 +297,9 @@ if uploaded_file:
             if avg_litres_per_person < 200:
                 ax.set_ylim(50, 300)  # Set y-axis limits for avg_litres_per_person < 160
             elif avg_litres_per_person < 280:
-                ax.set_ylim(130, 350)  # Set y-axis limits for avg_litres_per_person < 260
+                ax.set_ylim(130, 380)  # Set y-axis limits for avg_litres_per_person < 260
             else:
-                ax.set_ylim(200, 600)  # Set y-axis limits for avg_litres_per_person >= 260
+                ax.set_ylim(190, 600)  # Set y-axis limits for avg_litres_per_person >= 260
 
             # Display the plot
             st.pyplot(fig)
