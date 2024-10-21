@@ -135,12 +135,14 @@ if uploaded_file:
             'mapState': {
                 'latitude': center_lat,
                 'longitude': center_lon,
-                'zoom': 9
+                'zoom': 14
             },"mapStyle": {
                 "styleType": "satellite"
                 },
             }}
-
+        
+        # Rename for easier recognition in Kepler
+        df = df.rename(columns={"X": "longitude", "Y": "latitude"})
 
         kepler_map = KeplerGl(height=600, config=config1)
         kepler_map.add_data(data=df, name="Water Consumption Data")
