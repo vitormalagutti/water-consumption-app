@@ -344,7 +344,7 @@ if uploaded_file:
                                     "lng": "X"
                                 },
                                 "visConfig": {
-                                    "radius": 0.1,
+                                    "radius": 0.01,
                                     "opacity": 0.8
                                 }
                             }
