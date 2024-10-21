@@ -127,8 +127,8 @@ if uploaded_file:
         # Create a dynamic configuration for KeplerGL
         # Define a valid dynamic configuration for KeplerGL
         config1 = {
-        'version': 'v1',
-        'config': {
+            'version': 'v1',
+            'config': {
             'mapState': {
                 'latitude': center_lat,
                 'longitude': center_lon,
@@ -160,18 +160,10 @@ if uploaded_file:
             }
         }
 
-        # Verify that dynamic_config is indeed a dictionary
-        if isinstance(config1, dict):
-            kepler_map = KeplerGl(height=600, config=config1)
-            kepler_map.add_data(data=df, name="Water Consumption Data")
-            kepler_map.save_to_html(file_name="kepler_map_dynamic.html")
-        else:
-            st.error("Invalid configuration: Please provide a dictionary for the config parameter.")
-
-        # Prepare KeplerGL map with the dynamically generated configuration
-        kepler_map = KeplerGl(height=600, config=dynamic_config)
+        kepler_map = KeplerGl(height=600, config=config1)
         kepler_map.add_data(data=df, name="Water Consumption Data")
         kepler_map.save_to_html(file_name="kepler_map_dynamic.html")
+    
 
         # Display the saved KeplerGL map in Streamlit
         st.components.v1.html(open("kepler_map_dynamic.html", "r").read(), height=600)
