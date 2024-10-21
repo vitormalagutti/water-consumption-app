@@ -62,18 +62,13 @@ if uploaded_file:
 
 
 
-    # Step 1: Calculate total population using the full DataFrame (df), aggregated by Zone
+    # Calculate total population using the full DataFrame (df), aggregated by Zone and DMA
     df['Population'] = avg_floors * avg_people_per_family
     total_population_by_zone = df.groupby('Zone')['Population'].sum()
+    total_population_by_dma = df.groupby('DMA')['Population'].sum() if 'DMA' in df.columns else None
 
-    # Step 2: Filtered DataFrame for legal, illegal, and non-users percentages
+    # Calculate percentages for legal, illegal, and non-users per Zone
     filtered_df['Population'] = avg_floors * avg_people_per_family
-
-    # Step 3: Calculate total population by DMA (if 'DMA' column exists)
-    if 'DMA' in df.columns:
-        total_population_by_dma = df.groupby('DMA')['Population'].sum()
-
-    # Step 4: Calculate percentages for legal, illegal, and non-users per Zone
     user_summary_zone = filtered_df.pivot_table(
         values='Population',
         index='Zone',
@@ -89,7 +84,7 @@ if uploaded_file:
     user_summary_zone = user_summary_zone.round(1)
     overall_summary_zone = user_summary_zone[['Total Population', 'Legal %', 'Illegal %', 'Non-user %']].copy()
 
-    # Step 5: Calculate percentages for legal, illegal, and non-users per DMA (if 'DMA' column exists)
+    # Calculate percentages for legal, illegal, and non-users per DMA (if 'DMA' column exists)
     if 'DMA' in filtered_df.columns:
         user_summary_dma = filtered_df.pivot_table(
             values='Population',
@@ -106,15 +101,14 @@ if uploaded_file:
         user_summary_dma = user_summary_dma.round(1)
         overall_summary_dma = user_summary_dma[['Total Population', 'Legal %', 'Illegal %', 'Non-user %']].copy()
 
-
+    # Combine "overall" input with the sum of everything for both Zone and DMA
+    overall_population_zone = total_population_by_zone.sum()
+    overall_population_dma = total_population_by_dma.sum() if total_population_by_dma is not None else 0
 
     # Streamlit tabs for organized visualization
     tab1, tab2, tab3, tab4 = st.tabs(["📊 Network Users Summary", "📅 Seazonal Water Distribution", "💧 Water Demand Model", "🗺️ Data Visualization"])
 
     with tab1:
-        
-        st.markdown("### 📊 User Type Summary with Estimated Population")
-            # Display the results
         st.markdown("### 📊 User Type Summary by Zone")
         st.dataframe(overall_summary_zone)
 
@@ -124,7 +118,8 @@ if uploaded_file:
 
         st.markdown("### 📈 Population by User Type")
         fig, ax = plt.subplots(figsize=(10, 4))
-        user_summary[['Total Population', 'Legal', 'Illegal', 'Non-user']].plot(kind='bar', ax=ax)
+
+        user_summary_zone[['Total Population', 'Legal', 'Illegal', 'Non-user']].plot(kind='bar', ax=ax)
         ax.set_ylabel('Population')
         ax.set_title('Population Distribution by Zone and User Type')
         st.pyplot(fig)
