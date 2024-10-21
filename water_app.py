@@ -142,7 +142,7 @@ if uploaded_file:
         df_plotly,
         lat="Y",
         lon="X",
-        z=total_population,  # You can use 'Population' or other intensity columns if needed
+        z=None,  # You can use 'Population' or other intensity columns if needed
         radius=7,
         center=dict(lat=gdf['Y'].mean(), lon=gdf['X'].mean()),
         zoom=map_zoom,
