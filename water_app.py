@@ -247,7 +247,7 @@ if uploaded_file:
                 'mapState': {
                     'latitude': center_lat,
                     'longitude': center_lon,
-                    'zoom': 15
+                    'zoom': 14
                 },
                 "mapStyle": {
                     "styleType": "satellite"
@@ -261,17 +261,19 @@ if uploaded_file:
                                 "dataId": "Water Consumption Data",
                                 "label": "Building Locations",
                                 "columns": {
-                                    "lat": "latitude",
-                                    "lng": "longitude"
+                                    "lat": "lat",
+                                    "lng": "lng"
                                 },
                                 "visConfig": {
                                     "radius": 5,
                                     "opacity": 0.8,
                                     "colorField": {
-                                        "name": "Zone",  # Use the selected attribute (Zone or DMA) for coloring
+                                        "name": selected_attribute,  # Use the selected attribute (Zone or DMA) for coloring
                                         "type": "string"
                                     },
-                                    "colorScale": "ordinal"  # Use ordinal scale for categories
+                                    "colorRange": {
+                                        "colors": ["#FF5733", "#33FF57", "#3357FF", "#F5B041", "#8E44AD"]
+                                    }
                                 },
                                 "isVisible": True
                             }
