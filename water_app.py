@@ -226,12 +226,9 @@ if uploaded_file:
         # Dynamically generate a list of columns for the user to select from, excluding X (latitude) and Y (longitude)
         selectable_columns = [col for col in df.columns if col not in ['X', 'Y']]
 
-        # Create a selectbox for user to choose any column for coloring
-        selected_attribute = st.selectbox("Color points by:", options=selectable_columns, index=0)
-
-        # Dynamically determine the data type of the selected attribute
-        selected_column_type = 'integer' if pd.api.types.is_numeric_dtype(df[selected_attribute]) else 'string'
-
+        # Create a selectbox above the map
+        selected_attribute = st.selectbox("Color points by:", options=["Zone", "DMA"], index=0)
+        
         # Reorder the DataFrame so the selected attribute comes after lat/lon, but keep all columns
         cols = ['X', 'Y', selected_attribute] + [col for col in df.columns if col not in ['X', 'Y', selected_attribute]]
         df = df[cols]  # Dynamically reorder columns
@@ -278,8 +275,8 @@ if uploaded_file:
                                     "radius": 5,
                                     "opacity": 0.8,
                                     "colorField": {
-                                        "name": selected_attribute,  # Use the dynamically selected attribute for coloring
-                                        "type": selected_column_type  # Dynamically set type (integer or string)
+                                        "name": "Zone", 
+                                        "type": "integer"
                                     },
                                     "colorRange": {
                                         "colors": ["#FF5733", "#33FF57", "#3357FF", "#F5B041", "#8E44AD"]
@@ -292,6 +289,7 @@ if uploaded_file:
                 }
             }
         }
+
         # Rename for easier recognition in Kepler
         df = df.rename(columns={"X": "longitude", "Y": "latitude"})
 
