@@ -130,21 +130,31 @@ if uploaded_file:
 
         with col1:
             if 'Zone' in filtered_df.columns:
-                st.markdown("#### 📊 User Type Summary by Zone")
+                st.markdown("#### 📊 Water Network Summary - Zone")
                 st.dataframe(overall_summary_zone)
 
         with col2:
             if 'DMA' in filtered_df.columns:
-                st.markdown("#### 📊 User Type Summary by DMA")
+                st.markdown("#### 📊 Water Network Summary - DMA")
                 st.dataframe(overall_summary_dma)
 
         st.markdown("### 📈 Population by User Type")
-        fig, ax = plt.subplots(figsize=(10, 4))
 
-        user_summary_zone[['Total Population', 'Legal', 'Illegal', 'Non-user']].plot(kind='bar', ax=ax)
-        ax.set_ylabel('Population')
-        ax.set_title('Population Distribution by Zone and User Type')
-        st.pyplot(fig)
+        with col1:
+            fig, ax = plt.subplots(figsize=(10, 4))
+
+            user_summary_zone[['Total Population', 'Legal', 'Illegal', 'Non-user']].plot(kind='bar', ax=ax)
+            ax.set_ylabel('Population')
+            ax.set_title('Population Distribution by Zone and User Type')
+            st.pyplot(fig)
+
+        with col2:
+            fig, ax = plt.subplots(figsize=(10, 4))
+            user_summary_dma[['Total Population', 'Legal', 'Illegal', 'Non-user']].plot(kind='bar', ax=ax)
+            ax.set_ylabel('Population')
+            ax.set_title('Population Distribution by Zone and User Type')
+            st.pyplot(fig)
+
 
     with tab2:
         st.markdown("### 📅 Monthly Water Consumption Calculation")
