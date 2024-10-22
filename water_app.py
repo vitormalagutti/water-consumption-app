@@ -350,8 +350,9 @@ if uploaded_file:
 
             # Add the DMA and its monthly consumption to the DataFrame
             water_demand_dma.loc[len(water_demand_dma)] = [dma] + dma_consumption
-                
-        
+            
+        water_demand_dma.set_index('DMA', inplace=True)        
+        water_demand_dma = water_demand_dma.transpose()
         
         
         
