@@ -283,6 +283,7 @@ if uploaded_file:
             'Month': ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dez'],
             'Factor': [0.07, 0.07, 0.07, 0.08, 0.09, 0.09, 0.10, 0.10, 0.10, 0.08, 0.07, 0.07]
         }
+        days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]  # Number of days in each month
         # Create a DataFrame for the month factors
         df_factors = pd.DataFrame(month_factors)        
         
@@ -294,10 +295,11 @@ if uploaded_file:
 
 
         # Calculate monthly water consumption based on factors
-        df_factors['Factor - Updated'] = (1 - variation_factor) * np.mean(df_factors["Factor"]) + variation_factor * df_factors["Factor"]
-        df_factors['Monthly Daily Consumption - l/p/d'] = round(df_factors['Factor - Updated'] * avg_litres_per_person * 12)
-        df_factors["Total Monthly Consumption - m3"] = round(df_factors['Monthly Daily Consumption - l/p/d'] * sum(df["Population"]) / 1000, -2)
-        
+        for i in len(month_factors):
+            df_factors['Factor - Updated'] = (1 - variation_factor) * np.mean(df_factors["Factor"]) + variation_factor * df_factors["Factor"]
+            df_factors['Monthly Daily Consumption - l/p/d'] = round(df_factors['Factor - Updated'] * avg_litres_per_person * 12)
+            df_factors["Total Monthly Consumption - m3"] = round(df_factors['Monthly Daily Consumption - l/p/d'] * sum(df["Population"]) * days_in_month[i] / 1000, -2)
+            
         # Create columns for side-by-side layout
         col1, col2 = st.columns(2)
         
@@ -335,7 +337,7 @@ if uploaded_file:
 
         # Monthly Daily Consumption from Seasonal Distribution
         monthly_consumption = df_factors['Monthly Daily Consumption - l/p/d']
-        days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]  # Number of days in each month
+        
 
         # Create an empty DataFrame to store the results
         water_demand_dma = pd.DataFrame(columns=['DMA'] + df_factors['Month'].tolist())
