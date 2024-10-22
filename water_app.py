@@ -329,6 +329,13 @@ if uploaded_file:
             # Display the plot
             st.pyplot(fig)
 
+    fig, ax = plt.subplots(figsize=(8,4))
+    ax.plot(df_factors['Month'], df_factors['Total Monthly Consumption - m3'], kind='bar', color='lightblue', stacked=False, )
+    ax.set_ylabel('Monthly Water Consumption m3')
+    ax.set_title('Monthly Water Consumption Distribution')
+    ax.grid(True, linestyle ='-', axis = 'y')
+    
+
     with tab3:
         
         # Prepare population and non-user percentages for DMAs
