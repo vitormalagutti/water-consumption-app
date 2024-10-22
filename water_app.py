@@ -305,7 +305,7 @@ if uploaded_file:
         # Set up the Folium map with Google Satellite layer
         m = folium.Map(
             location=[center_lat, center_lon],
-            zoom_start=15
+            zoom_start=16
         )
         folium.TileLayer(
             tiles='https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
@@ -344,7 +344,7 @@ if uploaded_file:
             folium.LayerControl().add_to(m)
 
             # Display the Folium map in Streamlit
-            folium_static(m, width=800, height=1000)
+            folium_static(m, width=750, height=900)
         
         with col2:
             test = 100 / 1000
