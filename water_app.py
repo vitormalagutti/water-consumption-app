@@ -223,9 +223,12 @@ if uploaded_file:
     with tab4:
         st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
         
-        # Create a selectbox above the map
-        selected_attribute = st.selectbox("Color points by:", options=["Zone", "DMA"], index=0)
-        
+        # Dynamically generate a list of columns for the user to select from, excluding X (latitude) and Y (longitude)
+        selectable_columns = [col for col in df.columns if col not in ['X', 'Y']]
+
+        # Create a selectbox for user to choose any column for coloring
+        selected_attribute = st.selectbox("Color points by:", options=selectable_columns, index=0)
+
         # Reorder the DataFrame so the selected attribute comes after lat/lon, but keep all columns
         cols = ['X', 'Y', selected_attribute] + [col for col in df.columns if col not in ['X', 'Y', selected_attribute]]
         df = df[cols]  # Dynamically reorder columns
