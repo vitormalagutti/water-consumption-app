@@ -306,7 +306,7 @@ if uploaded_file:
         with col1:
              st.markdown("### Monthly Water Consumption")
                 # Display the table with calculated values
-             st.dataframe(df_factors)
+             st.dataframe(df_factors, height=500)
 
         with col2:
             # Plot a graph of monthly water consumption
@@ -329,12 +329,12 @@ if uploaded_file:
             # Display the plot
             st.pyplot(fig)
 
-    fig, ax = plt.subplots(figsize=(8, 4))
+    fig2, ax = plt.subplots(figsize=(8, 4))
     ax.bar(df_factors['Month'], df_factors['Total Monthly Consumption - m3'], color='lightblue')
     ax.set_ylabel('Monthly Water Consumption (m³)')
     ax.set_title('Monthly Water Consumption Distribution')
     ax.grid(True, linestyle='-', axis='y')  # Keep the grid on the y-axis
-    
+    st.pyplot(fig2)
 
     with tab3:
         
