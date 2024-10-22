@@ -328,13 +328,17 @@ if uploaded_file:
 
             # Display the plot
             st.pyplot(fig)
-
-    fig2, ax = plt.subplots(figsize=(8, 4))
-    ax.bar(df_factors['Month'], df_factors['Total Monthly Consumption - m3'], color='lightblue')
-    ax.set_ylabel('Monthly Water Consumption (m³)')
-    ax.set_title('Monthly Water Consumption Distribution')
-    ax.grid(True, linestyle='-', axis='y')  # Keep the grid on the y-axis
-    st.pyplot(fig2)
+        
+        # Create two columns, with empty space in the left and right columns for centering
+        col1, col2, col3 = st.columns([1, 2, 1])  # Make the center column wider for the plot
+        
+        with col2:
+            fig2, ax = plt.subplots(figsize=(8, 4))
+            ax.bar(df_factors['Month'], df_factors['Total Monthly Consumption - m3'], color='lightblue')
+            ax.set_ylabel('Monthly Water Consumption (m³)')
+            ax.set_title('Monthly Water Consumption Distribution')
+            ax.grid(True, linestyle='-', axis='y')
+            st.pyplot(fig2)
 
     with tab3:
         
