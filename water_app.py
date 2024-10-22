@@ -76,7 +76,7 @@ if uploaded_file:
     filtered_df = df[df['User Type'] != 'No Data']
 
     # Sidebar inputs section with sliders only for the average litres per person
-    st.sidebar.header("🔧 Average Inputs")
+    st.sidebar.header("🔧 Assumptions")
     avg_floors = st.sidebar.number_input("Average Floors per Building", min_value=0.0, step=0.1, value=1.0)
     avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=1.0, step=1.0, value=5.0)
     avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=500, step=10, value=150)
