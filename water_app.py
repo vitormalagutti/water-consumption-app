@@ -237,7 +237,7 @@ if uploaded_file:
             ax.set_ylabel('Number of Users')
             ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
             ax.set_xticklabels(user_summary_zone_plot.index, rotation=0)
-            y_max = user_summary_zone[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
+            y_max = user_summary_zone_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
             ax.set_yticks(range(0, int(y_max) + 5000, 5000))
             st.pyplot(fig)
 
@@ -256,7 +256,7 @@ if uploaded_file:
             ax.set_xlabel('DMAs')
             ax.set_ylabel('Number of Users')
             ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
-            y_max = user_summary_dma[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
+            y_max = user_summary_dma_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
             ax.set_yticks(range(0, int(y_max) + 5000, 5000))
             ax.set_xticklabels(user_summary_dma_plot.index, rotation=0)
             st.pyplot(fig)
@@ -371,7 +371,6 @@ if uploaded_file:
         lon_range = gdf["X"].max() - gdf["X"].min()
         zoom = 12 if max(lat_range, lon_range) < 1 else 10
         
-        # Create a dynamic configuration for KeplerGL
         # Create dynamic KeplerGL configuration
         config_1 = {
             'version': 'v1',
