@@ -223,6 +223,10 @@ if uploaded_file:
     with tab4:
         st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
         
+        # Create a selectbox above the map
+        selected_attribute = st.selectbox("Color points by:", options=["Zone", "DMA"], index=0)
+
+
         # Create a GeoDataFrame for processing
         gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
         gdf = gdf.set_crs(epsg=4326)
@@ -236,6 +240,7 @@ if uploaded_file:
         zoom = 12 if max(lat_range, lon_range) < 1 else 10
         
         # Create a dynamic configuration for KeplerGL
+        # Create dynamic KeplerGL configuration
         config_heatmap = {
             'version': 'v1',
             'config': {
@@ -251,43 +256,20 @@ if uploaded_file:
                     "layers": [
                         {
                             "id": "building_layer",
-                            "type": "point",  # Keep your existing point layer
+                            "type": "point",
                             "config": {
                                 "dataId": "Water Consumption Data",
                                 "label": "Building Locations",
-                                "color": [30, 144, 255],  # Color of points
                                 "columns": {
                                     "lat": "latitude",
-                                    "lng": "longitude"
+                                    "lng": "longitude",
+                                    "color": selected_attribute  # Color by the selected attribute (Zone or DMA)
                                 },
                                 "visConfig": {
                                     "radius": 5,
                                     "opacity": 0.8
                                 },
-                            "isVisible" : True
-                            }
-                        },
-                        {
-                            "id": "heatmap_layer",
-                            "type": "heatmap",  # Define the heatmap layer
-                            "config": {
-                                "dataId": "Water Consumption Data",
-                                "label": "Heatmap",
-                                "columns": {
-                                    "lat": "latitude",
-                                    "lng": "longitude"
-                                },
-                                "visConfig": {
-                                    "radius": 10,  # Radius of influence for the heatmap
-                                    "intensity": 10,  # Intensity of the heatmap
-                                    "opacity": 0.5,  # Opacity of the heatmap
-                                    "colorRange": {
-                                        "name": "Global Warming",
-                                        "type": "sequential",
-                                        "category": "Uber",
-                                        "colors": ["#5A1846", "#900C3F", "#C70039", "#FF5733", "#FFC300"]
-                                    }
-                                }
+                                "isVisible": True
                             }
                         }
                     ]
