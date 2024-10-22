@@ -93,47 +93,48 @@ if uploaded_file:
 
     # Calculate percentages for legal, illegal, and non-users per Zone
     # Calculate percentages for legal, illegal, and non-users per Zone
+# Calculate total population and percentages per Zone
     if 'Zone' in filtered_df.columns:
         
-        # Calculate the total population including all points (even those with no User Type info)
-        df['Population'] = avg_floors * avg_people_per_family
+        # Calculate total population for each zone, including all inputs (with or without User Type)
+        zone_counts = df.groupby('Zone').size()  # Count the number of inputs per Zone
+        total_population_by_zone = zone_counts * avg_floors * avg_people_per_family  # Calculate total population
+
+        # Count the number of Legal, Illegal, and Non-user inputs per zone
+        legal_count = filtered_df[filtered_df['User Type'] == 'Legal'].groupby('Zone').size()
+        illegal_count = filtered_df[filtered_df['User Type'] == 'Illegal'].groupby('Zone').size()
+        non_user_count = filtered_df[filtered_df['User Type'] == 'Non-user'].groupby('Zone').size()
+
+        # Ensure all zones are represented (fill missing values with 0)
+        legal_count = legal_count.reindex(total_population_by_zone.index, fill_value=0)
+        illegal_count = illegal_count.reindex(total_population_by_zone.index, fill_value=0)
+        non_user_count = non_user_count.reindex(total_population_by_zone.index, fill_value=0)
+
+        # Calculate the percentages for each user type (based on counts of Legal, Illegal, and Non-user)
+        total_known_users = legal_count + illegal_count + non_user_count
+        legal_percentage = (legal_count / total_known_users) * 100
+        illegal_percentage = (illegal_count / total_known_users) * 100
+        non_user_percentage = (non_user_count / total_known_users) * 100
+
+        # Create a DataFrame to store the results
+        user_summary_zone = pd.DataFrame({
+            'Total Population': total_population_by_zone,
+            'Legal %': legal_percentage,
+            'Illegal %': illegal_percentage,
+            'Non-user %': non_user_percentage
+        })
+
+        # Handle cases where no known users exist to avoid division by zero
+        user_summary_zone[['Legal %', 'Illegal %', 'Non-user %']] = user_summary_zone[['Legal %', 'Illegal %', 'Non-user %']].fillna(0)
+
+        # Add a final row with the sum of all Zones (weighted average for percentages)
+        total_population_all_zones = total_population_by_zone.sum()
+
+        legal_sum_zone = (legal_percentage * total_population_by_zone).sum() / total_population_all_zones
+        illegal_sum_zone = (illegal_percentage * total_population_by_zone).sum() / total_population_all_zones
+        non_user_sum_zone = (non_user_percentage * total_population_by_zone).sum() / total_population_all_zones
         
-        # Calculate the total population by Zone, including points without user type info
-        total_population_by_zone = df.groupby('Zone')['Population'].sum()
-        
-        # Filter out rows where User Type is missing or 'No Data' for the percentage calculation
-        valid_user_types_df = filtered_df[filtered_df['User Type'] != 'No Data']
-        
-        # Pivot table for user types with valid User Type data
-        user_summary_zone = valid_user_types_df.pivot_table(
-            values='Population',
-            index='Zone',
-            columns='User Type',
-            aggfunc='sum',
-            fill_value=0  # Ensure missing values are filled with 0
-        )
-
-        # Add the total population (including all points) to the pivot table
-        user_summary_zone['Total Population'] = total_population_by_zone
-
-        # Calculate the percentage for each user type, excluding points with missing User Type
-        for user_type in ['Legal', 'Illegal', 'Non-user']:
-            user_summary_zone[f'{user_type} %'] = (user_summary_zone[user_type] / user_summary_zone['Total Population']) * 100
-
-        # Handle any cases where Total Population is 0 to avoid division by zero
-        user_summary_zone.loc[user_summary_zone['Total Population'] == 0, ['Legal %', 'Illegal %', 'Non-user %']] = 0
-
-        user_summary_zone = user_summary_zone.round(1)
-        overall_summary_zone = user_summary_zone[['Total Population', 'Legal %', 'Illegal %', 'Non-user %']].copy()
-
-        # Add a final row with the sum of all Zones (weighted average)
-        total_population_all_zones = user_summary_zone['Total Population'].sum()
-
-        legal_sum_zone = (user_summary_zone['Legal %'] * user_summary_zone['Total Population']).sum() / total_population_all_zones
-        illegal_sum_zone = (user_summary_zone['Illegal %'] * user_summary_zone['Total Population']).sum() / total_population_all_zones
-        non_user_sum_zone = (user_summary_zone['Non-user %'] * user_summary_zone['Total Population']).sum() / total_population_all_zones
-        
-        overall_summary_zone.loc['Total'] = [total_population_all_zones, legal_sum_zone, illegal_sum_zone, non_user_sum_zone]
+        user_summary_zone.loc['Total'] = [total_population_all_zones, legal_sum_zone, illegal_sum_zone, non_user_sum_zone]
 
     # Calculate percentages for legal, illegal, and non-users per DMA (if 'DMA' column exists)
     if 'DMA' in filtered_df.columns:
