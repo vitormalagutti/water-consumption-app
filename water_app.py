@@ -567,4 +567,4 @@ if uploaded_file:
    
 
 else:
-    st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', or 'Status'.")
+    st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', 'Block_Number', or 'Status'. If information is not available, create the column and leave it blank")
