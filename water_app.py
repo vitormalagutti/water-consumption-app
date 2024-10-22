@@ -217,11 +217,15 @@ if uploaded_file:
         user_summary_dma['Illegal'] = (user_summary_dma['Total Population'] * user_summary_dma['Illegal %'] / 100).astype(int)
         user_summary_dma['Non-user'] = (user_summary_dma['Total Population'] * user_summary_dma['Non-user %'] / 100).astype(int)
 
+        # Exclude the 'Total' row for graph plotting
+        user_summary_zone_plot = user_summary_zone[user_summary_zone.index != 'Total']
+        user_summary_dma_plot = user_summary_dma[user_summary_dma.index != 'Total']
+
         # Place the two graphs in the side-by-side layout
         # First graph for Zone
         with col1:
             fig, ax = plt.subplots(figsize=(7, 5))  # Adjust figure size
-            user_summary_zone[['Non-user', 'Illegal', 'Legal', 'Total Population']].plot(
+            user_summary_zone_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].plot(
                 kind='bar', 
                 stacked=False, 
                 color=['#A9A9A9', '#FFA500', '#90EE90', '#87CEEB'],  
@@ -232,7 +236,7 @@ if uploaded_file:
             ax.set_xlabel('Zones')
             ax.set_ylabel('Number of Users')
             ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
-            #ax.set_xticklabels(user_summary_zone.index.astype(int), rotation=0)
+            ax.set_xticklabels(user_summary_zone.index, rotation=0)
             y_max = user_summary_zone[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
             ax.set_yticks(range(0, int(y_max) + 5000, 5000))
             st.pyplot(fig)
@@ -241,7 +245,7 @@ if uploaded_file:
        # Second graph for DMA
         with col2:
             fig, ax = plt.subplots(figsize=(7, 5))  # Adjust figure size
-            user_summary_dma[['Non-user', 'Illegal', 'Legal', 'Total Population']].plot(
+            user_summary_dma_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].plot(
                 kind='bar', 
                 stacked=False, 
                 color=['#A9A9A9', '#FFA500', '#90EE90', '#87CEEB'],  
@@ -254,7 +258,7 @@ if uploaded_file:
             ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
             y_max = user_summary_dma[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
             ax.set_yticks(range(0, int(y_max) + 5000, 5000))
-            #ax.set_xticklabels(user_summary_dma.index.astype(int), rotation=0)
+            ax.set_xticklabels(user_summary_dma.index, rotation=0)
             st.pyplot(fig)
 
 
