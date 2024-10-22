@@ -8,6 +8,7 @@ import geopandas as gpd
 import folium
 import pydeck as pdk
 import json
+import matplotlib.ticker as ticker
 from keplergl import KeplerGl
 from shapely.geometry import Point
 from streamlit_folium import folium_static
@@ -313,7 +314,7 @@ if uploaded_file:
             st.markdown("### Monthly Water Consumption Distribution (l/p/d)")
 
             fig, ax = plt.subplots(figsize=(8,4))
-            ax.plot(df_factors['Month'], df_factors['Monthly Daily Consumption - l/p/d'], marker='o', color='blue', linewidth=1.0)
+            ax.plot(df_factors['Month'], df_factors['Monthly Daily Consumption - l/p/d'], marker='o', color='skyblue', linewidth=1.0)
             ax.set_ylabel('Monthly Water Consumption (l/p/d)')
             ax.set_title('Monthly Water Consumption Distribution')
             ax.grid(True, linestyle ='-', axis = 'y')
@@ -330,13 +331,14 @@ if uploaded_file:
             st.pyplot(fig)
         
         # Create two columns, with empty space in the left and right columns for centering
-        col1, col2, col3 = st.columns([1, 4, 1])  # Make the center column wider for the plot
+        col1, col2, col3 = st.columns([1, 3, 1])  # Make the center column wider for the plot
         
         with col2:
             fig2, ax = plt.subplots(figsize=(8, 4))
             ax.bar(df_factors['Month'], df_factors['Total Monthly Consumption - m3'], color='deepskyblue')
             ax.set_ylabel('Monthly Water Consumption (m³)')
             ax.set_title('Monthly Water Consumption Distribution')
+            ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ','))) # Format the y-axis labels with a thousand separator
             ax.grid(True, linestyle='-', axis='y')
             st.pyplot(fig2)
 
