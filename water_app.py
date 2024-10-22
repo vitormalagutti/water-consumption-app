@@ -330,7 +330,7 @@ if uploaded_file:
             st.pyplot(fig)
         
         # Create two columns, with empty space in the left and right columns for centering
-        col1, col2, col3 = st.columns([1, 2, 1])  # Make the center column wider for the plot
+        col1, col2, col3 = st.columns([1, 4, 1])  # Make the center column wider for the plot
         
         with col2:
             fig2, ax = plt.subplots(figsize=(8, 4))
