@@ -334,7 +334,7 @@ if uploaded_file:
         
         with col2:
             fig2, ax = plt.subplots(figsize=(8, 4))
-            ax.bar(df_factors['Month'], df_factors['Total Monthly Consumption - m3'], color='lightblue')
+            ax.bar(df_factors['Month'], df_factors['Total Monthly Consumption - m3'], color='skyblue')
             ax.set_ylabel('Monthly Water Consumption (m³)')
             ax.set_title('Monthly Water Consumption Distribution')
             ax.grid(True, linestyle='-', axis='y')
