@@ -269,7 +269,7 @@ if uploaded_file:
                                     "opacity": 0.8,
                                     "colorField": {
                                         "name": selected_attribute,  # Use the selected attribute (Zone or DMA) for coloring
-                                        "type": "string"
+                                        "type": "integer"
                                     },
                                     "colorRange": {
                                         "colors": ["#FF5733", "#33FF57", "#3357FF", "#F5B041", "#8E44AD"]
