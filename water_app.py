@@ -176,7 +176,7 @@ if uploaded_file:
                 edgecolor='black'
             )
             ax.set_title('Network Users Summary - DMAs', fontsize=12)
-            ax.set_xlabel('DMAs')
+            ax.set_xlabel(int('DMAs'))
             ax.set_ylabel('Number of Users')
             ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
             ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
