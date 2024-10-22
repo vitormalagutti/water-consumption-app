@@ -399,13 +399,6 @@ if uploaded_file:
                                 "visConfig": {
                                     "radius": 5,
                                     "opacity": 0.8,
-                                    "colorField": {
-                                        "name": "Zone", 
-                                        "type": "integer"
-                                    },
-                                    "colorRange": {
-                                        "colors": ["#FF5733", "#33FF57", "#3357FF", "#F5B041", "#8E44AD"]
-                                    }
                                 },
                                 "isVisible": True
                             }
@@ -475,7 +468,7 @@ if uploaded_file:
                 'mapState': {
                     'latitude': center_lat,
                     'longitude': center_lon,
-                    'zoom': 14
+                    'zoom': 16
                 },
                 "mapStyle": {
                     "styleType": "satellite"
