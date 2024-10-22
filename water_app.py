@@ -240,8 +240,9 @@ if uploaded_file:
         zoom = 12 if max(lat_range, lon_range) < 1 else 10
         
         # Create a dynamic configuration for KeplerGL
- # Dynamically recreate the configuration for KeplerGL every time the user selects a new attribute
-        def create_kepler_config(selected_attribute):
+        # Dynamically recreate the configuration for KeplerGL every time the user selects a new attribute
+        # Dynamically recreate the configuration for KeplerGL based on the user selection
+        def create_kepler_config(attribute):
             return {
                 'version': 'v1',
                 'config': {
@@ -269,7 +270,8 @@ if uploaded_file:
                                         "radius": 5,
                                         "opacity": 0.8,
                                         "colorField": {
-                                            "name": "Zone",  # Dynamically use the selected attribute for coloring
+                                            "name": attribute,  # Dynamically set color field based on user selection
+                                            "type": "integer"  # Use "integer" since the values are integers
                                         },
                                         "colorRange": {
                                             "colors": ["#FF5733", "#33FF57", "#3357FF", "#F5B041", "#8E44AD"]
@@ -283,16 +285,27 @@ if uploaded_file:
                 }
             }
 
-        # Generate the dynamic KeplerGL config based on user selection
-        config_1 = create_kepler_config(selected_attribute)
-
+        # Clear previous layers and regenerate the KeplerGL map
+        def refresh_map(attribute):
+            # Generate the dynamic KeplerGL config based on user selection
+            config_heatmap = create_kepler_config(attribute)
+            
+            # Create the KeplerGL map
+            kepler_map = KeplerGl(height=800, config=config_heatmap)
+            
+            # Add the DataFrame to the KeplerGL map
+            kepler_map.add_data(data=df, name="Water Consumption Data")
+            
+            # Display the map in Streamlit
+            keplergl_static(kepler_map)
 
         # Rename for easier recognition in Kepler
         df = df.rename(columns={"X": "longitude", "Y": "latitude"})
 
-        kepler_map = KeplerGl(height=800, config=config_1)
-        kepler_map.add_data(data=df, name="Water Consumption Data")
-        keplergl_static(kepler_map)
+        # kepler_map = KeplerGl(height=800, config=config_1)
+        # kepler_map.add_data(data=df, name="Water Consumption Data")
+        # Refresh the map when the attribute is selected
+        refresh_map(selected_attribute)
 
         # Set up the Folium map with Google Satellite layer
         m = folium.Map(
