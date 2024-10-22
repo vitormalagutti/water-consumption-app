@@ -307,7 +307,7 @@ if uploaded_file:
             location=[center_lat, center_lon],
             zoom_start=15,
             width='1000px',
-            height='100%'
+            height='1100'
         )
         folium.TileLayer(
             tiles='https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
