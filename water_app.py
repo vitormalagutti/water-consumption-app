@@ -161,6 +161,7 @@ if uploaded_file:
             ax.set_xlabel('Zones')
             ax.set_ylabel('Number of Users')
             ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
+            ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
             st.pyplot(fig)
 
 
@@ -178,6 +179,7 @@ if uploaded_file:
             ax.set_xlabel('DMAs')
             ax.set_ylabel('Number of Users')
             ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
+            ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
             st.pyplot(fig)
 
 
