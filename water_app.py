@@ -345,7 +345,7 @@ if uploaded_file:
             folium.LayerControl().add_to(m)
 
             # Display the Folium map in Streamlit
-            folium_static(m, width=None, height=1100)
+            folium_static(m, width=None, height=900)
         
         with col2:
             test = 100 / 1000
@@ -384,28 +384,28 @@ if uploaded_file:
             # Create heatmaps based on selection
             if heatmap_type == "All Buildings":
                 st.markdown("#### 🔥 Heatmap of All Building Locations")
-                kepler_map = KeplerGl(height=800, config=config_heatmap)
+                kepler_map = KeplerGl(height=900, config=config_heatmap)
                 kepler_map.add_data(data=gdf, name="Water Consumption Data")
                 keplergl_static(kepler_map)
 
             elif heatmap_type == "Illegal Connections":
                 st.markdown("#### 🔥 Heatmap of Illegal Connections")
                 gdf_illegal = gdf[gdf['User Type'] == 'Illegal'] 
-                kepler_map = KeplerGl(height=800, config=config_heatmap)
+                kepler_map = KeplerGl(height=900, config=config_heatmap)
                 kepler_map.add_data(data=gdf_illegal, name="Water Consumption Data")
                 keplergl_static(kepler_map)
 
             elif heatmap_type == "Legal Connections":
                 st.markdown("#### 🔥 Heatmap of Legal Connections")
                 gdf_legal = gdf[gdf['User Type'] == 'Legal']
-                kepler_map = KeplerGl(height=800, config=config_heatmap)
+                kepler_map = KeplerGl(height=900, config=config_heatmap)
                 kepler_map.add_data(data=gdf_legal, name="Water Consumption Data")
                 keplergl_static(kepler_map)
                 
             elif heatmap_type == "Non-Users":
                 st.markdown("#### 🔥 Heatmap of Non-Users")
                 gdf_non_user = gdf[gdf['User Type'] == 'Non-user']
-                kepler_map = KeplerGl(height=800, config=config_heatmap)
+                kepler_map = KeplerGl(height=900, config=config_heatmap)
                 kepler_map.add_data(data=gdf_non_user, name="Water Consumption Data")
                 keplergl_static(kepler_map)
    
