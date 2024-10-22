@@ -262,12 +262,16 @@ if uploaded_file:
                                 "label": "Building Locations",
                                 "columns": {
                                     "lat": "latitude",
-                                    "lng": "longitude",
-                                    "color": selected_attribute  # Color by the selected attribute (Zone or DMA)
+                                    "lng": "longitude"
                                 },
                                 "visConfig": {
                                     "radius": 5,
-                                    "opacity": 0.8
+                                    "opacity": 0.8,
+                                    "colorField": {
+                                        "name": selected_attribute,  # Use the selected attribute (Zone or DMA) for coloring
+                                        "type": "string"
+                                    },
+                                    "colorScale": "ordinal"  # Use ordinal scale for categories
                                 },
                                 "isVisible": True
                             }
