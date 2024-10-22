@@ -147,19 +147,41 @@ if uploaded_file:
         col1, col2 = st.columns(2)
 
         # Place the two graphs in the side-by-side layout
+        # First graph for Zone
         with col1:
-            fig, ax = plt.subplots(figsize=(10, 4))
-            user_summary_zone[['Total Population', 'Legal', 'Illegal', 'Non-user']].plot(kind='bar', ax=ax)
-            ax.set_ylabel('Population')
-            ax.set_title('Population Distribution by Zone and User Type')
+            fig, ax = plt.subplots(figsize=(7, 5))  # Adjust figure size
+            user_summary_zone[['Non-user', 'Illegal', 'Legal', 'Total Population']].plot(
+                kind='bar', 
+                stacked=False, 
+                color=['#A9A9A9', '#FFA500', '#90EE90', '#1f77b4'],  # Light Green for Legal, Blue for Total Population
+                ax=ax, 
+                edgecolor='black'
+            )
+            ax.set_title('Network Users Summary - Zones', fontsize=12)
+            ax.set_xlabel('Zones')
+            ax.set_ylabel('Number of Users')
+            ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
+            ax.set_ylim(0, 15000)  # Adjust Y-axis limits to match your layout
             st.pyplot(fig)
 
+
+       # Second graph for DMA
         with col2:
-            fig, ax = plt.subplots(figsize=(10, 4))
-            user_summary_dma[['Total Population', 'Legal', 'Illegal', 'Non-user']].plot(kind='bar', ax=ax)
-            ax.set_ylabel('Population')
-            ax.set_title('Population Distribution by DMA and User Type')
+            fig, ax = plt.subplots(figsize=(7, 5))  # Adjust figure size
+            user_summary_dma[['Non-user', 'Illegal', 'Legal', 'Total Population']].plot(
+                kind='bar', 
+                stacked=False, 
+                color=['#A9A9A9', '#FFA500', '#90EE90', '#1f77b4'],  # Light Green for Legal, Blue for Total Population
+                ax=ax, 
+                edgecolor='black'
+            )
+            ax.set_title('Network Users Summary - DMAs', fontsize=12)
+            ax.set_xlabel('DMAs')
+            ax.set_ylabel('Number of Users')
+            ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
+            ax.set_ylim(0, 15000)  # Adjust Y-axis limits to match your layout
             st.pyplot(fig)
+
 
     with tab2:
         st.markdown("### 📅 Monthly Water Consumption Calculation")
