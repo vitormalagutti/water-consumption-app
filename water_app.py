@@ -268,7 +268,7 @@ if uploaded_file:
                                     "radius": 5,
                                     "opacity": 0.8,
                                     "colorField": {
-                                        "name": selected_attribute,  # Use the selected attribute (Zone or DMA) for coloring
+                                        "name": "Zone",  # Use the selected attribute (Zone or DMA) for coloring
                                         "type": "string"
                                     },
                                     "colorScale": "ordinal"  # Use ordinal scale for categories
