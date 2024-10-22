@@ -279,7 +279,7 @@ if uploaded_file:
                                 },
                                 "visConfig": {
                                     "radius": 10,  # Radius of influence for the heatmap
-                                    "intensity": 1,  # Intensity of the heatmap
+                                    "intensity": 10,  # Intensity of the heatmap
                                     "opacity": 0.5,  # Opacity of the heatmap
                                     "colorRange": {
                                         "name": "Global Warming",
