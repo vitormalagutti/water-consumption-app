@@ -123,18 +123,19 @@ if uploaded_file:
 
     with tab1:
         
+        st.markdown("## Summary of the Network Users")
         # Create columns for side-by-side layout
         col1, col2 = st.columns(2)
-        st.markdown("### Summary of the Network Users")
+        
 
         with col1:
             if 'Zone' in filtered_df.columns:
-                st.markdown("## 📊 User Type Summary by Zone")
+                st.markdown("#### 📊 User Type Summary by Zone")
                 st.dataframe(overall_summary_zone)
 
         with col2:
             if 'DMA' in filtered_df.columns:
-                st.markdown("## 📊 User Type Summary by DMA")
+                st.markdown("#### 📊 User Type Summary by DMA")
                 st.dataframe(overall_summary_dma)
 
         st.markdown("### 📈 Population by User Type")
