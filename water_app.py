@@ -92,8 +92,6 @@ if uploaded_file:
     total_population_by_dma = df.groupby('DMA')['Population'].sum() if 'DMA' in df.columns else None
 
     # Calculate percentages for legal, illegal, and non-users per Zone
-    # Calculate percentages for legal, illegal, and non-users per Zone
-# Calculate total population and percentages per Zone
     if 'Zone' in filtered_df.columns:
         
         # Calculate total population for each zone, including all inputs (with or without User Type)
@@ -136,45 +134,48 @@ if uploaded_file:
         
         user_summary_zone.loc['Total'] = [total_population_all_zones, legal_sum_zone, illegal_sum_zone, non_user_sum_zone]
 
-    # Calculate percentages for legal, illegal, and non-users per DMA (if 'DMA' column exists)
+   # Calculate total population and percentages per DMA (if 'DMA' column exists)
     if 'DMA' in filtered_df.columns:
         
-        # Calculate the total population by DMA, including points without user type info
-        total_population_by_dma = df.groupby('DMA')['Population'].sum()
+        # Calculate total population for each DMA, including all inputs (with or without User Type)
+        dma_counts = df.groupby('DMA').size()  # Count the number of inputs per DMA
+        total_population_by_dma = dma_counts * avg_floors * avg_people_per_family  # Calculate total population
+
+        # Count the number of Legal, Illegal, and Non-user inputs per DMA
+        legal_count_dma = filtered_df[filtered_df['User Type'] == 'Legal'].groupby('DMA').size()
+        illegal_count_dma = filtered_df[filtered_df['User Type'] == 'Illegal'].groupby('DMA').size()
+        non_user_count_dma = filtered_df[filtered_df['User Type'] == 'Non-user'].groupby('DMA').size()
+
+        # Ensure all DMAs are represented (fill missing values with 0)
+        legal_count_dma = legal_count_dma.reindex(total_population_by_dma.index, fill_value=0)
+        illegal_count_dma = illegal_count_dma.reindex(total_population_by_dma.index, fill_value=0)
+        non_user_count_dma = non_user_count_dma.reindex(total_population_by_dma.index, fill_value=0)
+
+        # Calculate the percentages for each user type (based on counts of Legal, Illegal, and Non-user)
+        total_known_users_dma = legal_count_dma + illegal_count_dma + non_user_count_dma
+        legal_percentage_dma = (legal_count_dma / total_known_users_dma) * 100
+        illegal_percentage_dma = (illegal_count_dma / total_known_users_dma) * 100
+        non_user_percentage_dma = (non_user_count_dma / total_known_users_dma) * 100
+
+        # Create a DataFrame to store the results for DMAs
+        user_summary_dma = pd.DataFrame({
+            'Total Population': total_population_by_dma,
+            'Legal %': legal_percentage_dma,
+            'Illegal %': illegal_percentage_dma,
+            'Non-user %': non_user_percentage_dma
+        })
+
+        # Handle cases where no known users exist to avoid division by zero
+        user_summary_dma[['Legal %', 'Illegal %', 'Non-user %']] = user_summary_dma[['Legal %', 'Illegal %', 'Non-user %']].fillna(0)
+
+        # Add a final row with the sum of all DMAs (weighted average for percentages)
+        total_population_all_dmas = total_population_by_dma.sum()
+
+        legal_sum_dma = (legal_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
+        illegal_sum_dma = (illegal_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
+        non_user_sum_dma = (non_user_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
         
-        # Filter out rows where User Type is missing or 'No Data' for the percentage calculation
-        valid_user_types_dma_df = filtered_df[filtered_df['User Type'] != 'No Data']
-
-        # Pivot table for user types with valid User Type data
-        user_summary_dma = valid_user_types_dma_df.pivot_table(
-            values='Population',
-            index='DMA',
-            columns='User Type',
-            aggfunc='sum',
-            fill_value=0
-        )
-
-        # Add the total population (including all points) to the pivot table
-        user_summary_dma['Total Population'] = total_population_by_dma
-
-        # Calculate the percentage for each user type, excluding points with missing User Type
-        for user_type in ['Legal', 'Illegal', 'Non-user']:
-            user_summary_dma[f'{user_type} %'] = (user_summary_dma[user_type] / user_summary_dma['Total Population']) * 100
-
-        # Handle any cases where Total Population is 0 to avoid division by zero
-        user_summary_dma.loc[user_summary_dma['Total Population'] == 0, ['Legal %', 'Illegal %', 'Non-user %']] = 0
-
-        user_summary_dma = user_summary_dma.round(1)
-        overall_summary_dma = user_summary_dma[['Total Population', 'Legal %', 'Illegal %', 'Non-user %']].copy()
-
-        # Add a final row with the sum of all DMAs (weighted average)
-        total_population_all_dmas = user_summary_dma['Total Population'].sum()
-
-        legal_sum_dma = (user_summary_dma['Legal %'] * user_summary_dma['Total Population']).sum() / total_population_all_dmas
-        illegal_sum_dma = (user_summary_dma['Illegal %'] * user_summary_dma['Total Population']).sum() / total_population_all_dmas
-        non_user_sum_dma = (user_summary_dma['Non-user %'] * user_summary_dma['Total Population']).sum() / total_population_all_dmas
-        
-        overall_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
+        user_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
 
 
 
