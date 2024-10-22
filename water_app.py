@@ -42,7 +42,7 @@ if uploaded_file:
             df[col] = None
 
     # Define the expected values for the Status column
-    expected_values = ['water meter', 'illegal connection', 'non-user', '']
+    expected_values = ['water meter', 'illegal connection', 'non-user', '', " "]
 
     # Step 1: Validate the 'Status' column for any unexpected values
     unexpected_values = df[~df['Status'].isin(expected_values)]
