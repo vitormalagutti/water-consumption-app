@@ -93,7 +93,8 @@ if uploaded_file:
 
     # Calculate percentages for legal, illegal, and non-users per Zone
     if 'Zone' in filtered_df.columns:
-        
+
+        df['Zone'] = df['Zone'].apply(lambda x: f'{x:.0f}')
         # Calculate total population for each zone, including all inputs (with or without User Type)
         zone_counts = df.groupby('Zone').size()  # Count the number of inputs per Zone
         total_population_by_zone = zone_counts * avg_floors * avg_people_per_family  # Calculate total population
@@ -136,6 +137,8 @@ if uploaded_file:
 
    # Calculate total population and percentages per DMA (if 'DMA' column exists)
     if 'DMA' in filtered_df.columns:
+        
+        df['DMA'] = df['DMA'].apply(lambda x: f'{x:.0f}')
         
         # Calculate total population for each DMA, including all inputs (with or without User Type)
         dma_counts = df.groupby('DMA').size()  # Count the number of inputs per DMA
