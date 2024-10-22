@@ -208,13 +208,13 @@ if uploaded_file:
         col1, col2 = st.columns(2)
     
         # Calculate the number of people for each user type by multiplying Total Population with percentages
-        user_summary_zone['Legal Users'] = (user_summary_zone['Total Population'] * user_summary_zone['Legal %'] / 100).astype(int)
-        user_summary_zone['Illegal Users'] = (user_summary_zone['Total Population'] * user_summary_zone['Illegal %'] / 100).astype(int)
+        user_summary_zone['Legal'] = (user_summary_zone['Total Population'] * user_summary_zone['Legal %'] / 100).astype(int)
+        user_summary_zone['Illegal'] = (user_summary_zone['Total Population'] * user_summary_zone['Illegal %'] / 100).astype(int)
         user_summary_zone['Non-user'] = (user_summary_zone['Total Population'] * user_summary_zone['Non-user %'] / 100).astype(int)
 
         # Calculate the number of people for each user type by multiplying Total Population with percentages
-        user_summary_dma['Legal Users'] = (user_summary_dma['Total Population'] * user_summary_dma['Legal %'] / 100).astype(int)
-        user_summary_dma['Illegal Users'] = (user_summary_dma['Total Population'] * user_summary_dma['Illegal %'] / 100).astype(int)
+        user_summary_dma['Legal'] = (user_summary_dma['Total Population'] * user_summary_dma['Legal %'] / 100).astype(int)
+        user_summary_dma['Illegal'] = (user_summary_dma['Total Population'] * user_summary_dma['Illegal %'] / 100).astype(int)
         user_summary_dma['Non-user'] = (user_summary_dma['Total Population'] * user_summary_dma['Non-user %'] / 100).astype(int)
 
         # Place the two graphs in the side-by-side layout
