@@ -187,6 +187,19 @@ if uploaded_file:
         # Title for Summary of the Network Users
         st.markdown("## Summary of the Network Users")
 
+        # Round the population and percentages for user_summary_zone
+        user_summary_zone['Total Population'] = user_summary_zone['Total Population'].round(-2)  # Round population to nearest hundreds
+        user_summary_zone['Legal %'] = user_summary_zone['Legal %'].round(1)  # Round percentages to 1 decimal place
+        user_summary_zone['Illegal %'] = user_summary_zone['Illegal %'].round(1)
+        user_summary_zone['Non-user %'] = user_summary_zone['Non-user %'].round(1)
+
+        # Round the population and percentages for user_summary_dma
+        user_summary_dma['Total Population'] = user_summary_dma['Total Population'].round(-2)  # Round population to nearest hundreds
+        user_summary_dma['Legal %'] = user_summary_dma['Legal %'].round(1)  # Round percentages to 1 decimal place
+        user_summary_dma['Illegal %'] = user_summary_dma['Illegal %'].round(1)
+        user_summary_dma['Non-user %'] = user_summary_dma['Non-user %'].round(1)
+
+
         # Create columns for side-by-side layout for the tables
         col1, col2 = st.columns(2)
 
