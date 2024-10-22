@@ -295,7 +295,7 @@ if uploaded_file:
 
 
         # Calculate monthly water consumption based on factors
-        for i in len(month_factors):
+        for i in len(days_in_month):
             df_factors['Factor - Updated'] = (1 - variation_factor) * np.mean(df_factors["Factor"]) + variation_factor * df_factors["Factor"]
             df_factors['Monthly Daily Consumption - l/p/d'] = round(df_factors['Factor - Updated'] * avg_litres_per_person * 12)
             df_factors["Total Monthly Consumption - m3"] = round(df_factors['Monthly Daily Consumption - l/p/d'] * sum(df["Population"]) * days_in_month[i] / 1000, -2)
