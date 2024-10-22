@@ -240,48 +240,53 @@ if uploaded_file:
         zoom = 12 if max(lat_range, lon_range) < 1 else 10
         
         # Create a dynamic configuration for KeplerGL
-        # Create dynamic KeplerGL configuration
-        config_1 = {
-            'version': 'v1',
-            'config': {
-                'mapState': {
-                    'latitude': center_lat,
-                    'longitude': center_lon,
-                    'zoom': 14
-                },
-                "mapStyle": {
-                    "styleType": "satellite"
-                },
-                "visState": {
-                    "layers": [
-                        {
-                            "id": "building_layer",
-                            "type": "point",
-                            "config": {
-                                "dataId": "Water Consumption Data",
-                                "label": "Building Locations",
-                                "columns": {
-                                    "lat": "lat",
-                                    "lng": "lng"
-                                },
-                                "visConfig": {
-                                    "radius": 5,
-                                    "opacity": 0.8,
-                                    "colorField": {
-                                        "name": selected_attribute,  # Use the selected attribute (Zone or DMA) for coloring
-                                        "type": "integer"
+ # Dynamically recreate the configuration for KeplerGL every time the user selects a new attribute
+        def create_kepler_config(selected_attribute):
+            return {
+                'version': 'v1',
+                'config': {
+                    'mapState': {
+                        'latitude': center_lat,
+                        'longitude': center_lon,
+                        'zoom': 14
+                    },
+                    "mapStyle": {
+                        "styleType": "satellite"
+                    },
+                    "visState": {
+                        "layers": [
+                            {
+                                "id": "building_layer",
+                                "type": "point",
+                                "config": {
+                                    "dataId": "Water Consumption Data",
+                                    "label": "Building Locations",
+                                    "columns": {
+                                        "lat": "lat",
+                                        "lng": "lng"
                                     },
-                                    "colorRange": {
-                                        "colors": ["#FF5733", "#33FF57", "#3357FF", "#F5B041", "#8E44AD"]
-                                    }
-                                },
-                                "isVisible": True
+                                    "visConfig": {
+                                        "radius": 5,
+                                        "opacity": 0.8,
+                                        "colorField": {
+                                            "name": selected_attribute,  # Dynamically use the selected attribute for coloring
+                                            "type": "integer"  # Set the type to integer (since Zone and DMA are integers)
+                                        },
+                                        "colorRange": {
+                                            "colors": ["#FF5733", "#33FF57", "#3357FF", "#F5B041", "#8E44AD"]
+                                        }
+                                    },
+                                    "isVisible": True
+                                }
                             }
-                        }
-                    ]
+                        ]
+                    }
                 }
             }
-        }
+
+        # Generate the dynamic KeplerGL config based on user selection
+        config_1 = create_kepler_config(selected_attribute)
+
 
         # Rename for easier recognition in Kepler
         df = df.rename(columns={"X": "longitude", "Y": "latitude"})
