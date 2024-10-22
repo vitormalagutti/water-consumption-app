@@ -344,7 +344,7 @@ if uploaded_file:
             folium.LayerControl().add_to(m)
 
             # Display the Folium map in Streamlit
-            folium_static(m, width=750, height=900)
+            folium_static(m, width=750, height=800)
         
         with col2:
             test = 100 / 1000
