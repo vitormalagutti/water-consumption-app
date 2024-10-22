@@ -19,7 +19,7 @@ from streamlit_keplergl import keplergl_static
 st.set_page_config(page_title="Water Consumption Visualization", layout="wide")
 
 # Main Title with description
-st.title("🌊 Water Demmand Assessment and Visualization")
+st.title("💧 Water Demand Estimation and Visualization 💧")
 st.markdown("This app calculates water consumption based on buildings information, with breakdowns by zone and user type. Use the sidebar to provide average consumption details and view interactive maps, graphs, and tables.")
 st.markdown("Please upload a .csv file with the specific columns' names X, Y, Block_Number, Zone, DMA, and Status")
 
@@ -180,7 +180,7 @@ if uploaded_file:
 
 
     # Streamlit tabs for organized visualization
-    tab1, tab2, tab3, tab4 = st.tabs(["📊 Network Users Summary", "📅 Seazonal Water Distribution", "💧 Water Demand Model", "🗺️ Data Visualization"])
+    tab1, tab2, tab3, tab4 = st.tabs(["📊 Network Users Summary", "📅 Seasonal Water Demand Distribution", "💧 Water Demand Model", "🗺️ Data Visualization"])
 
     with tab1:
 
@@ -328,32 +328,61 @@ if uploaded_file:
             st.pyplot(fig)
 
     with tab3:
+        
+        # Prepare population and non-user percentages for DMAs
+        population_dma = user_summary_dma['Total Population']
+        non_users_dma = user_summary_dma['Non-user %'] / 100  # Convert percentage to a proportion
+
+        # Monthly Daily Consumption from Seasonal Distribution
+        monthly_consumption = df_factors['Monthly Daily Consumption - l/p/d']
+        days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]  # Number of days in each month
+
+        # Create an empty DataFrame to store the results
+        water_demand_dma = pd.DataFrame(columns=['DMA'] + df_factors['Month'].tolist())
+
+        # Calculate the water consumption for each DMA and month
+        for dma in population_dma.index:
+            # For each DMA, calculate monthly consumption
+            dma_consumption = []
+            for i, month in enumerate(df_factors['Month']):
+                consumption_m3 = population_dma[dma] * (1 - non_users_dma[dma]) * monthly_consumption[i] * days_in_month[i] / 1000
+                dma_consumption.append(round(consumption_m3, -2))  # Round to the nearest 100
+
+            # Add the DMA and its monthly consumption to the DataFrame
+            water_demand_dma.loc[len(water_demand_dma)] = [dma] + dma_consumption
+                
+        
+        
+        
+        
+        
+        
         # Create columns for side-by-side layout
         col1, col2 = st.columns(2)
         
            
         # Calculate water consumption per zone and overall consumption (for monthly values)
-        df['Cubic Metres'] = df['Population'] * avg_litres_per_person / 1000 * 30
+        #df['Cubic Metres'] = df['Population'] * avg_litres_per_person / 1000 * 30
 
-        # Group water consumption data per zone
-        water_per_zone = df.groupby('Zone').agg({
-            'Cubic Metres': 'sum',
-            'Population': 'sum'
-        }).reset_index()
+        # # Group water consumption data per zone
+        # water_per_zone = df.groupby('Zone').agg({
+        #     'Cubic Metres': 'sum',
+        #     'Population': 'sum'
+        # }).reset_index()
 
         # Add a row for total values across all zones
-        total_row = pd.DataFrame([['Total', water_per_zone['Cubic Metres'].sum(), water_per_zone['Population'].sum()]],
-                                 columns=water_per_zone.columns)        
-        water_per_zone = pd.concat([water_per_zone, total_row], ignore_index=True)  
+        # total_row = pd.DataFrame([['Total', water_per_zone['Cubic Metres'].sum(), water_per_zone['Population'].sum()]],
+        #                          columns=water_per_zone.columns)        
+        # water_per_zone = pd.concat([water_per_zone, total_row], ignore_index=True)  
 
         with col1:
             st.markdown("### 💧 Water Consumption per Zone (Monthly)")
-            st.dataframe(water_per_zone)
+            st.dataframe(water_demand_dma)
 
         with col2:
             st.markdown("### 📉 Monthly Water Consumption Variation by Zone")
             fig, ax = plt.subplots(figsize=(10, 4))
-            water_per_zone.plot(x='Zone', y='Cubic Metres', kind='bar', ax=ax, color='#87CEEB')
+            water_demand_dma.plot(x='Zone', y='Cubic Metres', kind='bar', ax=ax, color='#87CEEB')
             ax.set_ylabel('Cubic Metres')
             ax.set_title('Monthly Water Consumption by Zone')
             st.pyplot(fig)
