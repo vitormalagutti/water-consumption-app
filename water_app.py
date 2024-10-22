@@ -122,12 +122,14 @@ if uploaded_file:
     tab1, tab2, tab3, tab4 = st.tabs(["📊 Network Users Summary", "📅 Seazonal Water Distribution", "💧 Water Demand Model", "🗺️ Data Visualization"])
 
     with tab1:
-        
-        st.markdown("## Summary of the Network Users")
-        # Create columns for side-by-side layout
-        col1, col2 = st.columns(2)
-        
 
+        # Title for Summary of the Network Users
+        st.markdown("## Summary of the Network Users")
+
+        # Create columns for side-by-side layout for the tables
+        col1, col2 = st.columns(2)
+
+        # Place the two tables in the side-by-side layout
         with col1:
             if 'Zone' in filtered_df.columns:
                 st.markdown("#### 📊 Water Network Summary - Zone")
@@ -138,11 +140,15 @@ if uploaded_file:
                 st.markdown("#### 📊 Water Network Summary - DMA")
                 st.dataframe(overall_summary_dma)
 
+        # Title for Population by User Type
         st.markdown("### 📈 Population by User Type")
 
+        # Create columns for side-by-side layout for the graphs
+        col1, col2 = st.columns(2)
+
+        # Place the two graphs in the side-by-side layout
         with col1:
             fig, ax = plt.subplots(figsize=(10, 4))
-
             user_summary_zone[['Total Population', 'Legal', 'Illegal', 'Non-user']].plot(kind='bar', ax=ax)
             ax.set_ylabel('Population')
             ax.set_title('Population Distribution by Zone and User Type')
@@ -152,9 +158,8 @@ if uploaded_file:
             fig, ax = plt.subplots(figsize=(10, 4))
             user_summary_dma[['Total Population', 'Legal', 'Illegal', 'Non-user']].plot(kind='bar', ax=ax)
             ax.set_ylabel('Population')
-            ax.set_title('Population Distribution by Zone and User Type')
+            ax.set_title('Population Distribution by DMA and User Type')
             st.pyplot(fig)
-
 
     with tab2:
         st.markdown("### 📅 Monthly Water Consumption Calculation")
