@@ -225,6 +225,10 @@ if uploaded_file:
         
         # Create a selectbox above the map
         selected_attribute = st.selectbox("Color points by:", options=["Zone", "DMA"], index=0)
+        
+        # Reorder the DataFrame so the selected attribute comes after lat/lon, but keep all columns
+        cols = ['X', 'Y', selected_attribute] + [col for col in df.columns if col not in ['X', 'Y', selected_attribute]]
+        df = df[cols]  # Dynamically reorder columns
 
 
         # Create a GeoDataFrame for processing
