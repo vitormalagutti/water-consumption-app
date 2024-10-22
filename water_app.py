@@ -247,7 +247,7 @@ if uploaded_file:
                 'mapState': {
                     'latitude': center_lat,
                     'longitude': center_lon,
-                    'zoom': 14
+                    'zoom': 16
                 },
                 "mapStyle": {
                     "styleType": "satellite"
