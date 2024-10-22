@@ -80,7 +80,6 @@ if uploaded_file:
     avg_floors = st.sidebar.number_input("Average Floors per Building", min_value=0.0, step=0.1, value=1.0)
     avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=1.0, step=1.0, value=5.0)
     avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=500, step=10, value=150)
-    # Choose which heatmap to display
     st.sidebar.header("🔍 Heatmap Options")
     heatmap_type = st.sidebar.selectbox(
         "Choose a heatmap to display:",
@@ -93,19 +92,36 @@ if uploaded_file:
     total_population_by_dma = df.groupby('DMA')['Population'].sum() if 'DMA' in df.columns else None
 
     # Calculate percentages for legal, illegal, and non-users per Zone
+    # Calculate percentages for legal, illegal, and non-users per Zone
     if 'Zone' in filtered_df.columns:
-        filtered_df['Population'] = avg_floors * avg_people_per_family
-        user_summary_zone = filtered_df.pivot_table(
+        
+        # Calculate the total population including all points (even those with no User Type info)
+        df['Population'] = avg_floors * avg_people_per_family
+        
+        # Calculate the total population by Zone, including points without user type info
+        total_population_by_zone = df.groupby('Zone')['Population'].sum()
+        
+        # Filter out rows where User Type is missing or 'No Data' for the percentage calculation
+        valid_user_types_df = filtered_df[filtered_df['User Type'] != 'No Data']
+        
+        # Pivot table for user types with valid User Type data
+        user_summary_zone = valid_user_types_df.pivot_table(
             values='Population',
             index='Zone',
             columns='User Type',
             aggfunc='sum',
-            fill_value=0
+            fill_value=0  # Ensure missing values are filled with 0
         )
+
+        # Add the total population (including all points) to the pivot table
         user_summary_zone['Total Population'] = total_population_by_zone
 
+        # Calculate the percentage for each user type, excluding points with missing User Type
         for user_type in ['Legal', 'Illegal', 'Non-user']:
             user_summary_zone[f'{user_type} %'] = (user_summary_zone[user_type] / user_summary_zone['Total Population']) * 100
+
+        # Handle any cases where Total Population is 0 to avoid division by zero
+        user_summary_zone.loc[user_summary_zone['Total Population'] == 0, ['Legal %', 'Illegal %', 'Non-user %']] = 0
 
         user_summary_zone = user_summary_zone.round(1)
         overall_summary_zone = user_summary_zone[['Total Population', 'Legal %', 'Illegal %', 'Non-user %']].copy()
