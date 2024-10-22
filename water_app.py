@@ -224,7 +224,7 @@ if uploaded_file:
         st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
         
         # Create a selectbox above the map
-        selected_attribute = st.selectbox("Color points by:", options=["Zone", "DMA"], index=0)
+        selected_attribute = st.selectbox("Color points by:", options=["User Type", "Status", "Zone", "DMA"], index=0)
 
 
         # Create a GeoDataFrame for processing
