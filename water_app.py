@@ -248,48 +248,48 @@ if uploaded_file:
         
         # Create a dynamic configuration for KeplerGL
         # Create dynamic KeplerGL configuration
-        config_1 = {
-            'version': 'v1',
-            'config': {
-                'mapState': {
-                    'latitude': center_lat,
-                    'longitude': center_lon,
-                    'zoom': 14
-                },
-                "mapStyle": {
-                    "styleType": "satellite"
-                },
-                "visState": {
-                    "layers": [
-                        {
-                            "id": "building_layer",
-                            "type": "point",
-                            "config": {
-                                "dataId": "Water Consumption Data",
-                                "label": "Building Locations",
-                                "columns": {
-                                    "lat": "lat",
-                                    "lng": "lng"
-                                },
-                                "visConfig": {
-                                    "radius": 5,
-                                    "opacity": 0.8
-                                    },
-                                    "colorRange": {
-                                        "colors": ["#FF5733", "#33FF57", "#3357FF", "#F5B041", "#8E44AD"]
-                                    }
-                                },
-                                "isVisible": True
-                            }
-                        ]
-                }
-            }
-        }
+        # config_1 = {
+        #     'version': 'v1',
+        #     'config': {
+        #         'mapState': {
+        #             'latitude': center_lat,
+        #             'longitude': center_lon,
+        #             'zoom': 14
+        #         },
+        #         "mapStyle": {
+        #             "styleType": "satellite"
+        #         },
+        #         "visState": {
+        #             "layers": [
+        #                 {
+        #                     "id": "building_layer",
+        #                     "type": "point",
+        #                     "config": {
+        #                         "dataId": "Water Consumption Data",
+        #                         "label": "Building Locations",
+        #                         "columns": {
+        #                             "lat": "lat",
+        #                             "lng": "lng"
+        #                         },
+        #                         "visConfig": {
+        #                             "radius": 5,
+        #                             "opacity": 0.8
+        #                             },
+        #                             "colorRange": {
+        #                                 "colors": ["#FF5733", "#33FF57", "#3357FF", "#F5B041", "#8E44AD"]
+        #                             }
+        #                         },
+        #                         "isVisible": True
+        #                     }
+        #                 ]
+        #         }
+        #     }
+        # }
 
         # Rename for easier recognition in Kepler
         df = df.rename(columns={"X": "longitude", "Y": "latitude"})
 
-        kepler_map = KeplerGl(height=800, config=config_1)
+        kepler_map = KeplerGl(height=800)
         kepler_map.add_data(data=df, name="Water Consumption Data")
         keplergl_static(kepler_map)
 
