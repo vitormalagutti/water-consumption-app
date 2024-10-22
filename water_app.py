@@ -162,6 +162,11 @@ if uploaded_file:
             ax.set_ylabel('Number of Users')
             ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
             ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+
+            # Dynamically set y-ticks in 5000 increments based on the max value
+            y_max = user_summary_zone[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
+            ax.set_yticks(range(0, int(y_max) + 5000, 5000))
+
             st.pyplot(fig)
 
 
@@ -176,9 +181,13 @@ if uploaded_file:
                 edgecolor='black'
             )
             ax.set_title('Network Users Summary - DMAs', fontsize=12)
-            ax.set_xlabel(int('DMAs'))
+            ax.set_xlabel('DMAs')
             ax.set_ylabel('Number of Users')
             ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
+            # Dynamically set y-ticks in 5000 increments based on the max value
+            y_max = user_summary_zone[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
+            ax.set_yticks(range(0, int(y_max) + 5000, 5000))
+
             ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
             st.pyplot(fig)
 
