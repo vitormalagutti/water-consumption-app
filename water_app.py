@@ -364,7 +364,7 @@ if uploaded_file:
 
         with col1:
             st.markdown("### 💧 Water Consumption per Zone (Monthly)")
-            st.dataframe(water_demand_dma)
+            st.dataframe(water_demand_dma, height=600)
 
         with col2:
             st.markdown("### 📉 Monthly Water Consumption Variation by Zone")
