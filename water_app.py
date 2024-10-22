@@ -183,9 +183,9 @@ if uploaded_file:
             ax.set_ylabel('Number of Users')
             ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
             ax.yaxis.grid(True)
-            y_max = user_summary_zone[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
+            y_max = user_summary_dma[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
             ax.set_yticks(range(0, int(y_max) + 5000, 5000))
-            ax.set_xticklabels(user_summary_zone.index.astype(int), rotation=0)
+            ax.set_xticklabels(user_summary_dma.index.astype(int), rotation=0)
             st.pyplot(fig)
 
 
