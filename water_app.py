@@ -320,10 +320,10 @@ if uploaded_file:
         
            
         # Calculate water consumption per zone and overall consumption (for monthly values)
-        filtered_df['Cubic Metres'] = filtered_df['Population'] * avg_litres_per_person / 1000 * 30
+        df['Cubic Metres'] = df['Population'] * avg_litres_per_person / 1000 * 30
 
         # Group water consumption data per zone
-        water_per_zone = filtered_df.groupby('Zone').agg({
+        water_per_zone = df.groupby('Zone').agg({
             'Cubic Metres': 'sum',
             'Population': 'sum'
         }).reset_index()
