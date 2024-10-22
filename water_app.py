@@ -93,8 +93,7 @@ if uploaded_file:
 
     # Calculate percentages for legal, illegal, and non-users per Zone
     if 'Zone' in filtered_df.columns:
-
-        df['Zone'] = df['Zone'].apply(lambda x: f'{x:.0f}')
+        
         # Calculate total population for each zone, including all inputs (with or without User Type)
         zone_counts = df.groupby('Zone').size()  # Count the number of inputs per Zone
         total_population_by_zone = zone_counts * avg_floors * avg_people_per_family  # Calculate total population
@@ -137,8 +136,6 @@ if uploaded_file:
 
    # Calculate total population and percentages per DMA (if 'DMA' column exists)
     if 'DMA' in filtered_df.columns:
-        
-        df['DMA'] = df['DMA'].apply(lambda x: f'{x:.0f}')
         
         # Calculate total population for each DMA, including all inputs (with or without User Type)
         dma_counts = df.groupby('DMA').size()  # Count the number of inputs per DMA
@@ -353,7 +350,7 @@ if uploaded_file:
 
             # Add the DMA and its monthly consumption to the DataFrame
             water_demand_dma.loc[len(water_demand_dma)] = [dma] + dma_consumption
-
+            
         water_demand_dma.set_index('DMA', inplace=True)        
         water_demand_dma = water_demand_dma.transpose()
         
@@ -381,7 +378,7 @@ if uploaded_file:
 
         with col1:
             st.markdown("### 💧 Water Consumption per Zone (Monthly)")
-            st.dataframe(water_demand_dma)
+            st.dataframe(water_demand_dma.transpose())
 
         with col2:
             st.markdown("### 📉 Monthly Water Consumption Variation by Zone")
