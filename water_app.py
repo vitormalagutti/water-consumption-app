@@ -153,7 +153,7 @@ if uploaded_file:
             user_summary_zone[['Non-user', 'Illegal', 'Legal', 'Total Population']].plot(
                 kind='bar', 
                 stacked=False, 
-                color=['#A9A9A9', '#FFA500', '#90EE90', '#1f77b4'],  # Light Green for Legal, Blue for Total Population
+                color=['#A9A9A9', '#FFA500', '#90EE90', '#87CEEB'],  
                 ax=ax, 
                 edgecolor='black'
             )
@@ -161,7 +161,6 @@ if uploaded_file:
             ax.set_xlabel('Zones')
             ax.set_ylabel('Number of Users')
             ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
-            ax.set_ylim(0, 15000)  # Adjust Y-axis limits to match your layout
             st.pyplot(fig)
 
 
@@ -171,7 +170,7 @@ if uploaded_file:
             user_summary_dma[['Non-user', 'Illegal', 'Legal', 'Total Population']].plot(
                 kind='bar', 
                 stacked=False, 
-                color=['#A9A9A9', '#FFA500', '#90EE90', '#1f77b4'],  # Light Green for Legal, Blue for Total Population
+                color=['#A9A9A9', '#FFA500', '#90EE90', '#87CEEB'],  
                 ax=ax, 
                 edgecolor='black'
             )
@@ -179,7 +178,6 @@ if uploaded_file:
             ax.set_xlabel('DMAs')
             ax.set_ylabel('Number of Users')
             ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
-            ax.set_ylim(0, 15000)  # Adjust Y-axis limits to match your layout
             st.pyplot(fig)
 
 
