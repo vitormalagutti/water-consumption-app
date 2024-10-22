@@ -350,7 +350,7 @@ if uploaded_file:
 
             # Add the DMA and its monthly consumption to the DataFrame
             water_demand_dma.loc[len(water_demand_dma)] = [dma] + dma_consumption
-            
+
         water_demand_dma.set_index('DMA', inplace=True)        
         water_demand_dma = water_demand_dma.transpose()
         
@@ -378,7 +378,7 @@ if uploaded_file:
 
         with col1:
             st.markdown("### 💧 Water Consumption per Zone (Monthly)")
-            st.dataframe(water_demand_dma.transpose())
+            st.dataframe(water_demand_dma)
 
         with col2:
             st.markdown("### 📉 Monthly Water Consumption Variation by Zone")
