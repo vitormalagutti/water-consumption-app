@@ -270,7 +270,6 @@ if uploaded_file:
                                         "opacity": 0.8,
                                         "colorField": {
                                             "name": selected_attribute,  # Dynamically use the selected attribute for coloring
-                                            "type": "integer"  # Set the type to integer (since Zone and DMA are integers)
                                         },
                                         "colorRange": {
                                             "colors": ["#FF5733", "#33FF57", "#3357FF", "#F5B041", "#8E44AD"]
