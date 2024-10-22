@@ -382,7 +382,7 @@ if uploaded_file:
         with col2:
             st.markdown("### 📉 Monthly Water Consumption Variation by Zone")
             fig, ax = plt.subplots(figsize=(10, 4))
-            water_demand_dma.plot(x='Zone', y='Cubic Metres', kind='bar', ax=ax, color='#87CEEB')
+            water_demand_dma.plot(x='DMA', y='Total', kind='bar', ax=ax, color='#87CEEB')
             ax.set_ylabel('Cubic Metres')
             ax.set_title('Monthly Water Consumption by Zone')
             st.pyplot(fig)
