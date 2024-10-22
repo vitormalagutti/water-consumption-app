@@ -41,8 +41,30 @@ if uploaded_file:
         if col not in df.columns:
             df[col] = None
 
-    # Step 1: Categorize Status into "legal", "illegal", and "non-user"
-    df['User Type'] = df['Status'].apply(lambda x: 'Legal' if x == 'water meter' else ('Illegal' if x == 'illegal connection' else ('Non-user' if x == 'non-user' else 'No Data')))
+    # Define the expected values for the Status column
+    expected_values = ['water meter', 'illegal connection', 'non-user', '']
+
+    # Step 1: Validate the 'Status' column for any unexpected values
+    unexpected_values = df[~df['Status'].isin(expected_values)]
+
+    # If any unexpected values are found, raise an error or show a message
+    if not unexpected_values.empty:
+        st.warning(f"Warning: Found unexpected values in the 'Status' column: {unexpected_values['Status'].unique()}")
+        
+        st.write(f"Expected values for the 'Status' column are: {expected_values}.")
+        st.write("You can either proceed without these records or adjust your file to include only the expected values.")
+        st.write("These records will not be processed if you choose to proceed.")
+
+        df = df[df['Status'].isin(expected_values)]  # Optional: Filter out rows with unexpected values
+
+    # Step 2: Categorize Status into "legal", "illegal", and "non-user"
+    df['User Type'] = df['Status'].apply(
+        lambda x: 'Legal' if x == 'water meter' else (
+            'Illegal' if x == 'illegal connection' else (
+                'Non-user' if x == 'non-user' else 'No Data'
+            )
+        )
+    )
 
     # Filter out rows with "No Data" in User Type for percentage calculations
     filtered_df = df[df['User Type'] != 'No Data']
