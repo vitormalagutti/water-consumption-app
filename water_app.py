@@ -194,12 +194,12 @@ if uploaded_file:
         with col1:
             if 'Zone' in filtered_df.columns:
                 st.markdown("#### 📊 Water Network Summary - Zone")
-                st.dataframe(overall_summary_zone)
+                st.dataframe(user_summary_zone)
 
         with col2:
             if 'DMA' in filtered_df.columns:
                 st.markdown("#### 📊 Water Network Summary - DMA")
-                st.dataframe(overall_summary_dma)
+                st.dataframe(user_summary_dma)
 
         # Title for Population by User Type
         st.markdown("### 📈 Population by User Type")
