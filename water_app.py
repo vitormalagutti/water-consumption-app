@@ -268,6 +268,7 @@ if uploaded_file:
                                     "visConfig": {
                                         "radius": 5,
                                         "opacity": 0.8,
+                                        # This is where you define the colorField for the fill color
                                         "colorField": {
                                             "name": attribute,  # Dynamically set color field based on user selection
                                             "type": "integer"  # Set the type to integer (since Zone and DMA are integers)
@@ -283,6 +284,7 @@ if uploaded_file:
                     }
                 }
             }
+
 
         # Generate the dynamic KeplerGL config based on user selection
         config_1 = create_kepler_config(selected_attribute)
