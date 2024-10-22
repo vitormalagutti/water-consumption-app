@@ -224,7 +224,7 @@ if uploaded_file:
         st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
         
         # Create a selectbox above the map
-        selected_attribute = st.selectbox("Color points by:", options=["User Type", "Status", "Zone", "DMA"], index=0)
+        selected_attribute = st.selectbox("Color points by:", options=["Zone", "DMA"], index=0)
 
 
         # Create a GeoDataFrame for processing
@@ -240,72 +240,55 @@ if uploaded_file:
         zoom = 12 if max(lat_range, lon_range) < 1 else 10
         
         # Create a dynamic configuration for KeplerGL
-        # Dynamically recreate the configuration for KeplerGL every time the user selects a new attribute
-        # Dynamically recreate the configuration for KeplerGL based on the user selection
-        def create_kepler_config(attribute):
-            return {
-                'version': 'v1',
-                'config': {
-                    'mapState': {
-                        'latitude': center_lat,
-                        'longitude': center_lon,
-                        'zoom': 14
-                    },
-                    "mapStyle": {
-                        "styleType": "satellite"
-                    },
-                    "visState": {
-                        "layers": [
-                            {
-                                "id": "building_layer",
-                                "type": "point",
-                                "config": {
-                                    "dataId": "Water Consumption Data",
-                                    "label": "Building Locations",
-                                    "columns": {
-                                        "lat": "lat",
-                                        "lng": "lng"
+        # Create dynamic KeplerGL configuration
+        config_1 = {
+            'version': 'v1',
+            'config': {
+                'mapState': {
+                    'latitude': center_lat,
+                    'longitude': center_lon,
+                    'zoom': 14
+                },
+                "mapStyle": {
+                    "styleType": "satellite"
+                },
+                "visState": {
+                    "layers": [
+                        {
+                            "id": "building_layer",
+                            "type": "point",
+                            "config": {
+                                "dataId": "Water Consumption Data",
+                                "label": "Building Locations",
+                                "columns": {
+                                    "lat": "lat",
+                                    "lng": "lng"
+                                },
+                                "visConfig": {
+                                    "radius": 5,
+                                    "opacity": 0.8,
+                                    "colorField": {
+                                        "name": selected_attribute,  # Use the selected attribute (Zone or DMA) for coloring
+                                        "type": "integer"
                                     },
-                                    "visConfig": {
-                                        "radius": 5,
-                                        "opacity": 0.8,
-                                        "colorField": {
-                                            "name": attribute,  # Dynamically set color field based on user selection
-                                            "type": "integer"  # Use "integer" since the values are integers
-                                        },
-                                        "colorRange": {
-                                            "colors": ["#FF5733", "#33FF57", "#3357FF", "#F5B041", "#8E44AD"]
-                                        }
-                                    },
-                                    "isVisible": True
-                                }
+                                    "colorRange": {
+                                        "colors": ["#FF5733", "#33FF57", "#3357FF", "#F5B041", "#8E44AD"]
+                                    }
+                                },
+                                "isVisible": True
                             }
-                        ]
-                    }
+                        }
+                    ]
                 }
             }
-
-        # Clear previous layers and regenerate the KeplerGL map
-        def refresh_map(attribute):
-            # Generate the dynamic KeplerGL config based on user selection
-            config_heatmap = create_kepler_config(attribute)
-            
-            # Create the KeplerGL map
-            kepler_map = KeplerGl(height=800, config=config_heatmap)
-            
-            # Add the DataFrame to the KeplerGL map
-            kepler_map.add_data(data=df, name="Water Consumption Data")
-            
-            # Display the map in Streamlit
-            keplergl_static(kepler_map)
+        }
 
         # Rename for easier recognition in Kepler
         df = df.rename(columns={"X": "longitude", "Y": "latitude"})
 
-        # kepler_map = KeplerGl(height=800, config=config_1)
-        # kepler_map.add_data(data=df, name="Water Consumption Data")
-        # Refresh the map when the attribute is selected
-        refresh_map(selected_attribute)
+        kepler_map = KeplerGl(height=800, config=config_1)
+        kepler_map.add_data(data=df, name="Water Consumption Data")
+        keplergl_static(kepler_map)
 
         # Set up the Folium map with Google Satellite layer
         m = folium.Map(
