@@ -49,9 +49,12 @@ if uploaded_file:
 
     # If any unexpected values are found, raise an error or show a message
     if not unexpected_values.empty:
+        unexpected_unique = unexpected_values['Status'].unique()
+        unexpected_rows = unexpected_values.index.tolist()  # Get the index (line numbers) of unexpected values
+
         st.warning(f"Warning: Found unexpected values in the 'Status' column: {unexpected_values['Status'].unique()}")
-        
         st.write(f"Expected values for the 'Status' column are: {expected_values}.")
+        st.write(f"These unexpected values were found in the following rows: {unexpected_rows}")
         st.write("You can either proceed without these records or adjust your file to include only the expected values.")
         st.write("These records will not be processed if you choose to proceed.")
 
