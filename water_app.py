@@ -397,8 +397,8 @@ if uploaded_file:
                                     "lng": "lng"
                                 },
                                 "visConfig": {
-                                    "radius": 5,
-                                    "opacity": 0.8,
+                                    "radius": 4,
+                                    "opacity": 1,
                                 },
                                 "isVisible": True
                             }
