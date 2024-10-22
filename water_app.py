@@ -122,12 +122,20 @@ if uploaded_file:
     tab1, tab2, tab3, tab4 = st.tabs(["📊 Network Users Summary", "📅 Seazonal Water Distribution", "💧 Water Demand Model", "🗺️ Data Visualization"])
 
     with tab1:
-        st.markdown("### 📊 User Type Summary by Zone")
-        st.dataframe(overall_summary_zone)
+        
+        # Create columns for side-by-side layout
+        col1, col2 = st.columns(2)
+        st.markdown("### Summary of the Network Users")
 
-        if 'DMA' in filtered_df.columns:
-            st.markdown("### 📊 User Type Summary by DMA")
-            st.dataframe(overall_summary_dma)
+        with col1:
+            if 'Zone' in filtered_df.columns:
+                st.markdown("## 📊 User Type Summary by Zone")
+                st.dataframe(overall_summary_zone)
+
+        with col2:
+            if 'DMA' in filtered_df.columns:
+                st.markdown("## 📊 User Type Summary by DMA")
+                st.dataframe(overall_summary_dma)
 
         st.markdown("### 📈 Population by User Type")
         fig, ax = plt.subplots(figsize=(10, 4))
