@@ -126,40 +126,55 @@ if uploaded_file:
         user_summary_zone = user_summary_zone.round(1)
         overall_summary_zone = user_summary_zone[['Total Population', 'Legal %', 'Illegal %', 'Non-user %']].copy()
 
-    # Add a final row with the sum of all Zones
+        # Add a final row with the sum of all Zones (weighted average)
         total_population_all_zones = user_summary_zone['Total Population'].sum()
-        legal_sum_zone = user_summary_zone['Legal %'].mean()
-        illegal_sum_zone = user_summary_zone['Illegal %'].mean()
-        non_user_sum_zone = user_summary_zone['Non-user %'].mean()
+
+        legal_sum_zone = (user_summary_zone['Legal %'] * user_summary_zone['Total Population']).sum() / total_population_all_zones
+        illegal_sum_zone = (user_summary_zone['Illegal %'] * user_summary_zone['Total Population']).sum() / total_population_all_zones
+        non_user_sum_zone = (user_summary_zone['Non-user %'] * user_summary_zone['Total Population']).sum() / total_population_all_zones
+        
         overall_summary_zone.loc['Total'] = [total_population_all_zones, legal_sum_zone, illegal_sum_zone, non_user_sum_zone]
 
     # Calculate percentages for legal, illegal, and non-users per DMA (if 'DMA' column exists)
     if 'DMA' in filtered_df.columns:
-        user_summary_dma = filtered_df.pivot_table(
+        
+        # Calculate the total population by DMA, including points without user type info
+        total_population_by_dma = df.groupby('DMA')['Population'].sum()
+        
+        # Filter out rows where User Type is missing or 'No Data' for the percentage calculation
+        valid_user_types_dma_df = filtered_df[filtered_df['User Type'] != 'No Data']
+
+        # Pivot table for user types with valid User Type data
+        user_summary_dma = valid_user_types_dma_df.pivot_table(
             values='Population',
             index='DMA',
             columns='User Type',
             aggfunc='sum',
             fill_value=0
         )
+
+        # Add the total population (including all points) to the pivot table
         user_summary_dma['Total Population'] = total_population_by_dma
 
+        # Calculate the percentage for each user type, excluding points with missing User Type
         for user_type in ['Legal', 'Illegal', 'Non-user']:
             user_summary_dma[f'{user_type} %'] = (user_summary_dma[user_type] / user_summary_dma['Total Population']) * 100
+
+        # Handle any cases where Total Population is 0 to avoid division by zero
+        user_summary_dma.loc[user_summary_dma['Total Population'] == 0, ['Legal %', 'Illegal %', 'Non-user %']] = 0
 
         user_summary_dma = user_summary_dma.round(1)
         overall_summary_dma = user_summary_dma[['Total Population', 'Legal %', 'Illegal %', 'Non-user %']].copy()
 
-    # Combine "overall" input with the sum of everything for both Zone and DMA
-    overall_population_zone = total_population_by_zone.sum() if total_population_by_zone is not None else 0
-    overall_population_dma = total_population_by_dma.sum() if total_population_by_dma is not None else 0
+        # Add a final row with the sum of all DMAs (weighted average)
+        total_population_all_dmas = user_summary_dma['Total Population'].sum()
 
-     # Add a final row with the sum of all DMAs
-    total_population_all_dmas = user_summary_dma['Total Population'].sum()
-    legal_sum_dma = user_summary_dma['Legal %'].mean()
-    illegal_sum_dma = user_summary_dma['Illegal %'].mean()
-    non_user_sum_dma = user_summary_dma['Non-user %'].mean()
-    overall_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
+        legal_sum_dma = (user_summary_dma['Legal %'] * user_summary_dma['Total Population']).sum() / total_population_all_dmas
+        illegal_sum_dma = (user_summary_dma['Illegal %'] * user_summary_dma['Total Population']).sum() / total_population_all_dmas
+        non_user_sum_dma = (user_summary_dma['Non-user %'] * user_summary_dma['Total Population']).sum() / total_population_all_dmas
+        
+        overall_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
+
 
 
     # Streamlit tabs for organized visualization
