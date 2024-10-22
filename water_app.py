@@ -349,7 +349,7 @@ if uploaded_file:
         non_users_dma = user_summary_dma['Non-user %'] / 100  
 
         st.write(population_dma)
-        st.write(non_users_dma)
+        st.write(round(non_users_dma,2))
         # Monthly Daily Consumption from Seasonal Distribution
         monthly_consumption = df_factors['Monthly Daily Consumption - l/p/d']
 
