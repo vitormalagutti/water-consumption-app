@@ -43,6 +43,9 @@ if uploaded_file:
 
     # Define the expected values for the Status column
     expected_values = ['water meter', 'illegal connection', 'non-user', '', " "]
+    
+    # Replace NaN values with empty strings in the 'Status' column
+    df['Status'] = df['Status'].fillna('')
 
     # Step 1: Validate the 'Status' column for any unexpected values
     unexpected_values = df[~df['Status'].isin(expected_values)]
