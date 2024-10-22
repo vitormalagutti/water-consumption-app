@@ -273,10 +273,7 @@ if uploaded_file:
                                 },
                                 "visConfig": {
                                     "radius": 5,
-                                    "opacity": 0.8,
-                                    "colorField": {
-                                        "name": "Zone", 
-                                        "type": "integer"
+                                    "opacity": 0.8
                                     },
                                     "colorRange": {
                                         "colors": ["#FF5733", "#33FF57", "#3357FF", "#F5B041", "#8E44AD"]
@@ -284,8 +281,7 @@ if uploaded_file:
                                 },
                                 "isVisible": True
                             }
-                        }
-                    ]
+                        ]
                 }
             }
         }
