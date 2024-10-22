@@ -229,6 +229,9 @@ if uploaded_file:
         # Create a selectbox for user to choose any column for coloring
         selected_attribute = st.selectbox("Color points by:", options=selectable_columns, index=0)
 
+        # Dynamically determine the data type of the selected attribute
+        selected_column_type = 'integer' if pd.api.types.is_numeric_dtype(df[selected_attribute]) else 'string'
+
         # Reorder the DataFrame so the selected attribute comes after lat/lon, but keep all columns
         cols = ['X', 'Y', selected_attribute] + [col for col in df.columns if col not in ['X', 'Y', selected_attribute]]
         df = df[cols]  # Dynamically reorder columns
@@ -273,7 +276,10 @@ if uploaded_file:
                                 },
                                 "visConfig": {
                                     "radius": 5,
-                                    "opacity": 0.8
+                                    "opacity": 0.8,
+                                    "colorField": {
+                                        "name": selected_attribute,  # Use the dynamically selected attribute for coloring
+                                        "type": selected_column_type  # Dynamically set type (integer or string)
                                     },
                                     "colorRange": {
                                         "colors": ["#FF5733", "#33FF57", "#3357FF", "#F5B041", "#8E44AD"]
@@ -281,11 +287,11 @@ if uploaded_file:
                                 },
                                 "isVisible": True
                             }
-                        ]
+                        }
+                    ]
                 }
             }
         }
-
         # Rename for easier recognition in Kepler
         df = df.rename(columns={"X": "longitude", "Y": "latitude"})
 
