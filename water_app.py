@@ -41,44 +41,45 @@ if uploaded_file:
     for col in expected_columns:
         if col not in df.columns:
             df[col] = None
-
-    # Define the expected values for the Status column
-    expected_values = ['water meter', 'water metre', 'illegal connection', 'non-user', 'non user', " ", ""]
     
     # Replace NaN values with empty strings in the 'Status' column
-    df['Status'] = df['Status'].fillna('')
+    df['Status'] = df['Status'].fillna('No Data')
 
-    # Step 1: Validate the 'Status' column for any unexpected values
-    unexpected_values = df[~df['Status'].isin(expected_values)]
+    # Define the expected variations for each user type
+    expected_legal = ['water meter', 'water_meter', 'water-meter', 'meter', 'water metre']
+    expected_illegal = ['illegal connection', 'illegal_connection', 'illegal-connection']
+    expected_non_user = ['non-user', 'non_user', 'non user']
+    expected_values = expected_legal + expected_illegal + expected_non_user + ['', ' ']  # Add blanks if allowed
 
     # Step 2: Categorize Status into "legal", "illegal", and "non-user" with added variations
     df['User Type'] = df['Status'].apply(
-        lambda x: 'Legal' if x.strip().lower() in ['water meter', 'water_meter', 'water-meter', 'meter', 'water metre'] else (
-            'Illegal' if x.strip().lower() in ['illegal connection', 'illegal_connection', 'illegal-connection'] else (
-                'Non-user' if x.strip().lower() in ['non-user', 'non_user', 'non user'] else 'No Data'
+        lambda x: 'Legal' if x.strip().lower() in expected_legal else (
+            'Illegal' if x.strip().lower() in expected_illegal else (
+                'Non-user' if x.strip().lower() in expected_non_user else 'No Data'
             )
         )
     )
 
-    # Identify rows where 'User Type' is still 'No Data' (i.e., unrecognized 'Status' values)
-    unrecognized_values = df[df['User Type'] == 'No Data']
+    # Identify rows where 'Status' does not match the expected values
+    unexpected_values = df[~df['Status'].str.strip().str.lower().isin(expected_values)]
 
-    # If there are unrecognized values, raise a warning
-    if not unrecognized_values.empty:
-        unexpected_unique = unrecognized_values['Status'].unique()
-        unexpected_rows = unrecognized_values.index.tolist()  # Get the index (line numbers) of unexpected values
+    # If there are unexpected values, raise a warning
+    if not unexpected_values.empty:
+        unexpected_unique = unexpected_values['Status'].unique()  # Unique unexpected values
+        unexpected_rows = unexpected_values.index.tolist()  # Get the index (line numbers) of unexpected values
 
         st.warning(f"Warning: Found unexpected values in the 'Status' column: {unexpected_unique}")
-        st.write(f"Expected values for the 'Status' column are: ['water meter', 'illegal connection', 'non-user', '', ' '].")
+        st.write(f"Expected values for the 'Status' column are: {expected_values}.")
         st.write(f"These unexpected values were found in the following rows: {unexpected_rows}")
         st.write("You can either proceed without these records or adjust your file to include only the expected values.")
         st.write("These records will not be processed if you choose to proceed.")
 
-        # Optionally filter out rows with unrecognized 'Status' values
-        df = df[df['User Type'] != 'No Data']
-        # Filter out rows with "No Data" in User Type for percentage calculations
-        filtered_df = df[df['User Type'] != 'No Data']
+        # Optionally filter out rows with unexpected values
+        df = df[df['Status'].str.strip().str.lower().isin(expected_values)]
 
+    # Filter out rows with "No Data" in User Type for percentage calculations
+    filtered_df = df[df['User Type'] != 'No Data']
+    
     # Sidebar inputs section with sliders only for the average litres per person
     st.sidebar.header("🔧 Assumptions")
     avg_floors = st.sidebar.number_input("Average Floors per Building", min_value=0.0, step=0.1, value=1.0)
