@@ -402,9 +402,10 @@ if uploaded_file:
             fig, ax = plt.subplots(figsize=(10, 6))
             columns_to_plot = water_demand_dma.columns[:-1]
             water_demand_dma[columns_to_plot].plot(kind='bar', stacked=True, ax=ax)
-            ax.set_title('Monthly Water Demand by DMA', fontsize=14)
+            ax.set_title('Monthly Water Demand by DMA', fontsize=15)
             ax.set_xlabel('Month', fontsize=12)
-            ax.set_ylabel('Water Demand (m3)', fontsize=12)
+            ax.set_ylabel('Water Demand (m3)', fontsize=13)
+            ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
             ax.legend(columns_to_plot, loc='upper left')
 
             # Show the grid for y-axis
@@ -425,9 +426,10 @@ if uploaded_file:
             fig, ax = plt.subplots(figsize=(10, 6))
             columns_to_plot = water_demand_zone.columns[:-1]
             water_demand_zone[columns_to_plot].plot(kind='bar', stacked=True, ax=ax)
-            ax.set_title('Monthly Water Demand by DMA', fontsize=14)
+            ax.set_title('Monthly Water Demand by Zone', fontsize=15)
             ax.set_xlabel('Month', fontsize=12)
-            ax.set_ylabel('Water Demand (m3)', fontsize=12)
+            ax.set_ylabel('Water Demand (m3)', fontsize=13)
+            ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
             ax.legend(columns_to_plot, loc='upper left')
 
             # Show the grid for y-axis
