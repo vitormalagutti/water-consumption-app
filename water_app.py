@@ -396,11 +396,11 @@ if uploaded_file:
          
 
         with col1:
-            st.markdown("### 💧 Water Consumption per Zone (Monthly)")
+            st.markdown("### 💧 Monthly Water Consumption per DMA")
             st.dataframe(water_demand_dma, height=500)
 
         with col2:
-            st.markdown("### 💧 Water Consumption per Zone (Monthly)")
+            st.markdown("### 💧 Monthly Water Consumption per Zone")
             st.dataframe(water_demand_zone, height=500)
 
     with tab4:
