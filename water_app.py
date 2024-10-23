@@ -400,6 +400,7 @@ if uploaded_file:
             st.dataframe(water_demand_dma, height=500)
             
             # Plot the stacked bars
+            fig, ax = plt.subplots(figsize=(10, 6))
             water_demand_dma[:-1].plot(kind='bar', stacked=True, ax=ax, color=['#87CEEB', '#FFA500', '#90EE90'])
             ax.set_title('Monthly Water Demand by DMA', fontsize=14)
             ax.set_xlabel('Month', fontsize=12)
