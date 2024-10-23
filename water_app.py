@@ -41,27 +41,29 @@ if uploaded_file:
     for col in expected_columns:
         if col not in df.columns:
             df[col] = None
-    
-    # # Replace NaN values with empty strings in the 'Status' column
-    df['Status'] = df['Status'].fillna('No Data')
+
+    # Replace NaN values with empty strings in the 'Status' column
+    df['Status'] = df['Status'].fillna('')
 
     # Define the expected variations for each user type
     expected_legal = ['water meter', 'water_meter', 'water-meter', 'meter', 'water metre']
     expected_illegal = ['illegal connection', 'illegal_connection', 'illegal-connection']
     expected_non_user = ['non-user', 'non_user', 'non user']
-    expected_values = expected_legal + expected_illegal + expected_non_user + ['', ' ', "No Data"]  # Add blanks if allowed
+    expected_values = expected_legal + expected_illegal + expected_non_user + ['', ' ']
 
-    # Step 2: Categorize Status into "legal", "illegal", and "non-user" with added variations
+    # Step 2: Categorize Status into "legal", "illegal", "non-user", and "No Data" only for blanks
     df['User Type'] = df['Status'].apply(
         lambda x: 'Legal' if x.strip().lower() in expected_legal else (
             'Illegal' if x.strip().lower() in expected_illegal else (
-                'Non-user' if x.strip().lower() in expected_non_user else 'No Data'
+                'Non-user' if x.strip().lower() in expected_non_user else (
+                    'No Data' if x.strip() == '' else 'Unexpected'
+                )
             )
         )
     )
 
-    # Identify rows where 'Status' does not match the expected values
-    unexpected_values = df[~df['Status'].str.strip().str.lower().isin(expected_values)]
+    # Identify rows where 'Status' does not match the expected values and are categorized as 'Unexpected'
+    unexpected_values = df[df['User Type'] == 'Unexpected']
 
     # If there are unexpected values, raise a warning
     if not unexpected_values.empty:
@@ -75,7 +77,12 @@ if uploaded_file:
         st.write("These records will not be processed if you choose to proceed.")
 
         # Optionally filter out rows with unexpected values
-        df = df[df['Status'].str.strip().str.lower().isin(expected_values)]
+        df = df[df['User Type'] != 'Unexpected']
+
+    # Proceed with the rest of your logic...
+
+
+
 
     # Filter out rows with "No Data" in User Type for percentage calculations
     filtered_df = df[df['User Type'] != 'No Data']
