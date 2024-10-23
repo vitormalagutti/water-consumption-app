@@ -420,7 +420,7 @@ if uploaded_file:
 
         # Show the plot
         plt.tight_layout()
-        plt.show()
+        st.pyplot(fig)
 
 
 
