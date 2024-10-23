@@ -43,7 +43,7 @@ if uploaded_file:
             df[col] = None
     
     # # Replace NaN values with empty strings in the 'Status' column
-    # df['Status'] = df['Status'].fillna('No Data')
+    df['Status'] = df['Status'].fillna('No Data')
 
     # Define the expected variations for each user type
     expected_legal = ['water meter', 'water_meter', 'water-meter', 'meter', 'water metre']
