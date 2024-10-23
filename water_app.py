@@ -398,6 +398,26 @@ if uploaded_file:
         with col1:
             st.markdown("### 💧 Monthly Water Consumption per DMA")
             st.dataframe(water_demand_dma, height=500)
+            
+            # Plot the stacked bars
+            water_demand_dma[:-1].plot(kind='bar', stacked=True, ax=ax, color=['#87CEEB', '#FFA500', '#90EE90'])
+            ax.set_title('Monthly Water Demand by DMA', fontsize=14)
+            ax.set_xlabel('Month', fontsize=12)
+            ax.set_ylabel('Water Demand (m3)', fontsize=12)
+            ax.legend(['Total Demand'] + list(water_demand_dma.columns[:-1]), loc='upper left')
+
+            # Show the grid for y-axis
+            ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
+
+            # Rotate x-axis labels if needed
+            ax.set_xticklabels(water_demand_dma.index, rotation=0)
+
+            # Show the plot
+            plt.tight_layout()
+            plt.show()
+
+
+
 
         with col2:
             st.markdown("### 💧 Monthly Water Consumption per Zone")
