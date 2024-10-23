@@ -421,24 +421,24 @@ if uploaded_file:
             st.markdown("### 💧 Monthly Water Consumption per Zone")
             st.dataframe(water_demand_zone, height=500)
 
-        # Plot the stacked bars
-        fig, ax = plt.subplots(figsize=(10, 6))
-        columns_to_plot = water_demand_dma.columns[:-1]
-        water_demand_dma[columns_to_plot].plot(kind='bar', stacked=True, ax=ax)
-        ax.set_title('Monthly Water Demand by DMA', fontsize=14)
-        ax.set_xlabel('Month', fontsize=12)
-        ax.set_ylabel('Water Demand (m3)', fontsize=12)
-        ax.legend(columns_to_plot, loc='upper left')
+            # Plot the stacked bars
+            fig, ax = plt.subplots(figsize=(10, 6))
+            columns_to_plot = water_demand_zone.columns[:-1]
+            water_demand_zone[columns_to_plot].plot(kind='bar', stacked=True, ax=ax)
+            ax.set_title('Monthly Water Demand by DMA', fontsize=14)
+            ax.set_xlabel('Month', fontsize=12)
+            ax.set_ylabel('Water Demand (m3)', fontsize=12)
+            ax.legend(columns_to_plot, loc='upper left')
 
-        # Show the grid for y-axis
-        ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
+            # Show the grid for y-axis
+            ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
 
-        # Rotate x-axis labels if needed
-        ax.set_xticklabels(water_demand_dma.index, rotation=0)
+            # Rotate x-axis labels if needed
+            ax.set_xticklabels(water_demand_zone.index, rotation=0)
 
-        # Show the plot
-        plt.tight_layout()
-        st.pyplot(fig)
+            # Show the plot
+            plt.tight_layout()
+            st.pyplot(fig)
 
 
 
