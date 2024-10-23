@@ -34,7 +34,7 @@ if uploaded_file:
     df = pd.read_csv(uploaded_file)
 
     # Define the expected columns
-    expected_columns = ["X", "Y", "Zone", "Block_Number", "DMA", "Status"]
+    expected_columns = ["X", "Y", "Zone", "Block_Number", "DMA", "Status", ""]
 
     # Select valid columns and fill missing ones with default values
     df = df[[col for col in df.columns if col in expected_columns]]
