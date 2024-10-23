@@ -49,7 +49,7 @@ if uploaded_file:
     expected_legal = ['water meter', 'water_meter', 'water-meter', 'meter', 'water metre']
     expected_illegal = ['illegal connection', 'illegal_connection', 'illegal-connection']
     expected_non_user = ['non-user', 'non_user', 'non user']
-    expected_values = expected_legal + expected_illegal + expected_non_user + ['', ' ']  # Add blanks if allowed
+    expected_values = expected_legal + expected_illegal + expected_non_user + ['', ' ', "No Data"]  # Add blanks if allowed
 
     # Step 2: Categorize Status into "legal", "illegal", and "non-user" with added variations
     df['User Type'] = df['Status'].apply(
