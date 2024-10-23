@@ -23,7 +23,7 @@ st.set_page_config(page_title="Water Consumption Visualization", layout="wide")
 st.title("💧 Water Demand Estimation and Visualization 💧")
 st.markdown("This app calculates water consumption based on buildings information, with breakdowns by zone and user type. Use the sidebar to provide average consumption details and view interactive maps, graphs, and tables.")
 st.markdown("Please upload a .csv file with the specific columns' names X, Y, Block_Number, Zone, DMA, and Status")
-
+st.markdown("Values accepted for the Status column are water meter, illegal connection, non user, and blank cells")
 
 # File upload section with icon
 st.markdown("### 📂 Upload Your Data File")
@@ -43,7 +43,7 @@ if uploaded_file:
             df[col] = None
 
     # Define the expected values for the Status column
-    expected_values = ['water meter', 'illegal connection', 'non-user', '', " "]
+    expected_values = ['water meter', 'water metre', 'illegal connection', 'non-user', 'non user', " "]
     
     # Replace NaN values with empty strings in the 'Status' column
     df['Status'] = df['Status'].fillna('')
@@ -51,30 +51,33 @@ if uploaded_file:
     # Step 1: Validate the 'Status' column for any unexpected values
     unexpected_values = df[~df['Status'].isin(expected_values)]
 
-    # If any unexpected values are found, raise an error or show a message
-    if not unexpected_values.empty:
-        unexpected_unique = unexpected_values['Status'].unique()
-        unexpected_rows = unexpected_values.index.tolist()  # Get the index (line numbers) of unexpected values
-
-        st.warning(f"Warning: Found unexpected values in the 'Status' column: {unexpected_values['Status'].unique()}")
-        st.write(f"Expected values for the 'Status' column are: {expected_values}.")
-        st.write(f"These unexpected values were found in the following rows: {unexpected_rows}")
-        st.write("You can either proceed without these records or adjust your file to include only the expected values.")
-        st.write("These records will not be processed if you choose to proceed.")
-
-        df = df[df['Status'].isin(expected_values)]  # Optional: Filter out rows with unexpected values
-
-    # Step 2: Categorize Status into "legal", "illegal", and "non-user"
+    # Step 2: Categorize Status into "legal", "illegal", and "non-user" with added variations
     df['User Type'] = df['Status'].apply(
-        lambda x: 'Legal' if x == 'water meter' else (
-            'Illegal' if x == 'illegal connection' else (
-                'Non-user' if x == 'non-user' else 'No Data'
+        lambda x: 'Legal' if x.strip().lower() in ['water meter', 'water_meter', 'water-meter', 'meter', 'water metre'] else (
+            'Illegal' if x.strip().lower() in ['illegal connection', 'illegal_connection', 'illegal-connection'] else (
+                'Non-user' if x.strip().lower() in ['non-user', 'non_user', 'non user'] else 'No Data'
             )
         )
     )
 
-    # Filter out rows with "No Data" in User Type for percentage calculations
-    filtered_df = df[df['User Type'] != 'No Data']
+    # Identify rows where 'User Type' is still 'No Data' (i.e., unrecognized 'Status' values)
+    unrecognized_values = df[df['User Type'] == 'No Data']
+
+    # If there are unrecognized values, raise a warning
+    if not unrecognized_values.empty:
+        unexpected_unique = unrecognized_values['Status'].unique()
+        unexpected_rows = unrecognized_values.index.tolist()  # Get the index (line numbers) of unexpected values
+
+        st.warning(f"Warning: Found unexpected values in the 'Status' column: {unexpected_unique}")
+        st.write(f"Expected values for the 'Status' column are: ['water meter', 'illegal connection', 'non-user', '', ' '].")
+        st.write(f"These unexpected values were found in the following rows: {unexpected_rows}")
+        st.write("You can either proceed without these records or adjust your file to include only the expected values.")
+        st.write("These records will not be processed if you choose to proceed.")
+
+        # Optionally filter out rows with unrecognized 'Status' values
+        df = df[df['User Type'] != 'No Data']
+        # Filter out rows with "No Data" in User Type for percentage calculations
+        filtered_df = df[df['User Type'] != 'No Data']
 
     # Sidebar inputs section with sliders only for the average litres per person
     st.sidebar.header("🔧 Assumptions")
@@ -348,8 +351,6 @@ if uploaded_file:
         population_dma = user_summary_dma['Total Population']
         non_users_dma = user_summary_dma['Non-user %'] / 100  
 
-        st.write(population_dma)
-        st.write(round(non_users_dma,2))
         # Monthly Daily Consumption from Seasonal Distribution
         monthly_consumption = df_factors['Monthly Daily Consumption - l/p/d']
 
