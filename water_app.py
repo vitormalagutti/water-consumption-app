@@ -79,11 +79,6 @@ if uploaded_file:
         # Optionally filter out rows with unexpected values
         df = df[df['User Type'] != 'Unexpected']
 
-    # Proceed with the rest of your logic...
-
-
-
-
     # Filter out rows with "No Data" in User Type for percentage calculations
     filtered_df = df[df['User Type'] != 'No Data']
 
@@ -103,7 +98,7 @@ if uploaded_file:
     total_population_by_zone = df.groupby('Zone')['Population'].sum() if 'Zone' in df.columns else None
     total_population_by_dma = df.groupby('DMA')['Population'].sum() if 'DMA' in df.columns else None
 
-    # Calculate percentages for legal, illegal, and non-users per Zone
+    # Calculate total population and percentages per Zone (if 'Zone' column exists)
     if 'Zone' in filtered_df.columns:
         
         # Calculate total population for each zone, including all inputs (with or without User Type)
@@ -188,7 +183,6 @@ if uploaded_file:
         non_user_sum_dma = (non_user_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
         
         user_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
-
 
 
     # Streamlit tabs for organized visualization
@@ -286,7 +280,6 @@ if uploaded_file:
             ax.set_xticklabels(user_summary_dma_plot.index, rotation=0)
             st.pyplot(fig)
 
-
     with tab2:
         st.markdown("### 📅 Monthly Water Consumption Calculation")
         
@@ -303,14 +296,11 @@ if uploaded_file:
         # Slider to adjust the factors' variation (0 = all equal, 1 = current, 2 = amplified)
         variation_factor = st.slider("Adjust Variation of Factors (0 = No Variation, 1 = Proposed, 2 = Amplified)", min_value=0.0, max_value=2.0, step=0.1, value=1.0)
 
-
-
-
         # Calculate monthly water consumption based on factors
         for i in range(len(days_in_month)):
             df_factors['Factor - Updated'] = (1 - variation_factor) * np.mean(df_factors["Factor"]) + variation_factor * df_factors["Factor"]
-            df_factors['Monthly Daily Consumption - l/p/d'] = round(df_factors['Factor - Updated'] * avg_litres_per_person * 12)
-            df_factors["Total Monthly Consumption - m3"] = round(df_factors['Monthly Daily Consumption - l/p/d'] * sum(df["Population"]) * days_in_month[i] / 1000, -2)
+            df_factors['Average Daily Consumption - l/p/d'] = round(df_factors['Factor - Updated'] * avg_litres_per_person * 12)
+            df_factors["Total Monthly Consumption - m3"] = round(df_factors['Average Daily Consumption - l/p/d'] * sum(df["Population"]) * days_in_month[i] / 1000, -2)
             
         # Create columns for side-by-side layout
         col1, col2 = st.columns(2)
@@ -325,7 +315,7 @@ if uploaded_file:
             st.markdown("### Monthly Water Consumption Distribution (l/p/d)")
 
             fig, ax = plt.subplots(figsize=(8,4))
-            ax.plot(df_factors['Month'], df_factors['Monthly Daily Consumption - l/p/d'], marker='o', color='skyblue', linewidth=1.0)
+            ax.plot(df_factors['Month'], df_factors['Average Daily Consumption - l/p/d'], marker='o', color='skyblue', linewidth=1.0)
             ax.set_ylabel('Monthly Water Consumption (l/p/d)')
             ax.set_title('Monthly Water Consumption Distribution')
             ax.grid(True, linestyle ='-', axis = 'y')
@@ -341,7 +331,7 @@ if uploaded_file:
             # Display the plot
             st.pyplot(fig)
         
-        # Create two columns, with empty space in the left and right columns for centering
+        # Create a column, with empty space in the left and right for centering
         col1, col2, col3 = st.columns([1, 3, 1])  # Make the center column wider for the plot
         
         with col2:
@@ -360,7 +350,7 @@ if uploaded_file:
         non_users_dma = user_summary_dma['Non-user %'] / 100  
 
         # Monthly Daily Consumption from Seasonal Distribution
-        monthly_consumption = df_factors['Monthly Daily Consumption - l/p/d']
+        monthly_consumption = df_factors['Average Daily Consumption - l/p/d']
 
         # Create an empty DataFrame to store the results
         water_demand_dma = pd.DataFrame(columns=['DMA'] + df_factors['Month'].tolist())
@@ -399,8 +389,6 @@ if uploaded_file:
             
         water_demand_zone.set_index('Zone', inplace=True)        
         water_demand_zone = water_demand_zone.transpose()
-        
-        
         
         
         # Create columns for side-by-side layout
