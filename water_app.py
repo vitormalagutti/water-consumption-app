@@ -312,11 +312,11 @@ if uploaded_file:
 
         with col2:
             # Plot a graph of monthly water consumption
-            st.markdown("### Monthly Water Consumption Distribution (l/p/d)")
+            st.markdown("#### Average Water Consumption Distribution (l/p/d)")
 
             fig, ax = plt.subplots(figsize=(8,4))
             ax.plot(df_factors['Month'], df_factors['Average Daily Consumption - l/p/d'], marker='o', color='skyblue', linewidth=1.0)
-            ax.set_ylabel('Monthly Water Consumption (l/p/d)')
+            ax.set_ylabel('Average Water Consumption (l/p/d)')
             ax.set_title('Monthly Water Consumption Distribution')
             ax.grid(True, linestyle ='-', axis = 'y')
 
