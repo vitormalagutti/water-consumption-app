@@ -410,7 +410,7 @@ if uploaded_file:
             ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
 
             # Rotate x-axis labels if needed
-            ax.set_xticklabels(water_demand_dma.index, rotation=0)
+            ax.set_xticklabels(water_demand_dma[:-1].index, rotation=0)
 
             # Show the plot
             plt.tight_layout()
