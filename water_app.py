@@ -42,8 +42,8 @@ if uploaded_file:
         if col not in df.columns:
             df[col] = None
     
-    # Replace NaN values with empty strings in the 'Status' column
-    df['Status'] = df['Status'].fillna('No Data')
+    # # Replace NaN values with empty strings in the 'Status' column
+    # df['Status'] = df['Status'].fillna('No Data')
 
     # Define the expected variations for each user type
     expected_legal = ['water meter', 'water_meter', 'water-meter', 'meter', 'water metre']
@@ -79,7 +79,7 @@ if uploaded_file:
 
     # Filter out rows with "No Data" in User Type for percentage calculations
     filtered_df = df[df['User Type'] != 'No Data']
-    
+
     # Sidebar inputs section with sliders only for the average litres per person
     st.sidebar.header("🔧 Assumptions")
     avg_floors = st.sidebar.number_input("Average Floors per Building", min_value=0.0, step=0.1, value=1.0)
