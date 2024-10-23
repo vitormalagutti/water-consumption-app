@@ -34,7 +34,7 @@ if uploaded_file:
     df = pd.read_csv(uploaded_file)
 
     # Define the expected columns
-    expected_columns = ["X", "Y", "Zone", "Block_Number", "DMA", "Status", ""]
+    expected_columns = ["X", "Y", "Zone", "Block_Number", "DMA", "Status"]
 
     # Select valid columns and fill missing ones with default values
     df = df[[col for col in df.columns if col in expected_columns]]
@@ -43,7 +43,7 @@ if uploaded_file:
             df[col] = None
 
     # Define the expected values for the Status column
-    expected_values = ['water meter', 'water metre', 'illegal connection', 'non-user', 'non user', " "]
+    expected_values = ['water meter', 'water metre', 'illegal connection', 'non-user', 'non user', " ", ""]
     
     # Replace NaN values with empty strings in the 'Status' column
     df['Status'] = df['Status'].fillna('')
