@@ -40,9 +40,7 @@ def convert_to_csv(uploaded_file):
             try:
                 # Load the Excel file and read the first sheet into a DataFrame
                 excel_data = pd.read_excel(uploaded_file, sheet_name=0)
-                csv_data = excel_data.to_csv(index=False)
-                csv_buffer = io.StringIO(csv_data)
-                return excel_data  # Return the DataFrame
+                return excel_data  # Return the DataFrame directly
 
             except Exception as e:
                 st.error(f"An error occurred while processing the Excel file: {e}")
