@@ -168,7 +168,7 @@ with tab1:
     
     st.markdown("### 📂 Upload Block Number - Subscription Number File")
     st.markdown("It must include the following column names [Block Number, Subscription Number]")
-    correlation_file = st.file_uploader("Choose a CSV file for Value", type=["csv", "xlsx"])
+    correlation_file = st.file_uploader("Choose a CSV file for Block Number - Subscription Number", type=["csv", "xlsx"])
 
     st.markdown("### 📂 Upload Your Value File")
     st.markdown("It must include the following column names [Subscription Number, mm/yy, mm/yy, ...]")
