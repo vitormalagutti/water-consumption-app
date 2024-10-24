@@ -165,7 +165,7 @@ with tab1:
 
     # File upload section with icon
     st.markdown("### 📂 Upload Your Buildings File")
-    st.markdown("Please upload a .csv file with the specific columns' names X, Y, Block_Number, Zone, DMA, and Status")
+    st.markdown("Please upload a .csv file with the specific columns' names X, Y, Block Number, Zone, DMA, and Status")
     st.markdown("Values accepted for the Status column are water meter, illegal connection, non user, and blank cells")
     buildings_file = st.file_uploader("Choose a CSV file", type=["csv", "xlsx"])
     
@@ -196,7 +196,7 @@ with tab1:
 
         # Replace NaN values with empty strings in the 'Status' column
         df['Status'] = df['Status'].fillna('')
-
+        df
         # Define the expected variations for each user type
         expected_legal = ['water meter', 'water_meter', 'water-meter', 'meter', 'water metre']
         expected_illegal = ['illegal connection', 'illegal_connection', 'illegal-connection']
