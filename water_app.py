@@ -63,42 +63,66 @@ def convert_to_csv(uploaded_file):
     else:
         return None
 
+def convert_to_mm_yy(date_str):
+    """
+    Tries to parse a given date string or datetime and convert it to the 'mm/yy' format.
+    """
+    try:
+        # If the input is already a datetime object
+        if isinstance(date_str, pd.Timestamp):
+            return date_str.strftime('%m/%y')
+
+        # Attempt to parse the string to a datetime object
+        parsed_date = parser.parse(date_str, fuzzy=True)
+        return parsed_date.strftime('%m/%y')
+    
+    except Exception as e:
+        # If parsing fails, return None and log the error
+        print(f"Error parsing date: {date_str}, error: {e}")
+        return None
+
+
 def process_volume_or_value_file(uploaded_file):
     """
     This function processes the volume or value files, ensuring that the expected 'Subscriber Number' column
     and columns in either 'mm/yy' or 'mmm.yy' format are kept, and values are numeric. Non-numeric values will trigger a warning.
+    It converts the identified date columns to 'mm/yy' format.
     """
     if uploaded_file is not None:
         df = convert_to_csv(uploaded_file)
 
-        # Clean up the column names by stripping spaces and converting to lowercase for consistent matching
-        df.columns = df.columns.str.strip().str.lower()
-
         # Ensure that we have a 'Subscriber Number' column
-        if 'subscriber number' not in df.columns:
+        if 'Subscriber Number' not in df.columns:
             st.error("The file does not contain a 'Subscriber Number' column.")
             return None
 
-        # Update the regex to match month formats, including non-English abbreviations (e.g., "Mai.23", "Mär.24")
-        date_columns = [col for col in df.columns if isinstance(col, str) and (
-            re.match(r'^[a-zA-Z]{3,}\.\d{2}$', col)  # Match mmm.yy pattern (more flexible to handle different languages)
-        )]
-        date_columns
+        # Try to identify date columns and convert them to 'mm/yy'
+        date_columns = []
+        for col in df.columns:
+            # Try converting the column header to a date format
+            mm_yy = convert_to_mm_yy(col)
+            if mm_yy:
+                date_columns.append(col)
+
         if not date_columns:
-            st.warning("No date columns in the expected 'mmm.yy' format were found.")
+            st.warning("No date columns in a recognizable format were found.")
             return None
 
-        # Keep only 'Subscriber Number' and date columns
-        df = df[['subscriber number'] + date_columns]
+        # Rename the date columns to the 'mm/yy' format
+        date_column_mapping = {col: convert_to_mm_yy(col) for col in date_columns}
+        df.rename(columns=date_column_mapping, inplace=True)
 
-        # Check for non-numeric values in date columns
-        for col in date_columns:
+        # Keep only 'Subscriber Number' and date columns
+        df = df[['Subscriber Number'] + list(date_column_mapping.values())]
+
+        # Check for non-numeric values in the date columns
+        for col in date_column_mapping.values():
             non_numeric = df[pd.to_numeric(df[col], errors='coerce').isna() & df[col].notna()]
             if not non_numeric.empty:
                 st.warning(f"Non-numeric values found in column '{col}' at rows: {non_numeric.index.tolist()}")
 
         # Replace blanks (NaN) with 0
-        df[date_columns] = df[date_columns].fillna(0)
+        df[date_column_mapping.values()] = df[date_column_mapping.values()].fillna(0)
 
         return df
     else:
