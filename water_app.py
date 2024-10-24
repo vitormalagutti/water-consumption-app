@@ -186,7 +186,7 @@ if uploaded_file:
 
 
     # Streamlit tabs for organized visualization
-    tab1, tab2, tab3, tab4 = st.tabs(["📊 Network Users Summary", "📅 Seasonal Water Demand Distribution", "💧 Water Demand Model", "🗺️ Data Visualization"])
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Network Users Summary", "📅 Seasonal Water Demand Distribution", "💧 Water Demand Model", "Billed Water Analysis", "🗺️ Data Visualization"])
 
     with tab1:
 
@@ -447,6 +447,9 @@ if uploaded_file:
                 st.pyplot(fig)
 
     with tab4:
+        st.markdown("#### Billed Water Analysis")
+
+    with tab5:
         st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
         
         # Dynamically generate a list of columns for the user to select from, excluding X (latitude) and Y (longitude)
