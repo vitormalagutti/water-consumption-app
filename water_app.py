@@ -448,6 +448,25 @@ if uploaded_file:
 
     with tab4:
         st.markdown("#### Billed Water Analysis")
+        # File upload section with separate inputs for Value and Volume files
+        st.markdown("### 📂 Upload Your Value File")
+        value_file = st.file_uploader("Choose a CSV file for Value", type=["csv"])
+
+        st.markdown("### 📂 Upload Your Volume File")
+        volume_file = st.file_uploader("Choose a CSV file for Volume", type=["csv"])
+
+        # Process the files after both have been uploaded
+        if value_file and volume_file:
+            value_df = pd.read_csv(value_file)
+            volume_df = pd.read_csv(volume_file)
+            
+            # Display the dataframes or proceed with your analysis
+            st.write("### Value Data")
+            st.dataframe(value_df)
+            
+            st.write("### Volume Data")
+            st.dataframe(volume_df)
+
 
     with tab5:
         st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
