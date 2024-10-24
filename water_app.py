@@ -529,180 +529,180 @@ with tab1:
                 st.dataframe(volume_df)
 
         with tab6:
-        st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
-        
-        # Dynamically generate a list of columns for the user to select from, excluding X (latitude) and Y (longitude)
-        selectable_columns = [col for col in df.columns if col not in ['X', 'Y']]
+            st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
+            
+            # Dynamically generate a list of columns for the user to select from, excluding X (latitude) and Y (longitude)
+            selectable_columns = [col for col in df.columns if col not in ['X', 'Y']]
 
-        # Create a selectbox above the map
-        selected_attribute = st.selectbox("Color points by:", options=["Zone", "DMA"], index=0)
-        
-        # Reorder the DataFrame so the selected attribute comes after lat/lon, but keep all columns
-        cols = ['X', 'Y', selected_attribute] + [col for col in df.columns if col not in ['X', 'Y', selected_attribute]]
-        df = df[cols]  # Dynamically reorder columns
+            # Create a selectbox above the map
+            selected_attribute = st.selectbox("Color points by:", options=["Zone", "DMA"], index=0)
+            
+            # Reorder the DataFrame so the selected attribute comes after lat/lon, but keep all columns
+            cols = ['X', 'Y', selected_attribute] + [col for col in df.columns if col not in ['X', 'Y', selected_attribute]]
+            df = df[cols]  # Dynamically reorder columns
 
 
-        # Create a GeoDataFrame for processing
-        gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
-        gdf = gdf.set_crs(epsg=4326)
+            # Create a GeoDataFrame for processing
+            gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
+            gdf = gdf.set_crs(epsg=4326)
 
-        # Calculate the center of the uploaded data
-        center_lat, center_lon = gdf["Y"].mean(), gdf["X"].mean()
+            # Calculate the center of the uploaded data
+            center_lat, center_lon = gdf["Y"].mean(), gdf["X"].mean()
 
-        # Determine a reasonable zoom level based on data spread
-        lat_range = gdf["Y"].max() - gdf["Y"].min()
-        lon_range = gdf["X"].max() - gdf["X"].min()
-        zoom = 12 if max(lat_range, lon_range) < 1 else 10
-        
-        # Create dynamic KeplerGL configuration
-        config_1 = {
-            'version': 'v1',
-            'config': {
-                'mapState': {
-                    'latitude': center_lat,
-                    'longitude': center_lon,
-                    'zoom': 15
-                },
-                "mapStyle": {
-                    "styleType": "satellite"
-                },
-                "visState": {
-                    "layers": [
-                        {
-                            "id": "building_layer",
-                            "type": "point",
-                            "config": {
-                                "dataId": "Water Consumption Data",
-                                "label": "Building Locations",
-                                "columns": {
-                                    "lat": "lat",
-                                    "lng": "lng"
-                                },
-                                "visConfig": {
-                                    "radius": 4,
-                                    "opacity": 1,
-                                },
-                                "isVisible": True
+            # Determine a reasonable zoom level based on data spread
+            lat_range = gdf["Y"].max() - gdf["Y"].min()
+            lon_range = gdf["X"].max() - gdf["X"].min()
+            zoom = 12 if max(lat_range, lon_range) < 1 else 10
+            
+            # Create dynamic KeplerGL configuration
+            config_1 = {
+                'version': 'v1',
+                'config': {
+                    'mapState': {
+                        'latitude': center_lat,
+                        'longitude': center_lon,
+                        'zoom': 15
+                    },
+                    "mapStyle": {
+                        "styleType": "satellite"
+                    },
+                    "visState": {
+                        "layers": [
+                            {
+                                "id": "building_layer",
+                                "type": "point",
+                                "config": {
+                                    "dataId": "Water Consumption Data",
+                                    "label": "Building Locations",
+                                    "columns": {
+                                        "lat": "lat",
+                                        "lng": "lng"
+                                    },
+                                    "visConfig": {
+                                        "radius": 4,
+                                        "opacity": 1,
+                                    },
+                                    "isVisible": True
+                                }
                             }
-                        }
-                    ]
+                        ]
+                    }
                 }
             }
-        }
 
-        # Rename for easier recognition in Kepler
-        df = df.rename(columns={"X": "longitude", "Y": "latitude"})
+            # Rename for easier recognition in Kepler
+            df = df.rename(columns={"X": "longitude", "Y": "latitude"})
 
-        kepler_map = KeplerGl(height=800, config=config_1)
-        kepler_map.add_data(data=df, name="Water Consumption Data")
-        keplergl_static(kepler_map)
+            kepler_map = KeplerGl(height=800, config=config_1)
+            kepler_map.add_data(data=df, name="Water Consumption Data")
+            keplergl_static(kepler_map)
 
-        # Set up the Folium map with Google Satellite layer
-        m = folium.Map(
-            location=[center_lat, center_lon],
-            zoom_start=16,
-            width='100%'
-        )
-        folium.TileLayer(
-            tiles='https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
-            attr='Google Satellite',
-            name='Google Satellite',
-            overlay=False,
-            control=True
-        ).add_to(m)
+            # Set up the Folium map with Google Satellite layer
+            m = folium.Map(
+                location=[center_lat, center_lon],
+                zoom_start=16,
+                width='100%'
+            )
+            folium.TileLayer(
+                tiles='https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+                attr='Google Satellite',
+                name='Google Satellite',
+                overlay=False,
+                control=True
+            ).add_to(m)
 
-        # Create columns for side-by-side layout
-        col1, col2 = st.columns(2)
-        with col1:
+            # Create columns for side-by-side layout
+            col1, col2 = st.columns(2)
+            with col1:
 
-            # Create heatmaps based on selection
-            if heatmap_type == "All Buildings":
-                st.markdown("#### 🔥 Heatmap of All Building Locations")
-                heat_data = [[row['Y'], row['X']] for idx, row in gdf.iterrows()]
-                HeatMap(heat_data, radius=15).add_to(m)
+                # Create heatmaps based on selection
+                if heatmap_type == "All Buildings":
+                    st.markdown("#### 🔥 Heatmap of All Building Locations")
+                    heat_data = [[row['Y'], row['X']] for idx, row in gdf.iterrows()]
+                    HeatMap(heat_data, radius=15).add_to(m)
 
-            elif heatmap_type == "Illegal Connections":
-                st.markdown("#### 🔥 Heatmap of Illegal Connections")
-                heat_data_illegal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Illegal'].iterrows()]
-                HeatMap(heat_data_illegal, radius=15).add_to(m)
+                elif heatmap_type == "Illegal Connections":
+                    st.markdown("#### 🔥 Heatmap of Illegal Connections")
+                    heat_data_illegal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Illegal'].iterrows()]
+                    HeatMap(heat_data_illegal, radius=15).add_to(m)
 
-            elif heatmap_type == "Legal Connections":
-                st.markdown("#### 🔥 Heatmap of Legal Connections")
-                heat_data_legal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Legal'].iterrows()]
-                HeatMap(heat_data_legal, radius=15).add_to(m)
-                
-            elif heatmap_type == "Non-Users":
-                st.markdown("#### 🔥 Heatmap of Non-Users")
-                heat_data_non_users = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Non-user'].iterrows()]
-                HeatMap(heat_data_non_users, radius=15).add_to(m)
+                elif heatmap_type == "Legal Connections":
+                    st.markdown("#### 🔥 Heatmap of Legal Connections")
+                    heat_data_legal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Legal'].iterrows()]
+                    HeatMap(heat_data_legal, radius=15).add_to(m)
+                    
+                elif heatmap_type == "Non-Users":
+                    st.markdown("#### 🔥 Heatmap of Non-Users")
+                    heat_data_non_users = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Non-user'].iterrows()]
+                    HeatMap(heat_data_non_users, radius=15).add_to(m)
 
-            # Add a layer control panel
-            folium.LayerControl().add_to(m)
+                # Add a layer control panel
+                folium.LayerControl().add_to(m)
 
-            # Display the Folium map in Streamlit
-            folium_static(m, width=None, height=900)
+                # Display the Folium map in Streamlit
+                folium_static(m, width=None, height=900)
+            
+            with col2:
+                test = 100 / 1000
+                config_grid = {
+                'version': 'v1',
+                'config': {
+                    'mapState': {
+                        'latitude': center_lat,
+                        'longitude': center_lon,
+                        'zoom': 16
+                    },
+                    "mapStyle": {
+                        "styleType": "satellite"
+                    },
+                    "visState": {
+                        "layers": [
+                            {
+                                "id": "building_layer",
+                                "type": "grid",  
+                                "config": {
+                                    "dataId": "Water Consumption Data",
+                                    "label": "Building Locations",
+                                    "color": [30, 144, 255],  # Color of points
+                                    "columns": {
+                                        "lat": "Y",
+                                        "lng": "X"
+                                    },
+                                    "visConfig": {
+                                        "radius": test,
+                                        "opacity": 0.8,
+                                    },
+                                    "isVisible" : True
+                                }
+                            }]}}}
+
+                # Create heatmaps based on selection
+                if heatmap_type == "All Buildings":
+                    st.markdown("#### 📍 Location of All Building Locations")
+                    kepler_map = KeplerGl(height=900, config=config_1)
+                    kepler_map.add_data(data=gdf, name="Water Consumption Data")
+                    keplergl_static(kepler_map)
+
+                elif heatmap_type == "Illegal Connections":
+                    st.markdown("#### 📍 Location of Illegal Connections")
+                    gdf_illegal = gdf[gdf['User Type'] == 'Illegal'] 
+                    kepler_map = KeplerGl(height=900, config=config_1)
+                    kepler_map.add_data(data=gdf_illegal, name="Water Consumption Data")
+                    keplergl_static(kepler_map)
+
+                elif heatmap_type == "Legal Connections":
+                    st.markdown("#### 📍 Location of Legal Connections")
+                    gdf_legal = gdf[gdf['User Type'] == 'Legal']
+                    kepler_map = KeplerGl(height=900, config=config_1)
+                    kepler_map.add_data(data=gdf_legal, name="Water Consumption Data")
+                    keplergl_static(kepler_map)
+                    
+                elif heatmap_type == "Non-Users":
+                    st.markdown("#### 📍 Location of Non-Users")
+                    gdf_non_user = gdf[gdf['User Type'] == 'Non-user']
+                    kepler_map = KeplerGl(height=900, config=config_1)
+                    kepler_map.add_data(data=gdf_non_user, name="Water Consumption Data")
+                    keplergl_static(kepler_map)
         
-        with col2:
-            test = 100 / 1000
-            config_grid = {
-            'version': 'v1',
-            'config': {
-                'mapState': {
-                    'latitude': center_lat,
-                    'longitude': center_lon,
-                    'zoom': 16
-                },
-                "mapStyle": {
-                    "styleType": "satellite"
-                },
-                "visState": {
-                    "layers": [
-                        {
-                            "id": "building_layer",
-                            "type": "grid",  
-                            "config": {
-                                "dataId": "Water Consumption Data",
-                                "label": "Building Locations",
-                                "color": [30, 144, 255],  # Color of points
-                                "columns": {
-                                    "lat": "Y",
-                                    "lng": "X"
-                                },
-                                "visConfig": {
-                                    "radius": test,
-                                    "opacity": 0.8,
-                                },
-                                "isVisible" : True
-                            }
-                        }]}}}
-
-            # Create heatmaps based on selection
-            if heatmap_type == "All Buildings":
-                st.markdown("#### 📍 Location of All Building Locations")
-                kepler_map = KeplerGl(height=900, config=config_1)
-                kepler_map.add_data(data=gdf, name="Water Consumption Data")
-                keplergl_static(kepler_map)
-
-            elif heatmap_type == "Illegal Connections":
-                st.markdown("#### 📍 Location of Illegal Connections")
-                gdf_illegal = gdf[gdf['User Type'] == 'Illegal'] 
-                kepler_map = KeplerGl(height=900, config=config_1)
-                kepler_map.add_data(data=gdf_illegal, name="Water Consumption Data")
-                keplergl_static(kepler_map)
-
-            elif heatmap_type == "Legal Connections":
-                st.markdown("#### 📍 Location of Legal Connections")
-                gdf_legal = gdf[gdf['User Type'] == 'Legal']
-                kepler_map = KeplerGl(height=900, config=config_1)
-                kepler_map.add_data(data=gdf_legal, name="Water Consumption Data")
-                keplergl_static(kepler_map)
-                
-            elif heatmap_type == "Non-Users":
-                st.markdown("#### 📍 Location of Non-Users")
-                gdf_non_user = gdf[gdf['User Type'] == 'Non-user']
-                kepler_map = KeplerGl(height=900, config=config_1)
-                kepler_map.add_data(data=gdf_non_user, name="Water Consumption Data")
-                keplergl_static(kepler_map)
-    
     else:
         st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', 'Block_Number', or 'Status'. If information is not available, create the column and leave it blank")
