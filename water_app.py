@@ -27,11 +27,17 @@ st.markdown("Values accepted for the Status column are water meter, illegal conn
 
 # File upload section with icon
 st.markdown("### 📂 Upload Your Data File")
-uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
+buildings_file = st.file_uploader("Choose a CSV file", type=["csv"])
 
-if uploaded_file:
+st.markdown("### 📂 Upload Your Value File")
+value_file = st.file_uploader("Choose a CSV file for Value", type=["csv"])
+
+st.markdown("### 📂 Upload Your Volume File")
+volume_file = st.file_uploader("Choose a CSV file for Volume", type=["csv"])
+
+if buildings_file:
     # Read the CSV file
-    df = pd.read_csv(uploaded_file)
+    df = pd.read_csv(buildings_file)
 
     # Define the expected columns
     expected_columns = ["X", "Y", "Zone", "Block_Number", "DMA", "Status"]
@@ -447,13 +453,7 @@ if uploaded_file:
                 st.pyplot(fig)
 
     with tab4:
-        st.markdown("#### Billed Water Analysis")
-        # File upload section with separate inputs for Value and Volume files
-        st.markdown("### 📂 Upload Your Value File")
-        value_file = st.file_uploader("Choose a CSV file for Value", type=["csv"])
 
-        st.markdown("### 📂 Upload Your Volume File")
-        volume_file = st.file_uploader("Choose a CSV file for Volume", type=["csv"])
 
         # Process the files after both have been uploaded
         if value_file and volume_file:
