@@ -615,31 +615,31 @@ with tab1:
 
         with tab5:
 
-            if volume_file:
-                volume_df = process_volume_or_value_file(volume_file)
-                if volume_df is not None:
-                    st.markdown("volume file")
-                    st.dataframe(volume_df)  # Display the cleaned data
-            else:
-                st.markdown("## Please, upload a volume's file")
+            # if volume_file:
+            #     volume_df = process_volume_or_value_file(volume_file)
+            #     if volume_df is not None:
+            #         st.markdown("volume file")
+            #         st.dataframe(volume_df)  # Display the cleaned data
+            # else:
+            #     st.markdown("## Please, upload a volume's file")
 
-            if value_file:
-                    processed_df = process_volume_or_value_file(value_file)
-                    if processed_df is not None:
-                        st.markdown("value file")
-                        st.dataframe(processed_df)  # Display the cleaned data
+            # if value_file:
+            #         processed_df = process_volume_or_value_file(value_file)
+            #         if processed_df is not None:
+            #             st.markdown("value file")
+            #             st.dataframe(processed_df)  # Display the cleaned data
 
-            else:
-                    st.markdown("## Please, upload a value's file")   
+            # else:
+            #         st.markdown("## Please, upload a value's file")   
 
-            if correlation_file:
-                    processed_df = process_block_subscription_file(correlation_file)
-                    if processed_df is not None:
-                        st.markdown("correlation file")
-                        st.dataframe(processed_df)  # Display the cleaned data
+            # if correlation_file:
+            #         processed_df = process_block_subscription_file(correlation_file)
+            #         if processed_df is not None:
+            #             st.markdown("correlation file")
+            #             st.dataframe(processed_df)  # Display the cleaned data
 
-            else:
-                    st.markdown("## Please, upload a Block Number - Subscription Number Correlation file")   
+            # else:
+            #         st.markdown("## Please, upload a Block Number - Subscription Number Correlation file")   
 
 
             # Step 1: Process the volume and value files
