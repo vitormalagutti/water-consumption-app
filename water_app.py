@@ -66,7 +66,7 @@ def convert_to_csv(uploaded_file):
 def process_volume_or_value_file(uploaded_file):
     """
     This function processes the volume or value files, ensuring that the expected 'Subscriber Number' column
-    and columns in the 'mm/yy' format are kept, and values are numeric. Non-numeric values will trigger a warning.
+    and columns in either 'mm/yy' or 'mmm.yy' format are kept, and values are numeric. Non-numeric values will trigger a warning.
     """
     if uploaded_file is not None:
         df = convert_to_csv(uploaded_file)
@@ -76,11 +76,13 @@ def process_volume_or_value_file(uploaded_file):
             st.error("The file does not contain a 'Subscriber Number' column.")
             return None
 
-        # Identify date columns (with the format mm/yy)
-        date_columns = [col for col in df.columns if isinstance(col, str) and re.match(r'^\d{2}/\d{2}$', col)]
+        # Identify date columns (with the format mm/yy or mmm.yy)
+        date_columns = [col for col in df.columns if isinstance(col, str) and (
+            re.match(r'^\d{2}/\d{2}$', col) or re.match(r'^[A-Za-z]{3}\.\d{2}$', col)
+        )]
         
         if not date_columns:
-            st.warning("No date columns in the expected 'mm/yy' format were found.")
+            st.warning("No date columns in the expected 'mm/yy' or 'mmm.yy' format were found.")
             return None
 
         # Keep only 'Subscriber Number' and date columns
