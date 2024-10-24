@@ -13,4 +13,3 @@ streamlit_keplergl
 
 # Additional packages that might be required
 numpy     # for numerical operations
-io
