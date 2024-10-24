@@ -30,39 +30,19 @@ st.markdown("This app calculates water consumption based on buildings informatio
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📂 Input Files Upload", "📊 Network Users Summary", "📅 Seasonal Water Demand Distribution", "💧 Water Demand Model", "💰 Billed Water Analysis", "🗺️ Data Visualization"])
 
 def convert_to_csv(uploaded_file):
-    """
-    This function takes an uploaded file (either .csv or .xlsx), reads it, and returns
-    a DataFrame. If the file is an .xlsx, it will convert the first sheet to CSV.
-    """
     if uploaded_file is not None:
         file_extension = uploaded_file.name.split('.')[-1]
-
-        if file_extension == 'xlsx':
-            try:
-                # Load the Excel file and read the first sheet into a DataFrame
-                excel_data = pd.read_excel(uploaded_file, sheet_name=0)
-                st.write("Excel file loaded successfully:")
-                return excel_data  # Return the DataFrame directly
-
-            except Exception as e:
-                st.error(f"An error occurred while processing the Excel file: {e}")
+        try:
+            if file_extension == 'xlsx':
+                return pd.read_excel(uploaded_file, sheet_name=0)  # Ensure you're reading the correct sheet
+            elif file_extension == 'csv':
+                return pd.read_csv(uploaded_file)
+            else:
+                st.error("Unsupported file format. Please upload a CSV or Excel file.")
                 return None
-
-        elif file_extension == 'csv':
-            try:
-                df = pd.read_csv(uploaded_file)
-                st.write("CSV file loaded successfully:")
-                return df
-
-            except Exception as e:
-                st.error(f"An error occurred while processing the CSV file: {e}")
-                return None
-
-        else:
-            st.error("Please upload a CSV or XLSX file.")
+        except Exception as e:
+            st.error(f"Error reading file: {e}")
             return None
-    else:
-        return None
 
 def process_volume_or_value_file(uploaded_file):
     """
@@ -196,7 +176,7 @@ with tab1:
 
         # Replace NaN values with empty strings in the 'Status' column
         df['Status'] = df['Status'].fillna('')
-        df
+
         # Define the expected variations for each user type
         expected_legal = ['water meter', 'water_meter', 'water-meter', 'meter', 'water metre']
         expected_illegal = ['illegal connection', 'illegal_connection', 'illegal-connection']
