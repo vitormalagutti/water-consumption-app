@@ -74,7 +74,7 @@ def process_volume_or_value_file(uploaded_file):
         df = convert_to_csv(uploaded_file)
 
         # Dynamically identify the "Subscriber Number" and "mm/yy" columns
-        subscriber_col = 'Subscriber Number'
+        subscriber_col = 'Subscription Number'
 
         # Extract columns that match the mm/yy format using regex
         date_columns = [col for col in df.columns if re.match(r'^\d{2}/\d{2}$', col)]
