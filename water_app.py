@@ -632,11 +632,11 @@ with tab1:
             # else:
             #         st.markdown("## Please, upload a value's file")   
 
-            # if correlation_file:
-            #         processed_df = process_block_subscription_file(correlation_file)
-            #         if processed_df is not None:
-            #             st.markdown("correlation file")
-            #             st.dataframe(processed_df)  # Display the cleaned data
+            if correlation_file:
+                    correlation_df = process_block_subscription_file(correlation_file)
+                    if correlation_df is not None:
+                        st.markdown("correlation file")
+                        st.dataframe(correlation_df)  # Display the cleaned data
 
             # else:
             #         st.markdown("## Please, upload a Block Number - Subscription Number Correlation file")   
@@ -650,7 +650,7 @@ with tab1:
                 # Process each file
                 volume_df = process_volume_or_value_file(volume_file)
                 value_df = process_volume_or_value_file(value_file)
-                correlation_df = process_block_subscription_file(correlation_file)
+                # correlation_df = process_block_subscription_file(correlation_file)
                 buildings_df = convert_to_csv(buildings_file)
 
                 # Step 2: Join the correlation file with the original buildings file on 'Block Number'
