@@ -346,104 +346,105 @@ if uploaded_file:
 
     with tab3:
         
-        # Prepare population and non-user percentages for DMAs
-        population_dma = user_summary_dma['Total Population']
-        non_users_dma = user_summary_dma['Non-user %'] / 100  
-
         # Monthly Daily Consumption from Seasonal Distribution
-        monthly_consumption = df_factors['Average Daily Consumption - l/p/d']
+        monthly_consumption = df_factors['Average Daily Consumption - l/p/d'] 
 
-        # Create an empty DataFrame to store the results
-        water_demand_dma = pd.DataFrame(columns=['DMA'] + df_factors['Month'].tolist())
+        if 'DMA' in filtered_df.columns:
+            # Prepare population and non-user percentages for DMAs
+            population_dma = user_summary_dma['Total Population']
+            non_users_dma = user_summary_dma['Non-user %'] / 100  
 
-        # Calculate the water consumption for each DMA and month
-        for dma in population_dma.index:
-            # For each DMA, calculate monthly consumption
-            dma_consumption = []
-            for i, month in enumerate(df_factors['Month']):
-                consumption_m3 = population_dma[dma] * (1 - non_users_dma[dma]) * monthly_consumption[i] * days_in_month[i] / 1000
-                dma_consumption.append(round(consumption_m3, -2))  # Round to the nearest 100
+            # Create an empty DataFrame to store the results
+            water_demand_dma = pd.DataFrame(columns=['DMA'] + df_factors['Month'].tolist())
 
-            # Add the DMA and its monthly consumption to the DataFrame
-            water_demand_dma.loc[len(water_demand_dma)] = [dma] + dma_consumption
-            
-        water_demand_dma.set_index('DMA', inplace=True)        
-        water_demand_dma = water_demand_dma.transpose()
+            # Calculate the water consumption for each DMA and month
+            for dma in population_dma.index:
+                # For each DMA, calculate monthly consumption
+                dma_consumption = []
+                for i, month in enumerate(df_factors['Month']):
+                    consumption_m3 = population_dma[dma] * (1 - non_users_dma[dma]) * monthly_consumption[i] * days_in_month[i] / 1000
+                    dma_consumption.append(round(consumption_m3, -2))  # Round to the nearest 100
+
+                # Add the DMA and its monthly consumption to the DataFrame
+                water_demand_dma.loc[len(water_demand_dma)] = [dma] + dma_consumption
+                
+            water_demand_dma.set_index('DMA', inplace=True)        
+            water_demand_dma = water_demand_dma.transpose()
         
-        # Prepare population and non-user percentages for Zones
-        population_zone = user_summary_zone['Total Population']
-        non_users_zone = user_summary_zone['Non-user %'] / 100  
-        
-        # Create an empty DataFrame to store the results
-        water_demand_zone = pd.DataFrame(columns=['Zone'] + df_factors['Month'].tolist())
-
-        # Calculate the water consumption for each DMA and month
-        for zone in population_zone.index:
-            # For each Zone, calculate monthly consumption
-            zone_consumption = []
-            for i, month in enumerate(df_factors['Month']):
-                consumption_m3 = population_zone[zone] * (1 - non_users_zone[zone]) * monthly_consumption[i] * days_in_month[i] / 1000
-                zone_consumption.append(round(consumption_m3, -2))  # Round to the nearest 100
-
-            # Add the zone and its monthly consumption to the DataFrame
-            water_demand_zone.loc[len(water_demand_zone)] = [zone] + zone_consumption
+        if 'Zone' in filtered_df.columns:
+            # Prepare population and non-user percentages for Zones
+            population_zone = user_summary_zone['Total Population']
+            non_users_zone = user_summary_zone['Non-user %'] / 100  
             
-        water_demand_zone.set_index('Zone', inplace=True)        
-        water_demand_zone = water_demand_zone.transpose()
+            # Create an empty DataFrame to store the results
+            water_demand_zone = pd.DataFrame(columns=['Zone'] + df_factors['Month'].tolist())
+
+            # Calculate the water consumption for each DMA and month
+            for zone in population_zone.index:
+                # For each Zone, calculate monthly consumption
+                zone_consumption = []
+                for i, month in enumerate(df_factors['Month']):
+                    consumption_m3 = population_zone[zone] * (1 - non_users_zone[zone]) * monthly_consumption[i] * days_in_month[i] / 1000
+                    zone_consumption.append(round(consumption_m3, -2))  # Round to the nearest 100
+
+                # Add the zone and its monthly consumption to the DataFrame
+                water_demand_zone.loc[len(water_demand_zone)] = [zone] + zone_consumption
+                
+            water_demand_zone.set_index('Zone', inplace=True)        
+            water_demand_zone = water_demand_zone.transpose()
         
         
         # Create columns for side-by-side layout
         col1, col2 = st.columns(2)
-         
 
-        with col1:
-            st.markdown("### 💧 Monthly Water Consumption per DMA")
-            st.dataframe(water_demand_dma, height=500)
-            # Plot the stacked bars
-            fig, ax = plt.subplots(figsize=(10, 6))
-            columns_to_plot = water_demand_dma.columns[:-1]
-            water_demand_dma[columns_to_plot].plot(kind='bar', stacked=True, ax=ax)
-            ax.set_title('Monthly Water Demand by DMA', fontsize=15)
-            ax.set_xlabel('Month', fontsize=12)
-            ax.set_ylabel('Water Demand (m3)', fontsize=13)
-            ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
-            ax.legend(columns_to_plot, loc='upper left')
+        if 'DMA' in filtered_df.columns:
+            with col1:
+                st.markdown("### 💧 Monthly Water Consumption per DMA")
+                st.dataframe(water_demand_dma, height=500)
+                # Plot the stacked bars
+                fig, ax = plt.subplots(figsize=(10, 6))
+                columns_to_plot = water_demand_dma.columns[:-1]
+                water_demand_dma[columns_to_plot].plot(kind='bar', stacked=True, ax=ax)
+                ax.set_title('Monthly Water Demand by DMA', fontsize=15)
+                ax.set_xlabel('Month', fontsize=12)
+                ax.set_ylabel('Water Demand (m3)', fontsize=13)
+                ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
+                ax.legend(columns_to_plot, loc='upper left')
 
-            # Show the grid for y-axis
-            ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
+                # Show the grid for y-axis
+                ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
 
-            # Rotate x-axis labels if needed
-            ax.set_xticklabels(water_demand_dma.index, rotation=0)
+                # Rotate x-axis labels if needed
+                ax.set_xticklabels(water_demand_dma.index, rotation=0)
 
-            # Show the plot
-            plt.tight_layout()
-            st.pyplot(fig)
-            
-        with col2:
-            st.markdown("### 💧 Monthly Water Consumption per Zone")
-            st.dataframe(water_demand_zone, height=500)
+                # Show the plot
+                plt.tight_layout()
+                st.pyplot(fig)
 
-            # Plot the stacked bars
-            fig, ax = plt.subplots(figsize=(10, 6))
-            columns_to_plot = water_demand_zone.columns[:-1]
-            water_demand_zone[columns_to_plot].plot(kind='bar', stacked=True, ax=ax)
-            ax.set_title('Monthly Water Demand by Zone', fontsize=15)
-            ax.set_xlabel('Month', fontsize=12)
-            ax.set_ylabel('Water Demand (m3)', fontsize=13)
-            ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
-            ax.legend(columns_to_plot, loc='upper left')
+        if 'Zone' in filtered_df.columns:            
+            with col2:
+                st.markdown("### 💧 Monthly Water Consumption per Zone")
+                st.dataframe(water_demand_zone, height=500)
 
-            # Show the grid for y-axis
-            ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
+                # Plot the stacked bars
+                fig, ax = plt.subplots(figsize=(10, 6))
+                columns_to_plot = water_demand_zone.columns[:-1]
+                water_demand_zone[columns_to_plot].plot(kind='bar', stacked=True, ax=ax)
+                ax.set_title('Monthly Water Demand by Zone', fontsize=15)
+                ax.set_xlabel('Month', fontsize=12)
+                ax.set_ylabel('Water Demand (m3)', fontsize=13)
+                ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
+                ax.legend(columns_to_plot, loc='upper left')
 
-            # Rotate x-axis labels if needed
-            ax.set_xticklabels(water_demand_zone.index, rotation=0)
+                # Show the grid for y-axis
+                ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
 
-            # Show the plot
-            plt.tight_layout()
-            st.pyplot(fig)
+                # Rotate x-axis labels if needed
+                ax.set_xticklabels(water_demand_zone.index, rotation=0)
 
-
+                # Show the plot
+                plt.tight_layout()
+                st.pyplot(fig)
 
     with tab4:
         st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
