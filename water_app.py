@@ -272,11 +272,15 @@ with tab2:
         if 'Zone' in filtered_df.columns:
             st.markdown("#### 📊 Water Network Summary - Zone")
             st.dataframe(user_summary_zone)
+        else:
+            st.markdown("Your file does not have 'Zone' column")
 
     with col2:
         if 'DMA' in filtered_df.columns:
             st.markdown("#### 📊 Water Network Summary - DMA")
             st.dataframe(user_summary_dma)
+        else:
+            st.markdown("Your file does not have 'DMA' column")
 
     # Title for Population by User Type
     st.markdown("### 📈 Population by User Type")
@@ -289,6 +293,8 @@ with tab2:
         user_summary_zone['Illegal'] = (user_summary_zone['Total Population'] * user_summary_zone['Illegal %'] / 100).astype(int)
         user_summary_zone['Non-user'] = (user_summary_zone['Total Population'] * user_summary_zone['Non-user %'] / 100).astype(int)
         user_summary_zone_plot = user_summary_zone[user_summary_zone.index != 'Total']       
+    else:
+        st.markdown("Your file does not have 'Zone' column")
 
     if 'DMA' in filtered_df.columns:
         # Calculate the number of people for each user type by multiplying Total Population with percentages
@@ -296,7 +302,9 @@ with tab2:
         user_summary_dma['Illegal'] = (user_summary_dma['Total Population'] * user_summary_dma['Illegal %'] / 100).astype(int)
         user_summary_dma['Non-user'] = (user_summary_dma['Total Population'] * user_summary_dma['Non-user %'] / 100).astype(int)
         user_summary_dma_plot = user_summary_dma[user_summary_dma.index != 'Total']
-    
+    else:
+        st.markdown("Your file does not have 'DMA' column")
+
     # Place the two graphs in the side-by-side layout
     if 'Zone' in filtered_df.columns:     
         # First graph for Zone
@@ -317,6 +325,8 @@ with tab2:
             y_max = user_summary_zone_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
             ax.set_yticks(range(0, int(y_max) + 5000, 5000))
             st.pyplot(fig)
+    else:
+        st.markdown("Your file does not have 'Zone' column")
 
     if 'DMA' in filtered_df.columns: 
     # Second graph for DMA
@@ -337,7 +347,9 @@ with tab2:
             ax.set_yticks(range(0, int(y_max) + 5000, 5000))
             ax.set_xticklabels(user_summary_dma_plot.index, rotation=0)
             st.pyplot(fig)
-
+    else:
+        st.markdown("Your file does not have 'DMA' column")
+        
 with tab3:
     st.markdown("### 📅 Monthly Water Consumption Calculation")
     
