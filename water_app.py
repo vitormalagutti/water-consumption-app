@@ -70,50 +70,29 @@ def process_volume_or_value_file(uploaded_file):
     """
     if uploaded_file is not None:
         df = convert_to_csv(uploaded_file)
-        st.markdown(df)
-        # Clean the column names by stripping whitespace and removing any hidden characters
-        df.columns = df.columns.str.strip()  # Strip any leading/trailing spaces
-        df.columns = df.columns.str.replace(r'[^\x00-\x7F]+', '', regex=True)  # Remove non-ASCII characters
-        
-        # Ensure that we have a 'Subscriber Number' column (case insensitive and removing spaces)
-        expected_column = 'Subscriber Number'
-        normalized_columns = {col.lower().strip(): col for col in df.columns}
 
-        if expected_column.lower() not in normalized_columns:
-            st.error(f"The file does not contain a '{expected_column}' column.")
+        # Ensure that we have a 'Subscriber Number' column
+        if 'Subscriber Number' not in df.columns:
+            st.error("The file does not contain a 'Subscriber Number' column.")
             return None
-        
-        # Use the normalized column name for 'Subscriber Number'
-        subscriber_number_column = normalized_columns[expected_column.lower()]
 
         # Identify date columns (with the format mm/yy or mmm.yy)
         date_columns = [col for col in df.columns if isinstance(col, str) and (
             re.match(r'^\d{2}/\d{2}$', col) or re.match(r'^[A-Za-z]{3}\.\d{2}$', col)
         )]
-
+        
         if not date_columns:
             st.warning("No date columns in the expected 'mm/yy' or 'mmm.yy' format were found.")
             return None
 
         # Keep only 'Subscriber Number' and date columns
-        df = df[[subscriber_number_column] + date_columns]
+        df = df[['Subscriber Number'] + date_columns]
 
         # Check for non-numeric values in date columns
-        non_numeric_found = False
         for col in date_columns:
-            # Check for non-numeric values
             non_numeric = df[pd.to_numeric(df[col], errors='coerce').isna() & df[col].notna()]
-            
             if not non_numeric.empty:
-                non_numeric_found = True
-                st.warning(
-                    f"Non-numeric values found in column '{col}' at rows: {non_numeric.index.tolist()}. "
-                    "Please ensure that all values in this column are numeric. Non-numeric values "
-                    "could be caused by incorrect data types (such as text or dates) and may impact the analysis."
-                )
-
-        if non_numeric_found:
-            st.write("You can correct these values in the original file. Non-numeric records will not be processed.")
+                st.warning(f"Non-numeric values found in column '{col}' at rows: {non_numeric.index.tolist()}")
 
         # Replace blanks (NaN) with 0
         df[date_columns] = df[date_columns].fillna(0)
