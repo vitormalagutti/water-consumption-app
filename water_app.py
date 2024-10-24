@@ -642,6 +642,43 @@ with tab1:
                     st.markdown("## Please, upload a Block Number - Subscription Number Correlation file")   
 
 
+            # Step 1: Process the volume and value files
+
+            # Check if all files are present before proceeding
+            if volume_file and value_file and correlation_file and buildings_file:
+
+                # Process each file
+                volume_df = process_volume_or_value_file(volume_file)
+                value_df = process_volume_or_value_file(value_file)
+                correlation_df = process_block_subscription_file(correlation_file)
+                buildings_df = convert_to_csv(buildings_file)
+
+                # Step 2: Join the correlation file with the original buildings file on 'Block Number'
+                # Assuming 'Block Number' is the column in both buildings_df and correlation_df
+                merged_df = pd.merge(buildings_df, correlation_df, on='Block Number', how='left')
+
+                # Step 3: Merge volume_df and value_df on 'Subscription Number'
+                # Ensure that 'Subscription Number' is present in both files
+                volume_df = pd.merge(correlation_df, volume_df, on='Subscription Number', how='left')
+                value_df = pd.merge(correlation_df, value_df, on='Subscription Number', how='left')
+
+                # Step 4: Group by 'Block Number' and sum Volume and Value
+                volume_summed = volume_df.groupby('Block Number').sum(numeric_only=True).reset_index()
+                value_summed = value_df.groupby('Block Number').sum(numeric_only=True).reset_index()
+
+                # Step 5: Merge the summed volumes and values back to the original df
+                final_df = pd.merge(merged_df, volume_summed, on='Block Number', how='left')
+                final_df = pd.merge(final_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value'))
+
+                # Display the final merged dataframe
+                st.markdown("### Final Merged DataFrame")
+                st.dataframe(final_df)
+
+            else:
+                st.error("Please upload all the necessary files (volume, value, correlation, and buildings files).")
+
+
+
         with tab6:
             st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
             
