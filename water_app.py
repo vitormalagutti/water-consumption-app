@@ -25,176 +25,185 @@ st.markdown("This app calculates water consumption based on buildings informatio
 st.markdown("Please upload a .csv file with the specific columns' names X, Y, Block_Number, Zone, DMA, and Status")
 st.markdown("Values accepted for the Status column are water meter, illegal connection, non user, and blank cells")
 
-# File upload section with icon
-st.markdown("### 📂 Upload Your Data File")
-buildings_file = st.file_uploader("Choose a CSV file", type=["csv"])
 
-st.markdown("### 📂 Upload Your Value File")
-value_file = st.file_uploader("Choose a CSV file for Value", type=["csv"])
+    # Streamlit tabs for organized visualization
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📂 Input Files Upload", "📊 Network Users Summary", "📅 Seasonal Water Demand Distribution", "💧 Water Demand Model", "Billed Water Analysis", "🗺️ Data Visualization"])
+    
+with tab1:
 
-st.markdown("### 📂 Upload Your Volume File")
-volume_file = st.file_uploader("Choose a CSV file for Volume", type=["csv"])
+    # File upload section with icon
+    st.markdown("### 📂 Upload Your Data File")
+    buildings_file = st.file_uploader("Choose a CSV file", type=["csv"])
 
-if buildings_file:
-    # Read the CSV file
-    df = pd.read_csv(buildings_file)
+    st.markdown("### 📂 Upload Your Value File")
+    value_file = st.file_uploader("Choose a CSV file for Value", type=["csv"])
 
-    # Define the expected columns
-    expected_columns = ["X", "Y", "Zone", "Block_Number", "DMA", "Status"]
+    st.markdown("### 📂 Upload Your Volume File")
+    volume_file = st.file_uploader("Choose a CSV file for Volume", type=["csv"])
 
-    # Select valid columns and fill missing ones with default values
-    df = df[[col for col in df.columns if col in expected_columns]]
-    for col in expected_columns:
-        if col not in df.columns:
-            df[col] = None
+    if buildings_file:
+        # Read the CSV file
+        df = pd.read_csv(buildings_file)
 
-    # Replace NaN values with empty strings in the 'Status' column
-    df['Status'] = df['Status'].fillna('')
+        # Define the expected columns
+        expected_columns = ["X", "Y", "Zone", "Block_Number", "DMA", "Status"]
 
-    # Define the expected variations for each user type
-    expected_legal = ['water meter', 'water_meter', 'water-meter', 'meter', 'water metre']
-    expected_illegal = ['illegal connection', 'illegal_connection', 'illegal-connection']
-    expected_non_user = ['non-user', 'non_user', 'non user']
-    expected_values = expected_legal + expected_illegal + expected_non_user + ['', ' ']
+        # Select valid columns and fill missing ones with default values
+        df = df[[col for col in df.columns if col in expected_columns]]
+        for col in expected_columns:
+            if col not in df.columns:
+                df[col] = None
 
-    # Step 2: Categorize Status into "legal", "illegal", "non-user", and "No Data" only for blanks
-    df['User Type'] = df['Status'].apply(
-        lambda x: 'Legal' if x.strip().lower() in expected_legal else (
-            'Illegal' if x.strip().lower() in expected_illegal else (
-                'Non-user' if x.strip().lower() in expected_non_user else (
-                    'No Data' if x.strip() == '' else 'Unexpected'
+        # Replace NaN values with empty strings in the 'Status' column
+        df['Status'] = df['Status'].fillna('')
+
+        # Define the expected variations for each user type
+        expected_legal = ['water meter', 'water_meter', 'water-meter', 'meter', 'water metre']
+        expected_illegal = ['illegal connection', 'illegal_connection', 'illegal-connection']
+        expected_non_user = ['non-user', 'non_user', 'non user']
+        expected_values = expected_legal + expected_illegal + expected_non_user + ['', ' ']
+
+        # Step 2: Categorize Status into "legal", "illegal", "non-user", and "No Data" only for blanks
+        df['User Type'] = df['Status'].apply(
+            lambda x: 'Legal' if x.strip().lower() in expected_legal else (
+                'Illegal' if x.strip().lower() in expected_illegal else (
+                    'Non-user' if x.strip().lower() in expected_non_user else (
+                        'No Data' if x.strip() == '' else 'Unexpected'
+                    )
                 )
             )
         )
-    )
 
-    # Identify rows where 'Status' does not match the expected values and are categorized as 'Unexpected'
-    unexpected_values = df[df['User Type'] == 'Unexpected']
+        # Identify rows where 'Status' does not match the expected values and are categorized as 'Unexpected'
+        unexpected_values = df[df['User Type'] == 'Unexpected']
 
-    # If there are unexpected values, raise a warning
-    if not unexpected_values.empty:
-        unexpected_unique = unexpected_values['Status'].unique()  # Unique unexpected values
-        unexpected_rows = unexpected_values.index.tolist()  # Get the index (line numbers) of unexpected values
+        # If there are unexpected values, raise a warning
+        if not unexpected_values.empty:
+            unexpected_unique = unexpected_values['Status'].unique()  # Unique unexpected values
+            unexpected_rows = unexpected_values.index.tolist()  # Get the index (line numbers) of unexpected values
 
-        st.warning(f"Warning: Found unexpected values in the 'Status' column: {unexpected_unique}")
-        st.write(f"Expected values for the 'Status' column are: {expected_values}.")
-        st.write(f"These unexpected values were found in the following rows: {unexpected_rows}")
-        st.write("You can either proceed without these records or adjust your file to include only the expected values.")
-        st.write("These records will not be processed if you choose to proceed.")
+            st.warning(f"Warning: Found unexpected values in the 'Status' column: {unexpected_unique}")
+            st.write(f"Expected values for the 'Status' column are: {expected_values}.")
+            st.write(f"These unexpected values were found in the following rows: {unexpected_rows}")
+            st.write("You can either proceed without these records or adjust your file to include only the expected values.")
+            st.write("These records will not be processed if you choose to proceed.")
 
-        # Optionally filter out rows with unexpected values
-        df = df[df['User Type'] != 'Unexpected']
+            # Optionally filter out rows with unexpected values
+            df = df[df['User Type'] != 'Unexpected']
 
-    # Filter out rows with "No Data" in User Type for percentage calculations
-    filtered_df = df[df['User Type'] != 'No Data']
+        # Filter out rows with "No Data" in User Type for percentage calculations
+        filtered_df = df[df['User Type'] != 'No Data']
 
-    # Sidebar inputs section with sliders only for the average litres per person
-    st.sidebar.header("🔧 Assumptions")
-    avg_floors = st.sidebar.number_input("Average Floors per Building", min_value=0.0, step=0.1, value=1.63)
-    avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=1.0, step=1.0, value=5.65)
-    avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=300, step=5, value=150)
-    st.sidebar.header("🔍 Heatmap Options")
-    heatmap_type = st.sidebar.selectbox(
-        "Choose a heatmap to display:",
-        ["All Buildings", "Illegal Connections", "Legal Connections", "Non-Users"]
-    )
+        # Sidebar inputs section with sliders only for the average litres per person
+        st.sidebar.header("🔧 Assumptions")
+        avg_floors = st.sidebar.number_input("Average Floors per Building", min_value=0.0, step=0.1, value=1.63)
+        avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=1.0, step=1.0, value=5.65)
+        avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=300, step=5, value=150)
+        st.sidebar.header("🔍 Heatmap Options")
+        heatmap_type = st.sidebar.selectbox(
+            "Choose a heatmap to display:",
+            ["All Buildings", "Illegal Connections", "Legal Connections", "Non-Users"]
+        )
 
-    # Calculate total population using the full DataFrame (df), aggregated by Zone and DMA
-    df['Population'] = avg_floors * avg_people_per_family
-    total_population_by_zone = df.groupby('Zone')['Population'].sum() if 'Zone' in df.columns else None
-    total_population_by_dma = df.groupby('DMA')['Population'].sum() if 'DMA' in df.columns else None
+        # Calculate total population using the full DataFrame (df), aggregated by Zone and DMA
+        df['Population'] = avg_floors * avg_people_per_family
+        total_population_by_zone = df.groupby('Zone')['Population'].sum() if 'Zone' in df.columns else None
+        total_population_by_dma = df.groupby('DMA')['Population'].sum() if 'DMA' in df.columns else None
 
-    # Calculate total population and percentages per Zone (if 'Zone' column exists)
-    if 'Zone' in filtered_df.columns:
-        
-        # Calculate total population for each zone, including all inputs (with or without User Type)
-        zone_counts = df.groupby('Zone').size()  # Count the number of inputs per Zone
-        total_population_by_zone = zone_counts * avg_floors * avg_people_per_family  # Calculate total population
+        # Calculate total population and percentages per Zone (if 'Zone' column exists)
+        if 'Zone' in filtered_df.columns:
+            
+            # Calculate total population for each zone, including all inputs (with or without User Type)
+            zone_counts = df.groupby('Zone').size()  # Count the number of inputs per Zone
+            total_population_by_zone = zone_counts * avg_floors * avg_people_per_family  # Calculate total population
 
-        # Count the number of Legal, Illegal, and Non-user inputs per zone
-        legal_count = filtered_df[filtered_df['User Type'] == 'Legal'].groupby('Zone').size()
-        illegal_count = filtered_df[filtered_df['User Type'] == 'Illegal'].groupby('Zone').size()
-        non_user_count = filtered_df[filtered_df['User Type'] == 'Non-user'].groupby('Zone').size()
+            # Count the number of Legal, Illegal, and Non-user inputs per zone
+            legal_count = filtered_df[filtered_df['User Type'] == 'Legal'].groupby('Zone').size()
+            illegal_count = filtered_df[filtered_df['User Type'] == 'Illegal'].groupby('Zone').size()
+            non_user_count = filtered_df[filtered_df['User Type'] == 'Non-user'].groupby('Zone').size()
 
-        # Ensure all zones are represented (fill missing values with 0)
-        legal_count = legal_count.reindex(total_population_by_zone.index, fill_value=0)
-        illegal_count = illegal_count.reindex(total_population_by_zone.index, fill_value=0)
-        non_user_count = non_user_count.reindex(total_population_by_zone.index, fill_value=0)
+            # Ensure all zones are represented (fill missing values with 0)
+            legal_count = legal_count.reindex(total_population_by_zone.index, fill_value=0)
+            illegal_count = illegal_count.reindex(total_population_by_zone.index, fill_value=0)
+            non_user_count = non_user_count.reindex(total_population_by_zone.index, fill_value=0)
 
-        # Calculate the percentages for each user type (based on counts of Legal, Illegal, and Non-user)
-        total_known_users = legal_count + illegal_count + non_user_count
-        legal_percentage = (legal_count / total_known_users) * 100
-        illegal_percentage = (illegal_count / total_known_users) * 100
-        non_user_percentage = (non_user_count / total_known_users) * 100
+            # Calculate the percentages for each user type (based on counts of Legal, Illegal, and Non-user)
+            total_known_users = legal_count + illegal_count + non_user_count
+            legal_percentage = (legal_count / total_known_users) * 100
+            illegal_percentage = (illegal_count / total_known_users) * 100
+            non_user_percentage = (non_user_count / total_known_users) * 100
 
-        # Create a DataFrame to store the results
-        user_summary_zone = pd.DataFrame({
-            'Total Population': total_population_by_zone,
-            'Legal %': legal_percentage,
-            'Illegal %': illegal_percentage,
-            'Non-user %': non_user_percentage
-        })
+            # Create a DataFrame to store the results
+            user_summary_zone = pd.DataFrame({
+                'Total Population': total_population_by_zone,
+                'Legal %': legal_percentage,
+                'Illegal %': illegal_percentage,
+                'Non-user %': non_user_percentage
+            })
 
-        # Handle cases where no known users exist to avoid division by zero
-        user_summary_zone[['Legal %', 'Illegal %', 'Non-user %']] = user_summary_zone[['Legal %', 'Illegal %', 'Non-user %']].fillna(0)
+            # Handle cases where no known users exist to avoid division by zero
+            user_summary_zone[['Legal %', 'Illegal %', 'Non-user %']] = user_summary_zone[['Legal %', 'Illegal %', 'Non-user %']].fillna(0)
 
-        # Add a final row with the sum of all Zones (weighted average for percentages)
-        total_population_all_zones = total_population_by_zone.sum()
+            # Add a final row with the sum of all Zones (weighted average for percentages)
+            total_population_all_zones = total_population_by_zone.sum()
 
-        legal_sum_zone = (legal_percentage * total_population_by_zone).sum() / total_population_all_zones
-        illegal_sum_zone = (illegal_percentage * total_population_by_zone).sum() / total_population_all_zones
-        non_user_sum_zone = (non_user_percentage * total_population_by_zone).sum() / total_population_all_zones
-        
-        user_summary_zone.loc['Total'] = [total_population_all_zones, legal_sum_zone, illegal_sum_zone, non_user_sum_zone]
+            legal_sum_zone = (legal_percentage * total_population_by_zone).sum() / total_population_all_zones
+            illegal_sum_zone = (illegal_percentage * total_population_by_zone).sum() / total_population_all_zones
+            non_user_sum_zone = (non_user_percentage * total_population_by_zone).sum() / total_population_all_zones
+            
+            user_summary_zone.loc['Total'] = [total_population_all_zones, legal_sum_zone, illegal_sum_zone, non_user_sum_zone]
 
-   # Calculate total population and percentages per DMA (if 'DMA' column exists)
-    if 'DMA' in filtered_df.columns:
-        
-        # Calculate total population for each DMA, including all inputs (with or without User Type)
-        dma_counts = df.groupby('DMA').size()  # Count the number of inputs per DMA
-        total_population_by_dma = dma_counts * avg_floors * avg_people_per_family  # Calculate total population
+    # Calculate total population and percentages per DMA (if 'DMA' column exists)
+        if 'DMA' in filtered_df.columns:
+            
+            # Calculate total population for each DMA, including all inputs (with or without User Type)
+            dma_counts = df.groupby('DMA').size()  # Count the number of inputs per DMA
+            total_population_by_dma = dma_counts * avg_floors * avg_people_per_family  # Calculate total population
 
-        # Count the number of Legal, Illegal, and Non-user inputs per DMA
-        legal_count_dma = filtered_df[filtered_df['User Type'] == 'Legal'].groupby('DMA').size()
-        illegal_count_dma = filtered_df[filtered_df['User Type'] == 'Illegal'].groupby('DMA').size()
-        non_user_count_dma = filtered_df[filtered_df['User Type'] == 'Non-user'].groupby('DMA').size()
+            # Count the number of Legal, Illegal, and Non-user inputs per DMA
+            legal_count_dma = filtered_df[filtered_df['User Type'] == 'Legal'].groupby('DMA').size()
+            illegal_count_dma = filtered_df[filtered_df['User Type'] == 'Illegal'].groupby('DMA').size()
+            non_user_count_dma = filtered_df[filtered_df['User Type'] == 'Non-user'].groupby('DMA').size()
 
-        # Ensure all DMAs are represented (fill missing values with 0)
-        legal_count_dma = legal_count_dma.reindex(total_population_by_dma.index, fill_value=0)
-        illegal_count_dma = illegal_count_dma.reindex(total_population_by_dma.index, fill_value=0)
-        non_user_count_dma = non_user_count_dma.reindex(total_population_by_dma.index, fill_value=0)
+            # Ensure all DMAs are represented (fill missing values with 0)
+            legal_count_dma = legal_count_dma.reindex(total_population_by_dma.index, fill_value=0)
+            illegal_count_dma = illegal_count_dma.reindex(total_population_by_dma.index, fill_value=0)
+            non_user_count_dma = non_user_count_dma.reindex(total_population_by_dma.index, fill_value=0)
 
-        # Calculate the percentages for each user type (based on counts of Legal, Illegal, and Non-user)
-        total_known_users_dma = legal_count_dma + illegal_count_dma + non_user_count_dma
-        legal_percentage_dma = (legal_count_dma / total_known_users_dma) * 100
-        illegal_percentage_dma = (illegal_count_dma / total_known_users_dma) * 100
-        non_user_percentage_dma = (non_user_count_dma / total_known_users_dma) * 100
+            # Calculate the percentages for each user type (based on counts of Legal, Illegal, and Non-user)
+            total_known_users_dma = legal_count_dma + illegal_count_dma + non_user_count_dma
+            legal_percentage_dma = (legal_count_dma / total_known_users_dma) * 100
+            illegal_percentage_dma = (illegal_count_dma / total_known_users_dma) * 100
+            non_user_percentage_dma = (non_user_count_dma / total_known_users_dma) * 100
 
-        # Create a DataFrame to store the results for DMAs
-        user_summary_dma = pd.DataFrame({
-            'Total Population': total_population_by_dma,
-            'Legal %': legal_percentage_dma,
-            'Illegal %': illegal_percentage_dma,
-            'Non-user %': non_user_percentage_dma
-        })
+            # Create a DataFrame to store the results for DMAs
+            user_summary_dma = pd.DataFrame({
+                'Total Population': total_population_by_dma,
+                'Legal %': legal_percentage_dma,
+                'Illegal %': illegal_percentage_dma,
+                'Non-user %': non_user_percentage_dma
+            })
 
-        # Handle cases where no known users exist to avoid division by zero
-        user_summary_dma[['Legal %', 'Illegal %', 'Non-user %']] = user_summary_dma[['Legal %', 'Illegal %', 'Non-user %']].fillna(0)
+            # Handle cases where no known users exist to avoid division by zero
+            user_summary_dma[['Legal %', 'Illegal %', 'Non-user %']] = user_summary_dma[['Legal %', 'Illegal %', 'Non-user %']].fillna(0)
 
-        # Add a final row with the sum of all DMAs (weighted average for percentages)
-        total_population_all_dmas = total_population_by_dma.sum()
+            # Add a final row with the sum of all DMAs (weighted average for percentages)
+            total_population_all_dmas = total_population_by_dma.sum()
 
-        legal_sum_dma = (legal_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
-        illegal_sum_dma = (illegal_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
-        non_user_sum_dma = (non_user_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
-        
-        user_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
+            legal_sum_dma = (legal_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
+            illegal_sum_dma = (illegal_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
+            non_user_sum_dma = (non_user_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
+            
+            user_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
 
 
-    # Streamlit tabs for organized visualization
-    tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Network Users Summary", "📅 Seasonal Water Demand Distribution", "💧 Water Demand Model", "Billed Water Analysis", "🗺️ Data Visualization"])
 
-    with tab1:
+
+
+
+
+
+    with tab2:
 
         # Title for Summary of the Network Users
         st.markdown("## Summary of the Network Users")
@@ -287,7 +296,7 @@ if buildings_file:
                 ax.set_xticklabels(user_summary_dma_plot.index, rotation=0)
                 st.pyplot(fig)
 
-    with tab2:
+    with tab3:
         st.markdown("### 📅 Monthly Water Consumption Calculation")
         
         #Seazonality factors
@@ -350,7 +359,7 @@ if buildings_file:
             ax.grid(True, linestyle='-', axis='y')
             st.pyplot(fig2)
 
-    with tab3:
+    with tab4:
         
         # Monthly Daily Consumption from Seasonal Distribution
         monthly_consumption = df_factors['Average Daily Consumption - l/p/d'] 
@@ -452,7 +461,7 @@ if buildings_file:
                 plt.tight_layout()
                 st.pyplot(fig)
 
-    with tab4:
+    with tab5:
 
 
         # Process the files after both have been uploaded
@@ -468,7 +477,7 @@ if buildings_file:
             st.dataframe(volume_df)
 
 
-    with tab5:
+    with tab6:
         st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
         
         # Dynamically generate a list of columns for the user to select from, excluding X (latitude) and Y (longitude)
