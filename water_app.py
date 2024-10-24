@@ -129,9 +129,9 @@ def process_volume_or_value_file(uploaded_file):
 
 def process_block_subscription_file(uploaded_file):
     """
-    This function processes the uploaded Block Number - Subscription Number file,
-    ensuring that the expected columns ['Block Number', 'Subscription Number'] are present,
-    and that the values in both columns are numeric. If non-numeric values are found, a warning is raised.
+    This function processes the uploaded Block Number - Subscription Number file, ensuring that the expected 
+    columns ['Block Number', 'Subscription Number'] are present, and that the values in both columns are numeric. 
+    If non-numeric values are found, a warning is raised. Extra columns will be dropped.
     """
     if uploaded_file is not None:
         df = convert_to_csv(uploaded_file)
@@ -142,16 +142,19 @@ def process_block_subscription_file(uploaded_file):
             st.error(f"The file must contain the columns: {required_columns}.")
             return None
 
+        # Drop any columns not in required_columns
+        df = df[required_columns]
+
         # Check for non-numeric values in 'Block Number' and 'Subscription Number'
         for col in required_columns:
             non_numeric = df[pd.to_numeric(df[col], errors='coerce').isna() & df[col].notna()]
             if not non_numeric.empty:
                 st.warning(f"Non-numeric values found in column '{col}' at rows: {non_numeric.index.tolist()}")
-        
+
         # Convert blanks or NaNs to 0 (if needed)
         df[required_columns] = df[required_columns].fillna(0)
 
-        # Optionally convert the columns to integers after replacing NaNs (you can modify this part if needed)
+        # Optionally convert the columns to integers after replacing NaNs
         df[required_columns] = df[required_columns].astype(int)
 
         return df
@@ -170,13 +173,13 @@ with tab1:
     st.markdown("It must include the following column names [Block Number, Subscription Number]")
     correlation_file = st.file_uploader("Choose a CSV file for Block Number - Subscription Number", type=["csv", "xlsx"])
 
-    st.markdown("### 📂 Upload Your Value File")
+    st.markdown("### 📂 Upload Your Billed Value File")
     st.markdown("It must include the following column names [Subscription Number, mm/yy, mm/yy, ...]")
-    value_file = st.file_uploader("Choose a CSV file for Value", type=["csv", "xlsx"])
+    value_file = st.file_uploader("Choose a CSV file for Billed Value", type=["csv", "xlsx"])
 
-    st.markdown("### 📂 Upload Your Volume File")
+    st.markdown("### 📂 Upload Your Billed Volume File")
     st.markdown("It must include the following column names [Subscription Number, mm/yy, mm/yy, ...]")
-    volume_file = st.file_uploader("Choose a CSV file for Volume", type=["csv", "xlsx"])
+    volume_file = st.file_uploader("Choose a CSV file for Billed Volume", type=["csv", "xlsx"])
 
     if buildings_file:
         # Read the CSV file
