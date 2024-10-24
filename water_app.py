@@ -253,7 +253,7 @@ with tab2:
         user_summary_zone['Illegal %'] = user_summary_zone['Illegal %'].round(1)
         user_summary_zone['Non-user %'] = user_summary_zone['Non-user %'].round(1)
     else:
-            st.markdown("Your file does not have 'Zone' column")
+        st.markdown("Your file does not have 'Zone' column")
 
     if 'DMA' in filtered_df.columns:
         # Round the population and percentages for user_summary_dma
@@ -262,7 +262,7 @@ with tab2:
         user_summary_dma['Illegal %'] = user_summary_dma['Illegal %'].round(1)
         user_summary_dma['Non-user %'] = user_summary_dma['Non-user %'].round(1)
     else:
-            st.markdown("Your file does not have 'DMA' column")
+        st.markdown("Your file does not have 'DMA' column")
 
     # Create columns for side-by-side layout for the tables
     col1, col2 = st.columns(2)
@@ -349,7 +349,7 @@ with tab2:
             st.pyplot(fig)
     else:
         st.markdown("Your file does not have 'DMA' column")
-        
+
 with tab3:
     st.markdown("### 📅 Monthly Water Consumption Calculation")
     
