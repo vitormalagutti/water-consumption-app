@@ -595,10 +595,11 @@ with tab1:
             else:
                 st.markdown("## Please, upload a volume's file")
 
-            if volume_file:
+            if value_file:
                     processed_df = process_volume_or_value_file(value_file)
                     if processed_df is not None:
                         st.dataframe(processed_df)  # Display the cleaned data
+
             else:
                     st.markdown("## Please, upload a value's file")   
 
