@@ -92,7 +92,12 @@ def process_volume_or_value_file(uploaded_file):
         for col in date_columns:
             non_numeric = df[pd.to_numeric(df[col], errors='coerce').isna() & df[col].notna()]
             if not non_numeric.empty:
-                st.warning(f"Non-numeric values found in column '{col}' at rows: {non_numeric.index.tolist()}")
+                st.warning(
+                    f"Non-numeric values found in column '{col}' at rows: {non_numeric.index.tolist()}. "
+                    "Please ensure that all values in this column are numeric. Non-numeric values "
+                    "could be caused by incorrect data types (such as text or dates) and may impact the analysis. "
+                    "You can correct these values in the original file."
+                )
 
         # Replace blanks (NaN) with 0
         df[date_columns] = df[date_columns].fillna(0)
