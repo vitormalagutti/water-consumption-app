@@ -190,6 +190,8 @@ with tab1:
             non_user_sum_zone = (non_user_percentage * total_population_by_zone).sum() / total_population_all_zones
             
             user_summary_zone.loc['Total'] = [total_population_all_zones, legal_sum_zone, illegal_sum_zone, non_user_sum_zone]
+        else:
+            st.markdown("Your file does not have 'Zone' column")
 
     # Calculate total population and percentages per DMA (if 'DMA' column exists)
         if 'DMA' in filtered_df.columns:
@@ -233,10 +235,10 @@ with tab1:
             non_user_sum_dma = (non_user_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
             
             user_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
-
+        else:
+            st.markdown("Your file does not have 'DMA' column")
     else:
         st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', 'Block_Number', or 'Status'. If information is not available, create the column and leave it blank")
-
 
 
 
@@ -250,6 +252,8 @@ with tab2:
         user_summary_zone['Legal %'] = user_summary_zone['Legal %'].round(1)  # Round percentages to 1 decimal place
         user_summary_zone['Illegal %'] = user_summary_zone['Illegal %'].round(1)
         user_summary_zone['Non-user %'] = user_summary_zone['Non-user %'].round(1)
+    else:
+            st.markdown("Your file does not have 'Zone' column")
 
     if 'DMA' in filtered_df.columns:
         # Round the population and percentages for user_summary_dma
@@ -257,7 +261,8 @@ with tab2:
         user_summary_dma['Legal %'] = user_summary_dma['Legal %'].round(1)  # Round percentages to 1 decimal place
         user_summary_dma['Illegal %'] = user_summary_dma['Illegal %'].round(1)
         user_summary_dma['Non-user %'] = user_summary_dma['Non-user %'].round(1)
-
+    else:
+            st.markdown("Your file does not have 'DMA' column")
 
     # Create columns for side-by-side layout for the tables
     col1, col2 = st.columns(2)
