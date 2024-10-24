@@ -237,8 +237,6 @@ with tab1:
             user_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
         else:
             st.markdown("Your file does not have 'DMA' column")
-    
-
 
         with tab2:
 
@@ -515,6 +513,14 @@ with tab1:
 
         with tab5:
 
+            if volume_file:
+                    # Read the CSV file
+                    df = convert_to_csv(volume_file)
+
+                    # Define the expected columns
+                    expected_columns = ["Subscriber Number", "mm/yy"]
+            else:
+                st.markdown("Please, upload a volume's file")
 
             # Process the files after both have been uploaded
             if value_file and volume_file:
