@@ -76,13 +76,13 @@ def process_volume_or_value_file(uploaded_file):
             st.error("The file does not contain a 'Subscriber Number' column.")
             return None
 
-        # Identify date columns (with the format mm/yy or mmm.yy)
+        # Update the regex to match month formats, including non-English abbreviations (e.g., "Mai.23")
         date_columns = [col for col in df.columns if isinstance(col, str) and (
-            re.match(r'^\d{2}/\d{2}$', col) or re.match(r'^[A-Za-z]{3}\.\d{2}$', col)
+            re.match(r'^[A-Za-z]{3}\.\d{2}$', col)  # Match mmm.yy pattern
         )]
-        
+
         if not date_columns:
-            st.warning("No date columns in the expected 'mm/yy' or 'mmm.yy' format were found.")
+            st.warning("No date columns in the expected 'mmm.yy' format were found.")
             return None
 
         # Keep only 'Subscriber Number' and date columns
