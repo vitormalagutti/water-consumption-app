@@ -237,471 +237,472 @@ with tab1:
             user_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
         else:
             st.markdown("Your file does not have 'DMA' column")
-    else:
-        st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', 'Block_Number', or 'Status'. If information is not available, create the column and leave it blank")
-
-
-
-with tab2:
-
-    # Title for Summary of the Network Users
-    st.markdown("## Summary of the Network Users")
-    if 'Zone' in filtered_df.columns and 'user_summary_zone' in locals():
-        # Round the population and percentages for user_summary_zone
-        user_summary_zone['Total Population'] = user_summary_zone['Total Population'].round(-2)  # Round population to nearest hundreds
-        user_summary_zone['Legal %'] = user_summary_zone['Legal %'].round(1)  # Round percentages to 1 decimal place
-        user_summary_zone['Illegal %'] = user_summary_zone['Illegal %'].round(1)
-        user_summary_zone['Non-user %'] = user_summary_zone['Non-user %'].round(1)
-    else:
-        st.markdown("Your file does not have 'Zone' column")
-
-    if 'DMA' in filtered_df.columns and 'user_summary_dma' in locals():
-        # Round the population and percentages for user_summary_dma
-        user_summary_dma['Total Population'] = user_summary_dma['Total Population'].round(-2)  # Round population to nearest hundreds
-        user_summary_dma['Legal %'] = user_summary_dma['Legal %'].round(1)  # Round percentages to 1 decimal place
-        user_summary_dma['Illegal %'] = user_summary_dma['Illegal %'].round(1)
-        user_summary_dma['Non-user %'] = user_summary_dma['Non-user %'].round(1)
-    else:
-        st.markdown("Your file does not have 'DMA' column")
-
-    # Create columns for side-by-side layout for the tables
-    col1, col2 = st.columns(2)
-
-    # Place the two tables in the side-by-side layout
-    with col1:
-        if 'Zone' in filtered_df.columns:
-            st.markdown("#### 📊 Water Network Summary - Zone")
-            st.dataframe(user_summary_zone)
-        else:
-            st.markdown("Your file does not have 'Zone' column")
-
-    with col2:
-        if 'DMA' in filtered_df.columns:
-            st.markdown("#### 📊 Water Network Summary - DMA")
-            st.dataframe(user_summary_dma)
-        else:
-            st.markdown("Your file does not have 'DMA' column")
-
-    # Title for Population by User Type
-    st.markdown("### 📈 Population by User Type")
-
-    # Create columns for side-by-side layout for the graphs
-    col1, col2 = st.columns(2)
-    if 'Zone' in filtered_df.columns:
-        # Calculate the number of people for each user type by multiplying Total Population with percentages
-        user_summary_zone['Legal'] = (user_summary_zone['Total Population'] * user_summary_zone['Legal %'] / 100).astype(int)
-        user_summary_zone['Illegal'] = (user_summary_zone['Total Population'] * user_summary_zone['Illegal %'] / 100).astype(int)
-        user_summary_zone['Non-user'] = (user_summary_zone['Total Population'] * user_summary_zone['Non-user %'] / 100).astype(int)
-        user_summary_zone_plot = user_summary_zone[user_summary_zone.index != 'Total']       
-    else:
-        st.markdown("Your file does not have 'Zone' column")
-
-    if 'DMA' in filtered_df.columns:
-        # Calculate the number of people for each user type by multiplying Total Population with percentages
-        user_summary_dma['Legal'] = (user_summary_dma['Total Population'] * user_summary_dma['Legal %'] / 100).astype(int)
-        user_summary_dma['Illegal'] = (user_summary_dma['Total Population'] * user_summary_dma['Illegal %'] / 100).astype(int)
-        user_summary_dma['Non-user'] = (user_summary_dma['Total Population'] * user_summary_dma['Non-user %'] / 100).astype(int)
-        user_summary_dma_plot = user_summary_dma[user_summary_dma.index != 'Total']
-    else:
-        st.markdown("Your file does not have 'DMA' column")
-
-    # Place the two graphs in the side-by-side layout
-    if 'Zone' in filtered_df.columns:     
-        # First graph for Zone
-        with col1:
-            fig, ax = plt.subplots(figsize=(7, 5))  # Adjust figure size
-            user_summary_zone_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].plot(
-                kind='bar', 
-                stacked=False, 
-                color=['#A9A9A9', '#FFA500', '#90EE90', '#87CEEB'],  
-                ax=ax, 
-                edgecolor='black'
-            )
-            ax.set_title('Network Users Summary - Zones', fontsize=12)
-            ax.set_xlabel('Zones')
-            ax.set_ylabel('Number of Users')
-            ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
-            ax.set_xticklabels(user_summary_zone_plot.index, rotation=0)
-            y_max = user_summary_zone_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
-            ax.set_yticks(range(0, int(y_max) + 5000, 5000))
-            st.pyplot(fig)
-    else:
-        st.markdown("Your file does not have 'Zone' column")
-
-    if 'DMA' in filtered_df.columns: 
-    # Second graph for DMA
-        with col2:
-            fig, ax = plt.subplots(figsize=(7, 5))  # Adjust figure size
-            user_summary_dma_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].plot(
-                kind='bar', 
-                stacked=False, 
-                color=['#A9A9A9', '#FFA500', '#90EE90', '#87CEEB'],  
-                ax=ax, 
-                edgecolor='black'
-            )
-            ax.set_title('Network Users Summary - DMAs', fontsize=12)
-            ax.set_xlabel('DMAs')
-            ax.set_ylabel('Number of Users')
-            ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
-            y_max = user_summary_dma_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
-            ax.set_yticks(range(0, int(y_max) + 5000, 5000))
-            ax.set_xticklabels(user_summary_dma_plot.index, rotation=0)
-            st.pyplot(fig)
-    else:
-        st.markdown("Your file does not have 'DMA' column")
-
-with tab3:
-    st.markdown("### 📅 Monthly Water Consumption Calculation")
     
-    #Seazonality factors
-    month_factors = {
-        'Month': ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dez'],
-        'Factor': [0.07, 0.07, 0.07, 0.08, 0.09, 0.09, 0.10, 0.10, 0.10, 0.08, 0.07, 0.07]
-    }
-    days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]  # Number of days in each month
-    # Create a DataFrame for the month factors
-    df_factors = pd.DataFrame(month_factors)        
-    
-    st.markdown("#### Seasonal Variation Factor")        
-    # Slider to adjust the factors' variation (0 = all equal, 1 = current, 2 = amplified)
-    variation_factor = st.slider("Adjust Variation of Factors (0 = No Variation, 1 = Proposed, 2 = Amplified)", min_value=0.0, max_value=2.0, step=0.1, value=1.0)
 
-    # Calculate monthly water consumption based on factors
-    for i in range(len(days_in_month)):
-        df_factors['Factor - Updated'] = (1 - variation_factor) * np.mean(df_factors["Factor"]) + variation_factor * df_factors["Factor"]
-        df_factors['Average Daily Consumption - l/p/d'] = round(df_factors['Factor - Updated'] * avg_litres_per_person * 12)
-        df_factors["Total Monthly Consumption - m3"] = round(df_factors['Average Daily Consumption - l/p/d'] * sum(df["Population"]) * days_in_month[i] / 1000, -2)
-        
-    # Create columns for side-by-side layout
-    col1, col2 = st.columns(2)
-    
-    with col1:
-            st.markdown("### Monthly Water Consumption")
-            # Display the table with calculated values
-            st.dataframe(df_factors, height=500)
 
-    with col2:
-        # Plot a graph of monthly water consumption
-        st.markdown("#### Average Water Consumption Distribution (l/p/d)")
+        with tab2:
 
-        fig, ax = plt.subplots(figsize=(8,4))
-        ax.plot(df_factors['Month'], df_factors['Average Daily Consumption - l/p/d'], marker='o', color='skyblue', linewidth=1.0)
-        ax.set_ylabel('Average Water Consumption (l/p/d)')
-        ax.set_title('Monthly Water Consumption Distribution')
-        ax.grid(True, linestyle ='-', axis = 'y')
+            # Title for Summary of the Network Users
+            st.markdown("## Summary of the Network Users")
+            if 'Zone' in filtered_df.columns and 'user_summary_zone' in locals():
+                # Round the population and percentages for user_summary_zone
+                user_summary_zone['Total Population'] = user_summary_zone['Total Population'].round(-2)  # Round population to nearest hundreds
+                user_summary_zone['Legal %'] = user_summary_zone['Legal %'].round(1)  # Round percentages to 1 decimal place
+                user_summary_zone['Illegal %'] = user_summary_zone['Illegal %'].round(1)
+                user_summary_zone['Non-user %'] = user_summary_zone['Non-user %'].round(1)
+            else:
+                st.markdown("Your file does not have 'Zone' column")
 
-        # Apply the if condition for y-axis limits
-        if avg_litres_per_person < 200:
-            ax.set_ylim(50, 300)  # Set y-axis limits for avg_litres_per_person < 160
-        elif avg_litres_per_person < 280:
-            ax.set_ylim(130, 380)  # Set y-axis limits for avg_litres_per_person < 260
-        else:
-            ax.set_ylim(190, 600)  # Set y-axis limits for avg_litres_per_person >= 260
+            if 'DMA' in filtered_df.columns and 'user_summary_dma' in locals():
+                # Round the population and percentages for user_summary_dma
+                user_summary_dma['Total Population'] = user_summary_dma['Total Population'].round(-2)  # Round population to nearest hundreds
+                user_summary_dma['Legal %'] = user_summary_dma['Legal %'].round(1)  # Round percentages to 1 decimal place
+                user_summary_dma['Illegal %'] = user_summary_dma['Illegal %'].round(1)
+                user_summary_dma['Non-user %'] = user_summary_dma['Non-user %'].round(1)
+            else:
+                st.markdown("Your file does not have 'DMA' column")
 
-        # Display the plot
-        st.pyplot(fig)
-    
-    # Create a column, with empty space in the left and right for centering
-    col1, col2, col3 = st.columns([1, 3, 1])  # Make the center column wider for the plot
-    
-    with col2:
-        fig2, ax = plt.subplots(figsize=(8, 4))
-        ax.bar(df_factors['Month'], df_factors['Total Monthly Consumption - m3'], color='deepskyblue')
-        ax.set_ylabel('Monthly Water Consumption (m³)')
-        ax.set_title('Monthly Water Consumption Distribution')
-        ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ','))) # Format the y-axis labels with a thousand separator
-        ax.grid(True, linestyle='-', axis='y')
-        st.pyplot(fig2)
+            # Create columns for side-by-side layout for the tables
+            col1, col2 = st.columns(2)
 
-with tab4:
-    
-    # Monthly Daily Consumption from Seasonal Distribution
-    monthly_consumption = df_factors['Average Daily Consumption - l/p/d'] 
+            # Place the two tables in the side-by-side layout
+            with col1:
+                if 'Zone' in filtered_df.columns:
+                    st.markdown("#### 📊 Water Network Summary - Zone")
+                    st.dataframe(user_summary_zone)
+                else:
+                    st.markdown("Your file does not have 'Zone' column")
 
-    if 'DMA' in filtered_df.columns:
-        # Prepare population and non-user percentages for DMAs
-        population_dma = user_summary_dma['Total Population']
-        non_users_dma = user_summary_dma['Non-user %'] / 100  
+            with col2:
+                if 'DMA' in filtered_df.columns:
+                    st.markdown("#### 📊 Water Network Summary - DMA")
+                    st.dataframe(user_summary_dma)
+                else:
+                    st.markdown("Your file does not have 'DMA' column")
 
-        # Create an empty DataFrame to store the results
-        water_demand_dma = pd.DataFrame(columns=['DMA'] + df_factors['Month'].tolist())
+            # Title for Population by User Type
+            st.markdown("### 📈 Population by User Type")
 
-        # Calculate the water consumption for each DMA and month
-        for dma in population_dma.index:
-            # For each DMA, calculate monthly consumption
-            dma_consumption = []
-            for i, month in enumerate(df_factors['Month']):
-                consumption_m3 = population_dma[dma] * (1 - non_users_dma[dma]) * monthly_consumption[i] * days_in_month[i] / 1000
-                dma_consumption.append(round(consumption_m3, -2))  # Round to the nearest 100
+            # Create columns for side-by-side layout for the graphs
+            col1, col2 = st.columns(2)
+            if 'Zone' in filtered_df.columns:
+                # Calculate the number of people for each user type by multiplying Total Population with percentages
+                user_summary_zone['Legal'] = (user_summary_zone['Total Population'] * user_summary_zone['Legal %'] / 100).astype(int)
+                user_summary_zone['Illegal'] = (user_summary_zone['Total Population'] * user_summary_zone['Illegal %'] / 100).astype(int)
+                user_summary_zone['Non-user'] = (user_summary_zone['Total Population'] * user_summary_zone['Non-user %'] / 100).astype(int)
+                user_summary_zone_plot = user_summary_zone[user_summary_zone.index != 'Total']       
+            else:
+                st.markdown("Your file does not have 'Zone' column")
 
-            # Add the DMA and its monthly consumption to the DataFrame
-            water_demand_dma.loc[len(water_demand_dma)] = [dma] + dma_consumption
+            if 'DMA' in filtered_df.columns:
+                # Calculate the number of people for each user type by multiplying Total Population with percentages
+                user_summary_dma['Legal'] = (user_summary_dma['Total Population'] * user_summary_dma['Legal %'] / 100).astype(int)
+                user_summary_dma['Illegal'] = (user_summary_dma['Total Population'] * user_summary_dma['Illegal %'] / 100).astype(int)
+                user_summary_dma['Non-user'] = (user_summary_dma['Total Population'] * user_summary_dma['Non-user %'] / 100).astype(int)
+                user_summary_dma_plot = user_summary_dma[user_summary_dma.index != 'Total']
+            else:
+                st.markdown("Your file does not have 'DMA' column")
+
+            # Place the two graphs in the side-by-side layout
+            if 'Zone' in filtered_df.columns:     
+                # First graph for Zone
+                with col1:
+                    fig, ax = plt.subplots(figsize=(7, 5))  # Adjust figure size
+                    user_summary_zone_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].plot(
+                        kind='bar', 
+                        stacked=False, 
+                        color=['#A9A9A9', '#FFA500', '#90EE90', '#87CEEB'],  
+                        ax=ax, 
+                        edgecolor='black'
+                    )
+                    ax.set_title('Network Users Summary - Zones', fontsize=12)
+                    ax.set_xlabel('Zones')
+                    ax.set_ylabel('Number of Users')
+                    ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
+                    ax.set_xticklabels(user_summary_zone_plot.index, rotation=0)
+                    y_max = user_summary_zone_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
+                    ax.set_yticks(range(0, int(y_max) + 5000, 5000))
+                    st.pyplot(fig)
+            else:
+                st.markdown("Your file does not have 'Zone' column")
+
+            if 'DMA' in filtered_df.columns: 
+            # Second graph for DMA
+                with col2:
+                    fig, ax = plt.subplots(figsize=(7, 5))  # Adjust figure size
+                    user_summary_dma_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].plot(
+                        kind='bar', 
+                        stacked=False, 
+                        color=['#A9A9A9', '#FFA500', '#90EE90', '#87CEEB'],  
+                        ax=ax, 
+                        edgecolor='black'
+                    )
+                    ax.set_title('Network Users Summary - DMAs', fontsize=12)
+                    ax.set_xlabel('DMAs')
+                    ax.set_ylabel('Number of Users')
+                    ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
+                    y_max = user_summary_dma_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
+                    ax.set_yticks(range(0, int(y_max) + 5000, 5000))
+                    ax.set_xticklabels(user_summary_dma_plot.index, rotation=0)
+                    st.pyplot(fig)
+            else:
+                st.markdown("Your file does not have 'DMA' column")
+
+        with tab3:
+            st.markdown("### 📅 Monthly Water Consumption Calculation")
             
-        water_demand_dma.set_index('DMA', inplace=True)        
-        water_demand_dma = water_demand_dma.transpose()
-    
-    if 'Zone' in filtered_df.columns:
-        # Prepare population and non-user percentages for Zones
-        population_zone = user_summary_zone['Total Population']
-        non_users_zone = user_summary_zone['Non-user %'] / 100  
-        
-        # Create an empty DataFrame to store the results
-        water_demand_zone = pd.DataFrame(columns=['Zone'] + df_factors['Month'].tolist())
-
-        # Calculate the water consumption for each DMA and month
-        for zone in population_zone.index:
-            # For each Zone, calculate monthly consumption
-            zone_consumption = []
-            for i, month in enumerate(df_factors['Month']):
-                consumption_m3 = population_zone[zone] * (1 - non_users_zone[zone]) * monthly_consumption[i] * days_in_month[i] / 1000
-                zone_consumption.append(round(consumption_m3, -2))  # Round to the nearest 100
-
-            # Add the zone and its monthly consumption to the DataFrame
-            water_demand_zone.loc[len(water_demand_zone)] = [zone] + zone_consumption
+            #Seazonality factors
+            month_factors = {
+                'Month': ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dez'],
+                'Factor': [0.07, 0.07, 0.07, 0.08, 0.09, 0.09, 0.10, 0.10, 0.10, 0.08, 0.07, 0.07]
+            }
+            days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]  # Number of days in each month
+            # Create a DataFrame for the month factors
+            df_factors = pd.DataFrame(month_factors)        
             
-        water_demand_zone.set_index('Zone', inplace=True)        
-        water_demand_zone = water_demand_zone.transpose()
-    
-    
-    # Create columns for side-by-side layout
-    col1, col2 = st.columns(2)
+            st.markdown("#### Seasonal Variation Factor")        
+            # Slider to adjust the factors' variation (0 = all equal, 1 = current, 2 = amplified)
+            variation_factor = st.slider("Adjust Variation of Factors (0 = No Variation, 1 = Proposed, 2 = Amplified)", min_value=0.0, max_value=2.0, step=0.1, value=1.0)
 
-    if 'DMA' in filtered_df.columns:
-        with col1:
-            st.markdown("### 💧 Monthly Water Consumption per DMA")
-            st.dataframe(water_demand_dma, height=500)
-            # Plot the stacked bars
-            fig, ax = plt.subplots(figsize=(10, 6))
-            columns_to_plot = water_demand_dma.columns[:-1]
-            water_demand_dma[columns_to_plot].plot(kind='bar', stacked=True, ax=ax)
-            ax.set_title('Monthly Water Demand by DMA', fontsize=15)
-            ax.set_xlabel('Month', fontsize=12)
-            ax.set_ylabel('Water Demand (m3)', fontsize=13)
-            ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
-            ax.legend(columns_to_plot, loc='upper left')
+            # Calculate monthly water consumption based on factors
+            for i in range(len(days_in_month)):
+                df_factors['Factor - Updated'] = (1 - variation_factor) * np.mean(df_factors["Factor"]) + variation_factor * df_factors["Factor"]
+                df_factors['Average Daily Consumption - l/p/d'] = round(df_factors['Factor - Updated'] * avg_litres_per_person * 12)
+                df_factors["Total Monthly Consumption - m3"] = round(df_factors['Average Daily Consumption - l/p/d'] * sum(df["Population"]) * days_in_month[i] / 1000, -2)
+                
+            # Create columns for side-by-side layout
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                    st.markdown("### Monthly Water Consumption")
+                    # Display the table with calculated values
+                    st.dataframe(df_factors, height=500)
 
-            # Show the grid for y-axis
-            ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
+            with col2:
+                # Plot a graph of monthly water consumption
+                st.markdown("#### Average Water Consumption Distribution (l/p/d)")
 
-            # Rotate x-axis labels if needed
-            ax.set_xticklabels(water_demand_dma.index, rotation=0)
+                fig, ax = plt.subplots(figsize=(8,4))
+                ax.plot(df_factors['Month'], df_factors['Average Daily Consumption - l/p/d'], marker='o', color='skyblue', linewidth=1.0)
+                ax.set_ylabel('Average Water Consumption (l/p/d)')
+                ax.set_title('Monthly Water Consumption Distribution')
+                ax.grid(True, linestyle ='-', axis = 'y')
 
-            # Show the plot
-            plt.tight_layout()
-            st.pyplot(fig)
+                # Apply the if condition for y-axis limits
+                if avg_litres_per_person < 200:
+                    ax.set_ylim(50, 300)  # Set y-axis limits for avg_litres_per_person < 160
+                elif avg_litres_per_person < 280:
+                    ax.set_ylim(130, 380)  # Set y-axis limits for avg_litres_per_person < 260
+                else:
+                    ax.set_ylim(190, 600)  # Set y-axis limits for avg_litres_per_person >= 260
 
-    if 'Zone' in filtered_df.columns:            
-        with col2:
-            st.markdown("### 💧 Monthly Water Consumption per Zone")
-            st.dataframe(water_demand_zone, height=500)
+                # Display the plot
+                st.pyplot(fig)
+            
+            # Create a column, with empty space in the left and right for centering
+            col1, col2, col3 = st.columns([1, 3, 1])  # Make the center column wider for the plot
+            
+            with col2:
+                fig2, ax = plt.subplots(figsize=(8, 4))
+                ax.bar(df_factors['Month'], df_factors['Total Monthly Consumption - m3'], color='deepskyblue')
+                ax.set_ylabel('Monthly Water Consumption (m³)')
+                ax.set_title('Monthly Water Consumption Distribution')
+                ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ','))) # Format the y-axis labels with a thousand separator
+                ax.grid(True, linestyle='-', axis='y')
+                st.pyplot(fig2)
 
-            # Plot the stacked bars
-            fig, ax = plt.subplots(figsize=(10, 6))
-            columns_to_plot = water_demand_zone.columns[:-1]
-            water_demand_zone[columns_to_plot].plot(kind='bar', stacked=True, ax=ax)
-            ax.set_title('Monthly Water Demand by Zone', fontsize=15)
-            ax.set_xlabel('Month', fontsize=12)
-            ax.set_ylabel('Water Demand (m3)', fontsize=13)
-            ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
-            ax.legend(columns_to_plot, loc='upper left')
+        with tab4:
+            
+            # Monthly Daily Consumption from Seasonal Distribution
+            monthly_consumption = df_factors['Average Daily Consumption - l/p/d'] 
 
-            # Show the grid for y-axis
-            ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
+            if 'DMA' in filtered_df.columns:
+                # Prepare population and non-user percentages for DMAs
+                population_dma = user_summary_dma['Total Population']
+                non_users_dma = user_summary_dma['Non-user %'] / 100  
 
-            # Rotate x-axis labels if needed
-            ax.set_xticklabels(water_demand_zone.index, rotation=0)
+                # Create an empty DataFrame to store the results
+                water_demand_dma = pd.DataFrame(columns=['DMA'] + df_factors['Month'].tolist())
 
-            # Show the plot
-            plt.tight_layout()
-            st.pyplot(fig)
+                # Calculate the water consumption for each DMA and month
+                for dma in population_dma.index:
+                    # For each DMA, calculate monthly consumption
+                    dma_consumption = []
+                    for i, month in enumerate(df_factors['Month']):
+                        consumption_m3 = population_dma[dma] * (1 - non_users_dma[dma]) * monthly_consumption[i] * days_in_month[i] / 1000
+                        dma_consumption.append(round(consumption_m3, -2))  # Round to the nearest 100
 
-with tab5:
+                    # Add the DMA and its monthly consumption to the DataFrame
+                    water_demand_dma.loc[len(water_demand_dma)] = [dma] + dma_consumption
+                    
+                water_demand_dma.set_index('DMA', inplace=True)        
+                water_demand_dma = water_demand_dma.transpose()
+            
+            if 'Zone' in filtered_df.columns:
+                # Prepare population and non-user percentages for Zones
+                population_zone = user_summary_zone['Total Population']
+                non_users_zone = user_summary_zone['Non-user %'] / 100  
+                
+                # Create an empty DataFrame to store the results
+                water_demand_zone = pd.DataFrame(columns=['Zone'] + df_factors['Month'].tolist())
+
+                # Calculate the water consumption for each DMA and month
+                for zone in population_zone.index:
+                    # For each Zone, calculate monthly consumption
+                    zone_consumption = []
+                    for i, month in enumerate(df_factors['Month']):
+                        consumption_m3 = population_zone[zone] * (1 - non_users_zone[zone]) * monthly_consumption[i] * days_in_month[i] / 1000
+                        zone_consumption.append(round(consumption_m3, -2))  # Round to the nearest 100
+
+                    # Add the zone and its monthly consumption to the DataFrame
+                    water_demand_zone.loc[len(water_demand_zone)] = [zone] + zone_consumption
+                    
+                water_demand_zone.set_index('Zone', inplace=True)        
+                water_demand_zone = water_demand_zone.transpose()
+            
+            
+            # Create columns for side-by-side layout
+            col1, col2 = st.columns(2)
+
+            if 'DMA' in filtered_df.columns:
+                with col1:
+                    st.markdown("### 💧 Monthly Water Consumption per DMA")
+                    st.dataframe(water_demand_dma, height=500)
+                    # Plot the stacked bars
+                    fig, ax = plt.subplots(figsize=(10, 6))
+                    columns_to_plot = water_demand_dma.columns[:-1]
+                    water_demand_dma[columns_to_plot].plot(kind='bar', stacked=True, ax=ax)
+                    ax.set_title('Monthly Water Demand by DMA', fontsize=15)
+                    ax.set_xlabel('Month', fontsize=12)
+                    ax.set_ylabel('Water Demand (m3)', fontsize=13)
+                    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
+                    ax.legend(columns_to_plot, loc='upper left')
+
+                    # Show the grid for y-axis
+                    ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
+
+                    # Rotate x-axis labels if needed
+                    ax.set_xticklabels(water_demand_dma.index, rotation=0)
+
+                    # Show the plot
+                    plt.tight_layout()
+                    st.pyplot(fig)
+
+            if 'Zone' in filtered_df.columns:            
+                with col2:
+                    st.markdown("### 💧 Monthly Water Consumption per Zone")
+                    st.dataframe(water_demand_zone, height=500)
+
+                    # Plot the stacked bars
+                    fig, ax = plt.subplots(figsize=(10, 6))
+                    columns_to_plot = water_demand_zone.columns[:-1]
+                    water_demand_zone[columns_to_plot].plot(kind='bar', stacked=True, ax=ax)
+                    ax.set_title('Monthly Water Demand by Zone', fontsize=15)
+                    ax.set_xlabel('Month', fontsize=12)
+                    ax.set_ylabel('Water Demand (m3)', fontsize=13)
+                    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
+                    ax.legend(columns_to_plot, loc='upper left')
+
+                    # Show the grid for y-axis
+                    ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
+
+                    # Rotate x-axis labels if needed
+                    ax.set_xticklabels(water_demand_zone.index, rotation=0)
+
+                    # Show the plot
+                    plt.tight_layout()
+                    st.pyplot(fig)
+
+        with tab5:
 
 
-    # Process the files after both have been uploaded
-    if value_file and volume_file:
-        value_df = pd.read_csv(value_file)
-        volume_df = pd.read_csv(volume_file)
+            # Process the files after both have been uploaded
+            if value_file and volume_file:
+                value_df = pd.read_csv(value_file)
+                volume_df = pd.read_csv(volume_file)
+                
+                # Display the dataframes or proceed with your analysis
+                st.write("### Value Data")
+                st.dataframe(value_df)
+                
+                st.write("### Volume Data")
+                st.dataframe(volume_df)
+
+        with tab6:
+        st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
         
-        # Display the dataframes or proceed with your analysis
-        st.write("### Value Data")
-        st.dataframe(value_df)
+        # Dynamically generate a list of columns for the user to select from, excluding X (latitude) and Y (longitude)
+        selectable_columns = [col for col in df.columns if col not in ['X', 'Y']]
+
+        # Create a selectbox above the map
+        selected_attribute = st.selectbox("Color points by:", options=["Zone", "DMA"], index=0)
         
-        st.write("### Volume Data")
-        st.dataframe(volume_df)
-
-with tab6:
-    st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
-    
-    # Dynamically generate a list of columns for the user to select from, excluding X (latitude) and Y (longitude)
-    selectable_columns = [col for col in df.columns if col not in ['X', 'Y']]
-
-    # Create a selectbox above the map
-    selected_attribute = st.selectbox("Color points by:", options=["Zone", "DMA"], index=0)
-    
-    # Reorder the DataFrame so the selected attribute comes after lat/lon, but keep all columns
-    cols = ['X', 'Y', selected_attribute] + [col for col in df.columns if col not in ['X', 'Y', selected_attribute]]
-    df = df[cols]  # Dynamically reorder columns
+        # Reorder the DataFrame so the selected attribute comes after lat/lon, but keep all columns
+        cols = ['X', 'Y', selected_attribute] + [col for col in df.columns if col not in ['X', 'Y', selected_attribute]]
+        df = df[cols]  # Dynamically reorder columns
 
 
-    # Create a GeoDataFrame for processing
-    gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
-    gdf = gdf.set_crs(epsg=4326)
+        # Create a GeoDataFrame for processing
+        gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
+        gdf = gdf.set_crs(epsg=4326)
 
-    # Calculate the center of the uploaded data
-    center_lat, center_lon = gdf["Y"].mean(), gdf["X"].mean()
+        # Calculate the center of the uploaded data
+        center_lat, center_lon = gdf["Y"].mean(), gdf["X"].mean()
 
-    # Determine a reasonable zoom level based on data spread
-    lat_range = gdf["Y"].max() - gdf["Y"].min()
-    lon_range = gdf["X"].max() - gdf["X"].min()
-    zoom = 12 if max(lat_range, lon_range) < 1 else 10
-    
-    # Create dynamic KeplerGL configuration
-    config_1 = {
-        'version': 'v1',
-        'config': {
-            'mapState': {
-                'latitude': center_lat,
-                'longitude': center_lon,
-                'zoom': 15
-            },
-            "mapStyle": {
-                "styleType": "satellite"
-            },
-            "visState": {
-                "layers": [
-                    {
-                        "id": "building_layer",
-                        "type": "point",
-                        "config": {
-                            "dataId": "Water Consumption Data",
-                            "label": "Building Locations",
-                            "columns": {
-                                "lat": "lat",
-                                "lng": "lng"
-                            },
-                            "visConfig": {
-                                "radius": 4,
-                                "opacity": 1,
-                            },
-                            "isVisible": True
+        # Determine a reasonable zoom level based on data spread
+        lat_range = gdf["Y"].max() - gdf["Y"].min()
+        lon_range = gdf["X"].max() - gdf["X"].min()
+        zoom = 12 if max(lat_range, lon_range) < 1 else 10
+        
+        # Create dynamic KeplerGL configuration
+        config_1 = {
+            'version': 'v1',
+            'config': {
+                'mapState': {
+                    'latitude': center_lat,
+                    'longitude': center_lon,
+                    'zoom': 15
+                },
+                "mapStyle": {
+                    "styleType": "satellite"
+                },
+                "visState": {
+                    "layers": [
+                        {
+                            "id": "building_layer",
+                            "type": "point",
+                            "config": {
+                                "dataId": "Water Consumption Data",
+                                "label": "Building Locations",
+                                "columns": {
+                                    "lat": "lat",
+                                    "lng": "lng"
+                                },
+                                "visConfig": {
+                                    "radius": 4,
+                                    "opacity": 1,
+                                },
+                                "isVisible": True
+                            }
                         }
-                    }
-                ]
+                    ]
+                }
             }
         }
-    }
 
-    # Rename for easier recognition in Kepler
-    df = df.rename(columns={"X": "longitude", "Y": "latitude"})
+        # Rename for easier recognition in Kepler
+        df = df.rename(columns={"X": "longitude", "Y": "latitude"})
 
-    kepler_map = KeplerGl(height=800, config=config_1)
-    kepler_map.add_data(data=df, name="Water Consumption Data")
-    keplergl_static(kepler_map)
+        kepler_map = KeplerGl(height=800, config=config_1)
+        kepler_map.add_data(data=df, name="Water Consumption Data")
+        keplergl_static(kepler_map)
 
-    # Set up the Folium map with Google Satellite layer
-    m = folium.Map(
-        location=[center_lat, center_lon],
-        zoom_start=16,
-        width='100%'
-    )
-    folium.TileLayer(
-        tiles='https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
-        attr='Google Satellite',
-        name='Google Satellite',
-        overlay=False,
-        control=True
-    ).add_to(m)
+        # Set up the Folium map with Google Satellite layer
+        m = folium.Map(
+            location=[center_lat, center_lon],
+            zoom_start=16,
+            width='100%'
+        )
+        folium.TileLayer(
+            tiles='https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+            attr='Google Satellite',
+            name='Google Satellite',
+            overlay=False,
+            control=True
+        ).add_to(m)
 
-    # Create columns for side-by-side layout
-    col1, col2 = st.columns(2)
-    with col1:
+        # Create columns for side-by-side layout
+        col1, col2 = st.columns(2)
+        with col1:
 
-        # Create heatmaps based on selection
-        if heatmap_type == "All Buildings":
-            st.markdown("#### 🔥 Heatmap of All Building Locations")
-            heat_data = [[row['Y'], row['X']] for idx, row in gdf.iterrows()]
-            HeatMap(heat_data, radius=15).add_to(m)
+            # Create heatmaps based on selection
+            if heatmap_type == "All Buildings":
+                st.markdown("#### 🔥 Heatmap of All Building Locations")
+                heat_data = [[row['Y'], row['X']] for idx, row in gdf.iterrows()]
+                HeatMap(heat_data, radius=15).add_to(m)
 
-        elif heatmap_type == "Illegal Connections":
-            st.markdown("#### 🔥 Heatmap of Illegal Connections")
-            heat_data_illegal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Illegal'].iterrows()]
-            HeatMap(heat_data_illegal, radius=15).add_to(m)
+            elif heatmap_type == "Illegal Connections":
+                st.markdown("#### 🔥 Heatmap of Illegal Connections")
+                heat_data_illegal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Illegal'].iterrows()]
+                HeatMap(heat_data_illegal, radius=15).add_to(m)
 
-        elif heatmap_type == "Legal Connections":
-            st.markdown("#### 🔥 Heatmap of Legal Connections")
-            heat_data_legal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Legal'].iterrows()]
-            HeatMap(heat_data_legal, radius=15).add_to(m)
-            
-        elif heatmap_type == "Non-Users":
-            st.markdown("#### 🔥 Heatmap of Non-Users")
-            heat_data_non_users = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Non-user'].iterrows()]
-            HeatMap(heat_data_non_users, radius=15).add_to(m)
+            elif heatmap_type == "Legal Connections":
+                st.markdown("#### 🔥 Heatmap of Legal Connections")
+                heat_data_legal = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Legal'].iterrows()]
+                HeatMap(heat_data_legal, radius=15).add_to(m)
+                
+            elif heatmap_type == "Non-Users":
+                st.markdown("#### 🔥 Heatmap of Non-Users")
+                heat_data_non_users = [[row['Y'], row['X']] for idx, row in gdf[gdf['User Type'] == 'Non-user'].iterrows()]
+                HeatMap(heat_data_non_users, radius=15).add_to(m)
 
-        # Add a layer control panel
-        folium.LayerControl().add_to(m)
+            # Add a layer control panel
+            folium.LayerControl().add_to(m)
 
-        # Display the Folium map in Streamlit
-        folium_static(m, width=None, height=900)
+            # Display the Folium map in Streamlit
+            folium_static(m, width=None, height=900)
+        
+        with col2:
+            test = 100 / 1000
+            config_grid = {
+            'version': 'v1',
+            'config': {
+                'mapState': {
+                    'latitude': center_lat,
+                    'longitude': center_lon,
+                    'zoom': 16
+                },
+                "mapStyle": {
+                    "styleType": "satellite"
+                },
+                "visState": {
+                    "layers": [
+                        {
+                            "id": "building_layer",
+                            "type": "grid",  
+                            "config": {
+                                "dataId": "Water Consumption Data",
+                                "label": "Building Locations",
+                                "color": [30, 144, 255],  # Color of points
+                                "columns": {
+                                    "lat": "Y",
+                                    "lng": "X"
+                                },
+                                "visConfig": {
+                                    "radius": test,
+                                    "opacity": 0.8,
+                                },
+                                "isVisible" : True
+                            }
+                        }]}}}
+
+            # Create heatmaps based on selection
+            if heatmap_type == "All Buildings":
+                st.markdown("#### 📍 Location of All Building Locations")
+                kepler_map = KeplerGl(height=900, config=config_1)
+                kepler_map.add_data(data=gdf, name="Water Consumption Data")
+                keplergl_static(kepler_map)
+
+            elif heatmap_type == "Illegal Connections":
+                st.markdown("#### 📍 Location of Illegal Connections")
+                gdf_illegal = gdf[gdf['User Type'] == 'Illegal'] 
+                kepler_map = KeplerGl(height=900, config=config_1)
+                kepler_map.add_data(data=gdf_illegal, name="Water Consumption Data")
+                keplergl_static(kepler_map)
+
+            elif heatmap_type == "Legal Connections":
+                st.markdown("#### 📍 Location of Legal Connections")
+                gdf_legal = gdf[gdf['User Type'] == 'Legal']
+                kepler_map = KeplerGl(height=900, config=config_1)
+                kepler_map.add_data(data=gdf_legal, name="Water Consumption Data")
+                keplergl_static(kepler_map)
+                
+            elif heatmap_type == "Non-Users":
+                st.markdown("#### 📍 Location of Non-Users")
+                gdf_non_user = gdf[gdf['User Type'] == 'Non-user']
+                kepler_map = KeplerGl(height=900, config=config_1)
+                kepler_map.add_data(data=gdf_non_user, name="Water Consumption Data")
+                keplergl_static(kepler_map)
     
-    with col2:
-        test = 100 / 1000
-        config_grid = {
-        'version': 'v1',
-        'config': {
-            'mapState': {
-                'latitude': center_lat,
-                'longitude': center_lon,
-                'zoom': 16
-            },
-            "mapStyle": {
-                "styleType": "satellite"
-            },
-            "visState": {
-                "layers": [
-                    {
-                        "id": "building_layer",
-                        "type": "grid",  
-                        "config": {
-                            "dataId": "Water Consumption Data",
-                            "label": "Building Locations",
-                            "color": [30, 144, 255],  # Color of points
-                            "columns": {
-                                "lat": "Y",
-                                "lng": "X"
-                            },
-                            "visConfig": {
-                                "radius": test,
-                                "opacity": 0.8,
-                            },
-                            "isVisible" : True
-                        }
-                    }]}}}
-
-        # Create heatmaps based on selection
-        if heatmap_type == "All Buildings":
-            st.markdown("#### 📍 Location of All Building Locations")
-            kepler_map = KeplerGl(height=900, config=config_1)
-            kepler_map.add_data(data=gdf, name="Water Consumption Data")
-            keplergl_static(kepler_map)
-
-        elif heatmap_type == "Illegal Connections":
-            st.markdown("#### 📍 Location of Illegal Connections")
-            gdf_illegal = gdf[gdf['User Type'] == 'Illegal'] 
-            kepler_map = KeplerGl(height=900, config=config_1)
-            kepler_map.add_data(data=gdf_illegal, name="Water Consumption Data")
-            keplergl_static(kepler_map)
-
-        elif heatmap_type == "Legal Connections":
-            st.markdown("#### 📍 Location of Legal Connections")
-            gdf_legal = gdf[gdf['User Type'] == 'Legal']
-            kepler_map = KeplerGl(height=900, config=config_1)
-            kepler_map.add_data(data=gdf_legal, name="Water Consumption Data")
-            keplergl_static(kepler_map)
-            
-        elif heatmap_type == "Non-Users":
-            st.markdown("#### 📍 Location of Non-Users")
-            gdf_non_user = gdf[gdf['User Type'] == 'Non-user']
-            kepler_map = KeplerGl(height=900, config=config_1)
-            kepler_map.add_data(data=gdf_non_user, name="Water Consumption Data")
-            keplergl_static(kepler_map)
+    else:
+        st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', 'Block_Number', or 'Status'. If information is not available, create the column and leave it blank")
