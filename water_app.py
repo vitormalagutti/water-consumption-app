@@ -632,14 +632,14 @@ with tab1:
             else:
                     st.markdown("## Please, upload a value's file")   
 
-            if value_file:
+            if correlation_file:
                     processed_df = process_block_subscription_file(correlation_file)
                     if processed_df is not None:
                         st.markdown("correlation file")
                         st.dataframe(processed_df)  # Display the cleaned data
 
             else:
-                    st.markdown("## Please, upload a value's file")   
+                    st.markdown("## Please, upload a Block Number - Subscription Number Correlation file")   
 
 
         with tab6:
