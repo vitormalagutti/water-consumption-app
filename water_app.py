@@ -594,41 +594,7 @@ with tab1:
                     st.pyplot(fig)
 
         with tab5:
-            # if 'buildings_df' not in st.session_state:
-            #     st.session_state['buildings_df'] = None
-
-            # if buildings_file:
-            #     buildings_df = convert_to_csv(buildings_file)
-            #     if buildings_df is not None:
-            #         st.session_state['buildings_df'] = buildings_df  # Save to session state
-
-            # buildings_df       
-            # if volume_file:
-            #     volume_df = process_volume_or_value_file(volume_file)
-            #     if volume_df is not None:
-            #         st.markdown("volume file")
-            #         st.dataframe(volume_df)  # Display the cleaned data
-            # else:
-            #     st.markdown("## Please, upload a volume's file")
-
-            # if value_file:
-            #         processed_df = process_volume_or_value_file(value_file)
-            #         if processed_df is not None:
-            #             st.markdown("value file")
-            #             st.dataframe(processed_df)  # Display the cleaned data
-
-            # else:
-            #         st.markdown("## Please, upload a value's file")   
-
-            # if correlation_file:
-            #         correlation_df = process_block_subscription_file(correlation_file)
-            #         if correlation_df is not None:
-            #             st.markdown("correlation file")
-            #             st.dataframe(correlation_df)  # Display the cleaned data
-
-            # else:
-            #         st.markdown("## Please, upload a Block Number - Subscription Number Correlation file")   
-
+           
 
             # Step 1: Process the volume and value files
 
@@ -639,12 +605,12 @@ with tab1:
                 volume_df = process_volume_or_value_file(volume_file)
                 value_df = process_volume_or_value_file(value_file)
                 correlation_df = process_block_subscription_file(correlation_file)
-                #buildings_df = convert_to_csv(buildings_file)
+                buildings_df = convert_to_csv(buildings_file)
 
                 volume_df
                 value_df
                 correlation_df
-                df
+                buildings_df
 
 
                 # Step 2: Join the correlation file with the original buildings file on 'Block Number'
