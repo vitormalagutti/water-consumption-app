@@ -653,6 +653,12 @@ with tab1:
                 correlation_df = process_block_subscription_file(correlation_file)
                 buildings_df = convert_to_csv(buildings_file)
 
+                volume_df
+                value_df
+                correlation_df
+                buildings_df
+                
+
                 # Step 2: Join the correlation file with the original buildings file on 'Block Number'
                 # Assuming 'Block Number' is the column in both buildings_df and correlation_df
                 merged_df = pd.merge(df, correlation_df, on='Block Number', how='left')
