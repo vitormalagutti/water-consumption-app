@@ -196,9 +196,8 @@ with tab1:
             
             user_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
 
-
-
-
+    else:
+        st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', 'Block_Number', or 'Status'. If information is not available, create the column and leave it blank")
 
 
 
@@ -653,6 +652,3 @@ with tab1:
                 kepler_map.add_data(data=gdf_non_user, name="Water Consumption Data")
                 keplergl_static(kepler_map)
    
-
-else:
-    st.error("The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', 'Block_Number', or 'Status'. If information is not available, create the column and leave it blank")
