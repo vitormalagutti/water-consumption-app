@@ -102,8 +102,9 @@ def process_volume_or_value_file(uploaded_file):
 
         # Function to detect and clean date columns
         def extract_date_from_column(col):
+            col_str = str(col)  # Ensure the column is a string
             # Match columns that have a recognizable date format
-            match = re.match(r'(\d{4}-\d{2}-\d{2})', col)  # Matches 'YYYY-MM-DD' format
+            match = re.match(r'(\d{4}-\d{2}-\d{2})', col_str)  # Matches 'YYYY-MM-DD' format
             if match:
                 date_part = match.group(1)  # Extract the date part
                 # Convert 'YYYY-MM-DD' to 'mm/yy' format
