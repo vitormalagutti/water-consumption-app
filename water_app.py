@@ -51,7 +51,7 @@ def process_volume_or_value_file(uploaded_file):
     """
     if uploaded_file is not None:
         df = convert_to_csv(uploaded_file)
-
+        df
         # Ensure that we have a 'Subscription Number' column
         if 'Subscription Number' not in df.columns:
             st.error("The file does not contain a 'Subscription Number' column.")
@@ -596,8 +596,6 @@ with tab1:
 
         with tab5:
            
-
-            # Step 1: Process the volume and value files
 
             # Check if all files are present before proceeding
             if volume_file and value_file and correlation_file and buildings_file:
