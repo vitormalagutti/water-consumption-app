@@ -87,6 +87,7 @@ def convert_to_mm_yy(date_str):
         return None
 
 
+
 def process_volume_or_value_file(uploaded_file):
     """
     This function processes the volume or value files, ensuring that the expected 'Subscriber Number' column
@@ -110,21 +111,32 @@ def process_volume_or_value_file(uploaded_file):
                 # Convert 'YYYY-MM-DD' to 'mm/yy' format
                 cleaned_date = pd.to_datetime(date_part).strftime('%m/%y')
                 return cleaned_date
+            # Extend this to check for 'mmm.yy' formats
+            match_2 = re.match(r'([A-Za-z]{3}\.\d{2})', col_str)
+            if match_2:
+                return match_2.group(1)
             return None
 
-        # Identify and clean date columns
+        # Initialize lists for columns
         cleaned_date_columns = []
+        remaining_columns = []
+
+        # Check and clean date columns
         for col in df.columns:
             cleaned_col = extract_date_from_column(col)
             if cleaned_col:
                 cleaned_date_columns.append(cleaned_col)
+            elif col == 'Subscriber Number':
+                remaining_columns.append(col)
 
-        if not cleaned_date_columns:
-            st.warning("No date columns in a recognizable format were found.")
-            return None
+        # Only keep 'Subscriber Number' and valid date columns
+        df = df[remaining_columns + [col for col in df.columns if extract_date_from_column(col)]]
 
         # Rename the date columns in the DataFrame
-        df.columns = ['Subscriber Number'] + cleaned_date_columns
+        if len(cleaned_date_columns) == len(df.columns) - 1:  # Expecting the rest to be date columns
+            df.columns = ['Subscriber Number'] + cleaned_date_columns
+        else:
+            st.warning("Some columns were not recognized as dates. Extra columns have been removed.")
 
         # Check for non-numeric values in the date columns
         for col in cleaned_date_columns:
