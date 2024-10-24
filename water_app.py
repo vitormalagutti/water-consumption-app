@@ -606,6 +606,7 @@ with tab1:
             if volume_file:
                 processed_df = process_volume_or_value_file(volume_file)
                 if processed_df is not None:
+                    st.markdown("volume file")
                     st.dataframe(processed_df)  # Display the cleaned data
             else:
                 st.markdown("## Please, upload a volume's file")
@@ -613,6 +614,7 @@ with tab1:
             if value_file:
                     processed_df = process_volume_or_value_file(value_file)
                     if processed_df is not None:
+                        st.markdown("value file")
                         st.dataframe(processed_df)  # Display the cleaned data
 
             else:
