@@ -213,6 +213,7 @@ with tab1:
 
         # Filter out rows with "No Data" in User Type for percentage calculations
         filtered_df = df[df['User Type'] != 'No Data']
+        buildings_df = df
 
         # Sidebar inputs section with sliders only for the average litres per person
         st.sidebar.header("🔧 Assumptions")
@@ -606,15 +607,9 @@ with tab1:
                 value_df = process_volume_or_value_file(value_file)
                 correlation_df = process_block_subscription_file(correlation_file)
 
-                volume_df
-                value_df
-                correlation_df
-                df
-
-
                 # Step 2: Join the correlation file with the original buildings file on 'Block Number'
                 # Assuming 'Block Number' is the column in both buildings_df and correlation_df
-                merged_df = pd.merge(df, correlation_df, on='Block Number', how='left')
+                merged_df = pd.merge(buildings_df, correlation_df, on='Block Number', how='left')
 
                 st.markdown("Working until here")
                 # Step 3: Merge volume_df and value_df on 'Subscription Number'
