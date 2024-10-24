@@ -705,4 +705,4 @@ with tab1:
                     keplergl_static(kepler_map)
         
     else:
-        st.error("##The uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', 'Block_Number', or 'Status'. If information is not available, create the column and leave it blank")
+        st.error("You havent yet uploaded a file or the uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', 'Block_Number', or 'Status'. If information is not available, create the column and leave it blank")
