@@ -616,6 +616,7 @@ with tab1:
                 # Assuming 'Block Number' is the column in both buildings_df and correlation_df
                 merged_df = pd.merge(df, correlation_df, on='Block Number', how='left')
 
+                st.markdown("Working until here")
                 # Step 3: Merge volume_df and value_df on 'Subscription Number'
                 # Ensure that 'Subscription Number' is present in both files
                 volume_df = pd.merge(correlation_df, volume_df, on='Subscription Number', how='left')
