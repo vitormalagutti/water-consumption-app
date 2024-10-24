@@ -9,6 +9,7 @@ import folium
 import pydeck as pdk
 import json
 import matplotlib.ticker as ticker
+import io
 from keplergl import KeplerGl
 from shapely.geometry import Point
 from streamlit_folium import folium_static
@@ -25,26 +26,64 @@ st.markdown("This app calculates water consumption based on buildings informatio
 
 # Streamlit tabs for organized visualization
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📂 Input Files Upload", "📊 Network Users Summary", "📅 Seasonal Water Demand Distribution", "💧 Water Demand Model", "💰 Billed Water Analysis", "🗺️ Data Visualization"])
-    
+
+def convert_to_csv(uploaded_file):
+    """
+    This function takes an uploaded file (either .csv or .xlsx), reads it, and returns
+    a DataFrame. If the file is an .xlsx, it will convert the first sheet to CSV.
+    """
+    if uploaded_file is not None:
+        file_extension = uploaded_file.name.split('.')[-1]
+
+        if file_extension == 'xlsx':
+            st.write(f"Processing {uploaded_file.name} (Excel file)...")
+            try:
+                # Load the Excel file and read the first sheet into a DataFrame
+                excel_data = pd.read_excel(uploaded_file, sheet_name=0)
+                csv_data = excel_data.to_csv(index=False)
+                csv_buffer = io.StringIO(csv_data)
+                return excel_data  # Return the DataFrame
+
+            except Exception as e:
+                st.error(f"An error occurred while processing the Excel file: {e}")
+                return None
+
+        elif file_extension == 'csv':
+            st.write(f"Processing {uploaded_file.name} (CSV file)...")
+            try:
+                df = pd.read_csv(uploaded_file)
+                return df
+
+            except Exception as e:
+                st.error(f"An error occurred while processing the CSV file: {e}")
+                return None
+
+        else:
+            st.error("Please upload a CSV or XLSX file.")
+            return None
+    else:
+        return None
+
+
 with tab1:
 
     # File upload section with icon
     st.markdown("### 📂 Upload Your Buildings File")
     st.markdown("Please upload a .csv file with the specific columns' names X, Y, Block_Number, Zone, DMA, and Status")
     st.markdown("Values accepted for the Status column are water meter, illegal connection, non user, and blank cells")
-    buildings_file = st.file_uploader("Choose a CSV file", type=["csv"])
+    buildings_file = st.file_uploader("Choose a CSV file", type=["csv", "xlsx"])
 
     st.markdown("### 📂 Upload Your Value File")
     st.markdown("It must include the following column names [Subscription Number, mm/yy, mm/yy, ...]")
-    value_file = st.file_uploader("Choose a CSV file for Value", type=["csv"])
+    value_file = st.file_uploader("Choose a CSV file for Value", type=["csv", "xlsx"])
 
     st.markdown("### 📂 Upload Your Volume File")
     st.markdown("It must include the following column names [Subscription Number, mm/yy, mm/yy, ...]")
-    volume_file = st.file_uploader("Choose a CSV file for Volume", type=["csv"])
+    volume_file = st.file_uploader("Choose a CSV file for Volume", type=["csv", "xlsx"])
 
     if buildings_file:
         # Read the CSV file
-        df = pd.read_csv(buildings_file)
+        df = convert_to_csv(buildings_file)
 
         # Define the expected columns
         expected_columns = ["X", "Y", "Zone", "Block_Number", "DMA", "Status"]
