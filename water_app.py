@@ -83,7 +83,7 @@ def process_volume_or_value_file(uploaded_file):
         date_columns = [col for col in df.columns if isinstance(col, str) and (
             re.match(r'^[a-zA-Z]{3,}\.\d{2}$', col)  # Match mmm.yy pattern (more flexible to handle different languages)
         )]
-
+        date_columns
         if not date_columns:
             st.warning("No date columns in the expected 'mmm.yy' format were found.")
             return None
