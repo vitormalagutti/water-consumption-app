@@ -64,26 +64,6 @@ def convert_to_csv(uploaded_file):
     else:
         return None
 
-def convert_to_mm_yy(date_str):
-    """
-    Tries to parse a given date string or datetime and convert it to the 'mm/yy' format.
-    """
-    try:
-        # If the input is already a datetime object
-        if isinstance(date_str, pd.Timestamp):
-            return date_str.strftime('%m/%y')
-
-        # Attempt to parse the string to a datetime object
-        parsed_date = parser.parse(date_str, fuzzy=True)
-        return parsed_date.strftime('%m/%y')
-    
-    except Exception as e:
-        # If parsing fails, return None and log the error
-        print(f"Error parsing date: {date_str}, error: {e}")
-        return None
-
-
-
 def process_volume_or_value_file(uploaded_file):
     """
     This function processes the volume or value files, ensuring that the expected 'Subscriber Number' column
@@ -147,7 +127,36 @@ def process_volume_or_value_file(uploaded_file):
     else:
         return None
 
+def process_block_subscription_file(uploaded_file):
+    """
+    This function processes the uploaded Block Number - Subscription Number file,
+    ensuring that the expected columns ['Block Number', 'Subscription Number'] are present,
+    and that the values in both columns are numeric. If non-numeric values are found, a warning is raised.
+    """
+    if uploaded_file is not None:
+        df = convert_to_csv(uploaded_file)
 
+        # Ensure that we have the required columns
+        required_columns = ['Block Number', 'Subscription Number']
+        if not all(col in df.columns for col in required_columns):
+            st.error(f"The file must contain the columns: {required_columns}.")
+            return None
+
+        # Check for non-numeric values in 'Block Number' and 'Subscription Number'
+        for col in required_columns:
+            non_numeric = df[pd.to_numeric(df[col], errors='coerce').isna() & df[col].notna()]
+            if not non_numeric.empty:
+                st.warning(f"Non-numeric values found in column '{col}' at rows: {non_numeric.index.tolist()}")
+        
+        # Convert blanks or NaNs to 0 (if needed)
+        df[required_columns] = df[required_columns].fillna(0)
+
+        # Optionally convert the columns to integers after replacing NaNs (you can modify this part if needed)
+        df[required_columns] = df[required_columns].astype(int)
+
+        return df
+    else:
+        return None
 
 with tab1:
 
@@ -156,6 +165,10 @@ with tab1:
     st.markdown("Please upload a .csv file with the specific columns' names X, Y, Block_Number, Zone, DMA, and Status")
     st.markdown("Values accepted for the Status column are water meter, illegal connection, non user, and blank cells")
     buildings_file = st.file_uploader("Choose a CSV file", type=["csv", "xlsx"])
+    
+    st.markdown("### 📂 Upload Block Number - Subscription Number File")
+    st.markdown("It must include the following column names [Block Number, Subscription Number]")
+    correlation_file = st.file_uploader("Choose a CSV file for Value", type=["csv", "xlsx"])
 
     st.markdown("### 📂 Upload Your Value File")
     st.markdown("It must include the following column names [Subscription Number, mm/yy, mm/yy, ...]")
@@ -615,6 +628,16 @@ with tab1:
 
             else:
                     st.markdown("## Please, upload a value's file")   
+
+            if value_file:
+                    processed_df = process_block_subscription_file(correlation_file)
+                    if processed_df is not None:
+                        st.markdown("correlation file")
+                        st.dataframe(processed_df)  # Display the cleaned data
+
+            else:
+                    st.markdown("## Please, upload a value's file")   
+
 
         with tab6:
             st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
