@@ -71,9 +71,10 @@ def process_volume_or_value_file(uploaded_file):
     if uploaded_file is not None:
         df = convert_to_csv(uploaded_file)
 
-        # Strip whitespace from column names
-        df.columns = df.columns.str.strip()
-
+        # Clean the column names by stripping whitespace and removing any hidden characters
+        df.columns = df.columns.str.strip()  # Strip any leading/trailing spaces
+        df.columns = df.columns.str.replace(r'[^\x00-\x7F]+', '', regex=True)  # Remove non-ASCII characters
+        
         # Ensure that we have a 'Subscriber Number' column (case insensitive and removing spaces)
         expected_column = 'Subscriber Number'
         normalized_columns = {col.lower().strip(): col for col in df.columns}
