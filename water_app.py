@@ -90,8 +90,7 @@ def convert_to_mm_yy(date_str):
 def process_volume_or_value_file(uploaded_file):
     """
     This function processes the volume or value files, ensuring that the expected 'Subscriber Number' column
-    and columns with recognizable date formats are identified and converted to 'mm/yy' format.
-    Values should be numeric, and non-numeric values will trigger a warning.
+    and columns in either 'mm/yy' or 'mmm.yy' format are kept, and values are numeric. Non-numeric values will trigger a warning.
     """
     if uploaded_file is not None:
         df = convert_to_csv(uploaded_file)
@@ -101,40 +100,39 @@ def process_volume_or_value_file(uploaded_file):
             st.error("The file does not contain a 'Subscriber Number' column.")
             return None
 
-        # Initialize an empty list for columns that will be identified as dates
-        date_columns = []
+        # Function to detect and clean date columns
+        def extract_date_from_column(col):
+            # Match columns that have a recognizable date format
+            match = re.match(r'(\d{4}-\d{2}-\d{2})', col)  # Matches 'YYYY-MM-DD' format
+            if match:
+                date_part = match.group(1)  # Extract the date part
+                # Convert 'YYYY-MM-DD' to 'mm/yy' format
+                cleaned_date = pd.to_datetime(date_part).strftime('%m/%y')
+                return cleaned_date
+            return None
 
-        # Attempt to recognize date columns
+        # Identify and clean date columns
+        cleaned_date_columns = []
         for col in df.columns:
-            if isinstance(col, str):  # Only proceed with string column names
-                try:
-                    # Try to parse the column name as a date
-                    parsed_date = parser.parse(col, fuzzy=True)  # Fuzzy allows for flexible parsing
-                    # If successful, format it as 'mm/yy'
-                    formatted_date = parsed_date.strftime('%m/%y')
-                    date_columns.append(formatted_date)
-                except (ValueError, TypeError):
-                    # If parsing fails, it's not a valid date format
-                    continue
+            cleaned_col = extract_date_from_column(col)
+            if cleaned_col:
+                cleaned_date_columns.append(cleaned_col)
 
-        if not date_columns:
+        if not cleaned_date_columns:
             st.warning("No date columns in a recognizable format were found.")
             return None
 
-        # Rename columns to 'mm/yy' format
-        df.columns = [parser.parse(col, fuzzy=True).strftime('%m/%y') if isinstance(col, str) else col for col in df.columns]
+        # Rename the date columns in the DataFrame
+        df.columns = ['Subscriber Number'] + cleaned_date_columns
 
-        # Keep only 'Subscriber Number' and the identified date columns
-        df = df[['Subscriber Number'] + date_columns]
-
-        # Check for non-numeric values in date columns
-        for col in date_columns:
+        # Check for non-numeric values in the date columns
+        for col in cleaned_date_columns:
             non_numeric = df[pd.to_numeric(df[col], errors='coerce').isna() & df[col].notna()]
             if not non_numeric.empty:
                 st.warning(f"Non-numeric values found in column '{col}' at rows: {non_numeric.index.tolist()}")
 
         # Replace blanks (NaN) with 0
-        df[date_columns] = df[date_columns].fillna(0)
+        df[cleaned_date_columns] = df[cleaned_date_columns].fillna(0)
 
         return df
     else:
