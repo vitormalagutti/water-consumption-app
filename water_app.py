@@ -520,19 +520,8 @@ with tab1:
                     # Define the expected columns
                     expected_columns = ["Subscriber Number", "mm/yy"]
             else:
-                st.markdown("Please, upload a volume's file")
+                st.markdown("##Please, upload a volume's file")
 
-            # Process the files after both have been uploaded
-            if value_file and volume_file:
-                value_df = pd.read_csv(value_file)
-                volume_df = pd.read_csv(volume_file)
-                
-                # Display the dataframes or proceed with your analysis
-                st.write("### Value Data")
-                st.dataframe(value_df)
-                
-                st.write("### Volume Data")
-                st.dataframe(volume_df)
 
         with tab6:
             st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
