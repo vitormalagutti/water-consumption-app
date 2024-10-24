@@ -24,7 +24,7 @@ st.title("💧 Water Demand Estimation and Visualization 💧")
 st.markdown("This app calculates water consumption based on buildings information, with breakdowns by zone and user type. Use the sidebar to provide average consumption details and view interactive maps, graphs, and tables.")
 
 # Streamlit tabs for organized visualization
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📂 Input Files Upload", "📊 Network Users Summary", "📅 Seasonal Water Demand Distribution", "💧 Water Demand Model", "Billed Water Analysis", "🗺️ Data Visualization"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📂 Input Files Upload", "📊 Network Users Summary", "📅 Seasonal Water Demand Distribution", "💧 Water Demand Model", "💰 Billed Water Analysis", "🗺️ Data Visualization"])
     
 with tab1:
 
@@ -475,7 +475,6 @@ with tab5:
         
         st.write("### Volume Data")
         st.dataframe(volume_df)
-
 
 with tab6:
     st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
