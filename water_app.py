@@ -71,14 +71,17 @@ def process_volume_or_value_file(uploaded_file):
     if uploaded_file is not None:
         df = convert_to_csv(uploaded_file)
 
+        # Clean up the column names by stripping spaces and converting to lowercase for consistent matching
+        df.columns = df.columns.str.strip().str.lower()
+
         # Ensure that we have a 'Subscriber Number' column
-        if 'Subscriber Number' not in df.columns:
+        if 'subscriber number' not in df.columns:
             st.error("The file does not contain a 'Subscriber Number' column.")
             return None
 
-        # Update the regex to match month formats, including non-English abbreviations (e.g., "Mai.23")
+        # Update the regex to match month formats, including non-English abbreviations (e.g., "Mai.23", "Mär.24")
         date_columns = [col for col in df.columns if isinstance(col, str) and (
-            re.match(r'^[A-Za-z]{3}\.\d{2}$', col)  # Match mmm.yy pattern
+            re.match(r'^[a-zA-Z]{3,}\.\d{2}$', col)  # Match mmm.yy pattern (more flexible to handle different languages)
         )]
 
         if not date_columns:
@@ -86,7 +89,7 @@ def process_volume_or_value_file(uploaded_file):
             return None
 
         # Keep only 'Subscriber Number' and date columns
-        df = df[['Subscriber Number'] + date_columns]
+        df = df[['subscriber number'] + date_columns]
 
         # Check for non-numeric values in date columns
         for col in date_columns:
