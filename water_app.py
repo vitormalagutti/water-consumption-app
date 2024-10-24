@@ -594,7 +594,15 @@ with tab1:
                     st.pyplot(fig)
 
         with tab5:
+            if 'buildings_df' not in st.session_state:
+                st.session_state['buildings_df'] = None
 
+            if buildings_file:
+                buildings_df = convert_to_csv(buildings_file)
+                if buildings_df is not None:
+                    st.session_state['buildings_df'] = buildings_df  # Save to session state
+
+                    
             # if volume_file:
             #     volume_df = process_volume_or_value_file(volume_file)
             #     if volume_df is not None:
