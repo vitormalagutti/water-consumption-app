@@ -105,14 +105,14 @@ def process_volume_or_value_file(uploaded_file):
                 elif re.match(r'^[A-Za-z]{3}\.\d{2}$', col):  # Format mmm.yy
                     date_columns.append(col)
             elif isinstance(col, pd.Timestamp):  # Check for pandas date columns
-                date_columns.append(col.strftime('%m/%y'))
+                date_columns.append(col.strftime('%d%m/%y'))
 
         if not date_columns:
             st.warning("No date columns in a recognizable format were found.")
             return None
 
         # Rename any pandas Timestamps to 'mm/yy'
-        df.columns = [col.strftime('%m/%y') if isinstance(col, pd.Timestamp) else col for col in df.columns]
+        df.columns = [col.strftime('%d%m/%y') if isinstance(col, pd.Timestamp) else col for col in df.columns]
 
         # Keep only 'Subscriber Number' and date columns
         df = df[['Subscriber Number'] + date_columns]
