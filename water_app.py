@@ -38,7 +38,6 @@ def convert_to_csv(uploaded_file):
         file_extension = uploaded_file.name.split('.')[-1]
 
         if file_extension == 'xlsx':
-            st.write(f"Processing {uploaded_file.name} (Excel file)...")
             try:
                 # Load the Excel file and read the first sheet into a DataFrame
                 excel_data = pd.read_excel(uploaded_file, sheet_name=0)
@@ -50,7 +49,6 @@ def convert_to_csv(uploaded_file):
                 return None
 
         elif file_extension == 'csv':
-            st.write(f"Processing {uploaded_file.name} (CSV file)...")
             try:
                 df = pd.read_csv(uploaded_file)
                 st.write("CSV file loaded successfully:")
