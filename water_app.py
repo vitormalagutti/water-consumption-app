@@ -22,8 +22,7 @@ st.set_page_config(page_title="Water Consumption Visualization", layout="wide")
 # Main Title with description
 st.title("💧 Water Demand Estimation and Visualization 💧")
 st.markdown("This app calculates water consumption based on buildings information, with breakdowns by zone and user type. Use the sidebar to provide average consumption details and view interactive maps, graphs, and tables.")
-st.markdown("Please upload a .csv file with the specific columns' names X, Y, Block_Number, Zone, DMA, and Status")
-st.markdown("Values accepted for the Status column are water meter, illegal connection, non user, and blank cells")
+
 
 
     # Streamlit tabs for organized visualization
@@ -32,13 +31,17 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📂 Input Files Upload", "📊 N
 with tab1:
 
     # File upload section with icon
-    st.markdown("### 📂 Upload Your Data File")
+    st.markdown("### 📂 Upload Your Buildings File")
+    st.markdown("Please upload a .csv file with the specific columns' names X, Y, Block_Number, Zone, DMA, and Status")
+    st.markdown("Values accepted for the Status column are water meter, illegal connection, non user, and blank cells")
     buildings_file = st.file_uploader("Choose a CSV file", type=["csv"])
 
     st.markdown("### 📂 Upload Your Value File")
+    st.markdown("It must include the following column names [Subscription Number, mm/yy, mm/yy, ...]")
     value_file = st.file_uploader("Choose a CSV file for Value", type=["csv"])
 
     st.markdown("### 📂 Upload Your Volume File")
+    st.markdown("It must include the following column names [Subscription Number, mm/yy, mm/yy, ...]")
     volume_file = st.file_uploader("Choose a CSV file for Volume", type=["csv"])
 
     if buildings_file:
