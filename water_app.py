@@ -11,6 +11,7 @@ import json
 import matplotlib.ticker as ticker
 import io
 import re
+from dateutil import parser
 from keplergl import KeplerGl
 from shapely.geometry import Point
 from streamlit_folium import folium_static
