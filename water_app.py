@@ -70,7 +70,7 @@ def process_volume_or_value_file(uploaded_file):
     """
     if uploaded_file is not None:
         df = convert_to_csv(uploaded_file)
-
+        st.markdown(df)
         # Clean the column names by stripping whitespace and removing any hidden characters
         df.columns = df.columns.str.strip()  # Strip any leading/trailing spaces
         df.columns = df.columns.str.replace(r'[^\x00-\x7F]+', '', regex=True)  # Remove non-ASCII characters
