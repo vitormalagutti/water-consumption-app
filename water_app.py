@@ -10,6 +10,7 @@ import pydeck as pdk
 import json
 import matplotlib.ticker as ticker
 import io
+import re
 from keplergl import KeplerGl
 from shapely.geometry import Point
 from streamlit_folium import folium_static
@@ -61,6 +62,56 @@ def convert_to_csv(uploaded_file):
             return None
     else:
         return None
+
+def process_volume_or_value_file(uploaded_file):
+    """
+    Process the volume or value file by ensuring correct formatting for the "Subscriber Number"
+    column and dynamically handling date columns. It ensures all values are numbers, with blanks replaced by 0.
+    Warns the user if non-numeric values are found in the date columns and identifies the problematic rows and columns.
+    """
+    if uploaded_file is not None:
+        # Read the file, assuming it can be either .csv or .xlsx
+        df = convert_to_csv(uploaded_file)
+
+        # Dynamically identify the "Subscriber Number" and "mm/yy" columns
+        subscriber_col = 'Subscriber Number'
+
+        # Extract columns that match the mm/yy format using regex
+        date_columns = [col for col in df.columns if re.match(r'^\d{2}/\d{2}$', col)]
+
+        # Ensure that the "Subscriber Number" column exists
+        if subscriber_col not in df.columns:
+            st.error(f"The file is missing the '{subscriber_col}' column.")
+            return None
+
+        # Retain only the "Subscriber Number" and date columns, dropping all other columns
+        df = df[[subscriber_col] + date_columns]
+
+        # Check for non-numeric values in the date columns and report any issues
+        issues_found = False
+        issue_details = []
+        for col in date_columns:
+            # Identify rows where the values in the column are not numeric
+            non_numeric_rows = df[~df[col].apply(lambda x: pd.to_numeric(x, errors='coerce')).notnull()]
+            if not non_numeric_rows.empty:
+                issues_found = True
+                # Record the problematic rows and columns
+                for index, value in non_numeric_rows[col].items():
+                    issue_details.append(f"Row {index + 1}, Column '{col}': {value}")
+
+        # If issues are found, display a warning with details
+        if issues_found:
+            st.warning(f"Non-numeric values were found in the following locations:")
+            for detail in issue_details:
+                st.write(detail)
+        else:
+            st.success("All values are numeric in the date columns.")
+
+        # Convert date columns to numeric, filling non-numeric values with 0
+        df[date_columns] = df[date_columns].apply(pd.to_numeric, errors='coerce').fillna(0)
+
+        return df
+
 
 
 with tab1:
@@ -514,11 +565,9 @@ with tab1:
         with tab5:
 
             if volume_file:
-                    # Read the CSV file
-                    df = convert_to_csv(volume_file)
-
-                    # Define the expected columns
-                    expected_columns = ["Subscriber Number", "mm/yy"]
+                processed_df = process_volume_or_value_file(volume_file)
+                if processed_df is not None:
+                    st.dataframe(processed_df)  # Display the cleaned data
             else:
                 st.markdown("## Please, upload a volume's file")
 
