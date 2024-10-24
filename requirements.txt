@@ -14,4 +14,4 @@ streamlit_keplergl
 # Additional packages that might be required
 numpy     # for numerical operations
 openpyxl
-dateutil
+python-dateutil
