@@ -186,7 +186,7 @@ with tab1:
         df = convert_to_csv(buildings_file)
 
         # Define the expected columns
-        expected_columns = ["X", "Y", "Zone", "Block_Number", "DMA", "Status"]
+        expected_columns = ["X", "Y", "Zone", "Block Number", "DMA", "Status"]
 
         # Select valid columns and fill missing ones with default values
         df = df[[col for col in df.columns if col in expected_columns]]
@@ -856,4 +856,4 @@ with tab1:
                     keplergl_static(kepler_map)
         
     else:
-        st.error("You havent yet uploaded a file or the uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', 'Block_Number', or 'Status'. If information is not available, create the column and leave it blank")
+        st.error("You havent yet uploaded a file or the uploaded CSV file does not contain the required columns 'X', 'Y', 'Zone', 'Block Number', or 'Status'. If information is not available, create the column and leave it blank")
