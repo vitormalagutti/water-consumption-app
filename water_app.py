@@ -54,7 +54,7 @@ def process_volume_or_value_file(uploaded_file):
 
         # Ensure that we have a 'Subscriber Number' column
         if 'Subscriber Number' not in df.columns:
-            st.error("The file does not contain a 'Subscriber Number' column.")
+            st.error("The file does not contain a 'Subscription Number' column.")
             return None
 
         # Function to detect and clean date columns
@@ -82,7 +82,7 @@ def process_volume_or_value_file(uploaded_file):
             cleaned_col = extract_date_from_column(col)
             if cleaned_col:
                 cleaned_date_columns.append(cleaned_col)
-            elif col == 'Subscriber Number':
+            elif col == 'Subscription Number':
                 remaining_columns.append(col)
 
         # Only keep 'Subscriber Number' and valid date columns
@@ -90,7 +90,7 @@ def process_volume_or_value_file(uploaded_file):
 
         # Rename the date columns in the DataFrame
         if len(cleaned_date_columns) == len(df.columns) - 1:  # Expecting the rest to be date columns
-            df.columns = ['Subscriber Number'] + cleaned_date_columns
+            df.columns = ['Subscription Number'] + cleaned_date_columns
         else:
             st.warning("Some columns were not recognized as dates. Extra columns have been removed.")
 
