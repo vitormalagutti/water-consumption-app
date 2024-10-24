@@ -85,8 +85,8 @@ def convert_to_mm_yy(date_str):
 def process_volume_or_value_file(uploaded_file):
     """
     This function processes the volume or value files, ensuring that the expected 'Subscriber Number' column
-    and columns in either 'mm/yy' or 'mmm.yy' format are kept, and values are numeric. Non-numeric values will trigger a warning.
-    It converts the identified date columns to 'mm/yy' format.
+    and columns in date formats (including 'YYYY-MM-DD') are recognized and converted to 'mm/yy'.
+    Values should be numeric, and non-numeric values will trigger a warning.
     """
     if uploaded_file is not None:
         df = convert_to_csv(uploaded_file)
@@ -96,33 +96,35 @@ def process_volume_or_value_file(uploaded_file):
             st.error("The file does not contain a 'Subscriber Number' column.")
             return None
 
-        # Try to identify date columns and convert them to 'mm/yy'
+        # Identify columns with date-like names (recognize 'YYYY-MM-DD' and others)
         date_columns = []
         for col in df.columns:
-            # Try converting the column header to a date format
-            mm_yy = convert_to_mm_yy(col)
-            if mm_yy:
-                date_columns.append(col)
+            if isinstance(col, str):
+                if re.match(r'^\d{2}/\d{2}$', col):  # Format mm/yy
+                    date_columns.append(col)
+                elif re.match(r'^[A-Za-z]{3}\.\d{2}$', col):  # Format mmm.yy
+                    date_columns.append(col)
+            elif isinstance(col, pd.Timestamp):  # Check for pandas date columns
+                date_columns.append(col.strftime('%m/%y'))
 
         if not date_columns:
             st.warning("No date columns in a recognizable format were found.")
             return None
 
-        # Rename the date columns to the 'mm/yy' format
-        date_column_mapping = {col: convert_to_mm_yy(col) for col in date_columns}
-        df.rename(columns=date_column_mapping, inplace=True)
+        # Rename any pandas Timestamps to 'mm/yy'
+        df.columns = [col.strftime('%m/%y') if isinstance(col, pd.Timestamp) else col for col in df.columns]
 
         # Keep only 'Subscriber Number' and date columns
-        df = df[['Subscriber Number'] + list(date_column_mapping.values())]
+        df = df[['Subscriber Number'] + date_columns]
 
-        # Check for non-numeric values in the date columns
-        for col in date_column_mapping.values():
+        # Check for non-numeric values in date columns
+        for col in date_columns:
             non_numeric = df[pd.to_numeric(df[col], errors='coerce').isna() & df[col].notna()]
             if not non_numeric.empty:
                 st.warning(f"Non-numeric values found in column '{col}' at rows: {non_numeric.index.tolist()}")
 
         # Replace blanks (NaN) with 0
-        df[date_column_mapping.values()] = df[date_column_mapping.values()].fillna(0)
+        df[date_columns] = df[date_columns].fillna(0)
 
         return df
     else:
