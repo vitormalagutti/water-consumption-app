@@ -65,52 +65,39 @@ def convert_to_csv(uploaded_file):
 
 def process_volume_or_value_file(uploaded_file):
     """
-    Process the volume or value file by ensuring correct formatting for the "Subscriber Number"
-    column and dynamically handling date columns. It ensures all values are numbers, with blanks replaced by 0.
-    Warns the user if non-numeric values are found in the date columns and identifies the problematic rows and columns.
+    This function processes the volume or value files, ensuring that the expected 'Subscriber Number' column
+    and columns in the 'mm/yy' format are kept, and values are numeric. Non-numeric values will trigger a warning.
     """
     if uploaded_file is not None:
-        # Read the file, assuming it can be either .csv or .xlsx
         df = convert_to_csv(uploaded_file)
 
-        # Dynamically identify the "Subscriber Number" and "mm/yy" columns
-        subscriber_col = 'Subscription Number'
-
-        # Extract columns that match the mm/yy format using regex
-        date_columns = [col for col in df.columns if re.match(r'^\d{2}/\d{2}$', col)]
-
-        # Ensure that the "Subscriber Number" column exists
-        if subscriber_col not in df.columns:
-            st.error(f"The file is missing the '{subscriber_col}' column.")
+        # Ensure that we have a 'Subscriber Number' column
+        if 'Subscriber Number' not in df.columns:
+            st.error("The file does not contain a 'Subscriber Number' column.")
             return None
 
-        # Retain only the "Subscriber Number" and date columns, dropping all other columns
-        df = df[[subscriber_col] + date_columns]
+        # Identify date columns (with the format mm/yy)
+        date_columns = [col for col in df.columns if isinstance(col, str) and re.match(r'^\d{2}/\d{2}$', col)]
+        
+        if not date_columns:
+            st.warning("No date columns in the expected 'mm/yy' format were found.")
+            return None
 
-        # Check for non-numeric values in the date columns and report any issues
-        issues_found = False
-        issue_details = []
+        # Keep only 'Subscriber Number' and date columns
+        df = df[['Subscriber Number'] + date_columns]
+
+        # Check for non-numeric values in date columns
         for col in date_columns:
-            # Identify rows where the values in the column are not numeric
-            non_numeric_rows = df[~df[col].apply(lambda x: pd.to_numeric(x, errors='coerce')).notnull()]
-            if not non_numeric_rows.empty:
-                issues_found = True
-                # Record the problematic rows and columns
-                for index, value in non_numeric_rows[col].items():
-                    issue_details.append(f"Row {index + 1}, Column '{col}': {value}")
+            non_numeric = df[pd.to_numeric(df[col], errors='coerce').isna() & df[col].notna()]
+            if not non_numeric.empty:
+                st.warning(f"Non-numeric values found in column '{col}' at rows: {non_numeric.index.tolist()}")
 
-        # If issues are found, display a warning with details
-        if issues_found:
-            st.warning(f"Non-numeric values were found in the following locations:")
-            for detail in issue_details:
-                st.write(detail)
-        else:
-            st.success("All values are numeric in the date columns.")
-
-        # Convert date columns to numeric, filling non-numeric values with 0
-        df[date_columns] = df[date_columns].apply(pd.to_numeric, errors='coerce').fillna(0)
+        # Replace blanks (NaN) with 0
+        df[date_columns] = df[date_columns].fillna(0)
 
         return df
+    else:
+        return None
 
 
 
