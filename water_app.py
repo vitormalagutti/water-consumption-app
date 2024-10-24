@@ -43,7 +43,6 @@ def convert_to_csv(uploaded_file):
                 # Load the Excel file and read the first sheet into a DataFrame
                 excel_data = pd.read_excel(uploaded_file, sheet_name=0)
                 st.write("Excel file loaded successfully:")
-                st.write(excel_data.head())  # Display the first few rows for checking
                 return excel_data  # Return the DataFrame directly
 
             except Exception as e:
@@ -55,7 +54,6 @@ def convert_to_csv(uploaded_file):
             try:
                 df = pd.read_csv(uploaded_file)
                 st.write("CSV file loaded successfully:")
-                st.write(df.head())  # Display the first few rows for checking
                 return df
 
             except Exception as e:
