@@ -531,12 +531,9 @@ with tab1:
 
         with tab4:
             
-
             # Monthly Daily Consumption from Seasonal Distribution
             monthly_consumption = df_factors['Average Daily Consumption - l/p/d'] 
-            monthly_consumption
-            print(f"Zone index types: {monthly_consumption.index.map(type)}")
-            
+
             if 'DMA' in filtered_df.columns:
                 # Prepare population and non-user percentages for DMAs
                 population_dma = user_summary_dma['Total Population']
@@ -559,7 +556,7 @@ with tab1:
                     
                 water_demand_dma.set_index('DMA', inplace=True)        
                 water_demand_dma = water_demand_dma.transpose()
-                print(f"DMA index types: {water_demand_dma.index.map(type)}")
+                st.write(f"DMA index types: {water_demand_dma.index.map(type)}")
             
             if 'Zone' in filtered_df.columns:
                 # Prepare population and non-user percentages for Zones
@@ -582,8 +579,8 @@ with tab1:
                     
                 water_demand_zone.set_index('Zone', inplace=True)        
                 water_demand_zone = water_demand_zone.transpose()
-
                 
+                st.write(f"Zone index types: {water_demand_zone.index.map(type)}")
             
 
             
