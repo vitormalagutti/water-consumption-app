@@ -47,7 +47,7 @@ def convert_to_csv(uploaded_file):
 def process_volume_or_value_file(uploaded_file):
     """
     This function processes volume or value files by ensuring that a 'Subscription Number' column
-    is present, identifying date columns automatically, and converting them into a standard format.
+    is present, identifying date columns in various formats, and converting them to a standard format.
     """
     if uploaded_file is not None:
         df = convert_to_csv(uploaded_file)
@@ -60,12 +60,12 @@ def process_volume_or_value_file(uploaded_file):
         # Function to identify and standardize date columns
         def standardize_date(col):
             try:
-                parsed_date = parser.parse(col, fuzzy=True)  # 'fuzzy' handles minor variations in formatting
-                return parsed_date.strftime('%m/%y')  # Standardize to 'mm/yy' format
+                parsed_date = parser.parse(col, fuzzy=True, dayfirst=False)  # Handles various formats
+                return parsed_date.strftime('%m/%y')  # Convert to 'mm/yy' format
             except (ValueError, TypeError):
                 return None
 
-        # Find and standardize date columns
+        # Separate out date and non-date columns
         standardized_date_columns = []
         non_date_columns = []
 
@@ -76,7 +76,7 @@ def process_volume_or_value_file(uploaded_file):
             elif col == 'Subscription Number':
                 non_date_columns.append(col)
 
-        # Keep only 'Subscription Number' and standardized date columns
+        # Keep only 'Subscription Number' and valid date columns
         df = df[non_date_columns + [col for col in df.columns if standardize_date(col)]]
 
         # Rename columns with standardized date formats
@@ -85,7 +85,7 @@ def process_volume_or_value_file(uploaded_file):
         else:
             st.warning("Some columns were not recognized as dates. Extra columns have been removed.")
 
-        # Check for non-numeric values in date columns
+        # Check for non-numeric values in the date columns
         for col in standardized_date_columns:
             non_numeric = df[pd.to_numeric(df[col], errors='coerce').isna() & df[col].notna()]
             if not non_numeric.empty:
