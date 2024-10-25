@@ -390,7 +390,7 @@ with tab1:
             user_summary_dma[['Legal %', 'Illegal %', 'Non-user %']] = user_summary_dma[['Legal %', 'Illegal %', 'Non-user %']].fillna(0)
 
             # Extract unique DMA and Zone values
-            unique_dmas = filtered_df['DMA'].unique().tolist()
+            unique_dmas = [int(dma) for dma in filtered_df['DMA'].unique() if pd.notnull(dma)]
             
             # # Add a final row with the sum of all DMAs (weighted average for percentages)
             total_population_all_dmas = total_population_by_dma.sum()
