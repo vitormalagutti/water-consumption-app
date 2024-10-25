@@ -355,7 +355,7 @@ with tab1:
             non_user_sum_dma = (non_user_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
             
             user_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
-            st.write(f"Data type of DMA after processing: {df['DMA'].dtype}")
+            
         else:
             st.markdown("Your file does not have 'DMA' column")
 
@@ -378,6 +378,7 @@ with tab1:
                 user_summary_dma['Legal %'] = user_summary_dma['Legal %'].round(1)  # Round percentages to 1 decimal place
                 user_summary_dma['Illegal %'] = user_summary_dma['Illegal %'].round(1)
                 user_summary_dma['Non-user %'] = user_summary_dma['Non-user %'].round(1)
+                st.write(f"Data type of DMA after processing: {df['DMA'].dtype}")
             else:
                 st.markdown("Your file does not have 'DMA' column")
 
