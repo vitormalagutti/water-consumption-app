@@ -155,7 +155,10 @@ def align_and_calculate_percentage(water_demand_df, billed_df):
 
     # Calculate percentage billed
     percentage_billed = (billed_df / water_demand_df) * 100
-    percentage_billed.fillna(0, inplace=True)  # Replace any NaN values with 0
+
+    # Fill any NaN or infinite values with 0, and ensure numeric type
+    percentage_billed = percentage_billed.fillna(0).replace([float('inf'), -float('inf')], 0)
+    percentage_billed = percentage_billed.astype(float)  # Ensure the type is float
 
     return percentage_billed
 
