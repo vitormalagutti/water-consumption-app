@@ -43,9 +43,9 @@ def convert_to_csv(uploaded_file):
             
             # Check and convert DMA and Zone columns to integers if they exist
             if 'DMA' in df.columns:
-                df['DMA'] = pd.to_numeric(df['DMA'], errors='coerce').fillna(0).astype(int)
+                df['DMA'] = pd.to_numeric(df['DMA'], errors='coerce').astype(int)
             if 'Zone' in df.columns:
-                df['Zone'] = pd.to_numeric(df['Zone'], errors='coerce').fillna(0).astype(int)
+                df['Zone'] = pd.to_numeric(df['Zone'], errors='coerce').astype(int)
 
             return df
         except Exception as e:
