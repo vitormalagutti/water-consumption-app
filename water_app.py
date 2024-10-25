@@ -723,13 +723,13 @@ with tab1:
                 # Step 2: Join the tables by the month column and add suffix
                 # We are joining the zone and DMA volume DataFrames with the corresponding water demand DataFrames
 
-                def join_billed_with_demand(billed_df, demand_df, suffix):
+                def join_billed_with_demand(billed_df, demand_df):
                     # Reset index for demand_df to expose the 'Month' (which is the index)
                     demand_df = demand_df.reset_index()  # 'Month' becomes a column here
                     
                     # Now we assume the demand_df has a 'Month' column in 'mmm' format, no need to recreate it
                     # Proceed with the merge on the 'Month' column
-                    merged_df = pd.merge(billed_df, demand_df, on='Month', how='left', suffixes=('', f'_{suffix}_demand'))
+                    merged_df = pd.merge(billed_df, demand_df, on='Month', how='left', suffixes=('_demand'))
 
                     return merged_df
 
