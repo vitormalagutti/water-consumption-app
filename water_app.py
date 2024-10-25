@@ -802,14 +802,19 @@ with tab1:
 
                     # Plot Demand Bars
                     for i, column in enumerate(demand_columns):
-                        ax1.bar(
-                            [p + i * bar_width for p in demand_positions],
-                            df[column].values,
-                            width=bar_width,
-                            label=f"{column} Demand",
-                            color='blue',
-                            alpha=0.6
-                        )
+                        positions = demand_positions + i * bar_width  # Create positions based on demand_positions
+                        if len(df[column].values) == len(positions):
+                            ax1.bar(
+                                positions,
+                                df[column].values,
+                                width=bar_width,
+                                label=f"{column} Demand",
+                                color='blue',
+                                alpha=0.6
+                            )
+                        else:
+                            # Handle the case where lengths don't match
+                            st.warning(f"Length mismatch in column '{column}': Expected {len(positions)}, but got {len(df[column].values)}")
 
                     # Plot Billed Bars
                     for i, column in enumerate(billed_columns):
