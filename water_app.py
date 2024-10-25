@@ -877,7 +877,7 @@ with tab1:
                                     },
                                     "visConfig": {
                                         "radius": 6,
-                                        "opacity": 0.2,
+                                        "opacity": 1,
                                     },
                                     "isVisible": True
                                 },
@@ -920,7 +920,7 @@ with tab1:
                                     },
                                     "visConfig": {
                                         "radius": 8,
-                                        "opacity": 0.8,
+                                        "opacity": 0.2,
                                     },
                                     "isVisible": True
                                 }
