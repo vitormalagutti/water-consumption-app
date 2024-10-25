@@ -539,22 +539,20 @@ with tab1:
                 population_dma = user_summary_dma['Total Population']
                 non_users_dma = user_summary_dma['Non-user %'] / 100  
 
-                # Create an empty DataFrame to store the results
-                water_demand_dma = pd.DataFrame(columns=['DMA'] + df_factors['Month'].tolist())
+                # Create an empty DataFrame to store the results with DMA as index and Months as columns
+                water_demand_dma = pd.DataFrame(index=df_factors['Month'].tolist(), columns=population_dma.index)
+
 
                 # Calculate the water consumption for each DMA and month
                 for dma in population_dma.index:
                     # For each DMA, calculate monthly consumption
-                    dma_consumption = []
                     for i, month in enumerate(df_factors['Month']):
                         consumption_m3 = population_dma[dma] * (1 - non_users_dma[dma]) * monthly_consumption[i] * days_in_month[i] / 1000
-                        dma_consumption.append(round(consumption_m3, -2))  # Round to the nearest 100
+                        water_demand_dma.at[month, dma] = round(consumption_m3, -2)  # Round to the nearest 100
 
-                    # Add the DMA and its monthly consumption to the DataFrame
-                    water_demand_dma.loc[len(water_demand_dma)] = [dma] + dma_consumption
-                    
-                water_demand_dma.set_index('DMA', inplace=True)        
-                water_demand_dma = water_demand_dma.transpose()
+                water_demand_dma = water_demand_dma.fillna(0)  # Fill any missing values with 0
+                st.markdown("### Water Demand per DMA")
+                st.dataframe(water_demand_dma)
             
             if 'Zone' in filtered_df.columns:
                 # Prepare population and non-user percentages for Zones
@@ -703,15 +701,6 @@ with tab1:
                     # st.dataframe(dma_value_df)
 
 
-
-
-                # Ensure zone_volume_df and dma_volume_df indices are integers, not floats
-                zone_volume_df.index = zone_volume_df.index.astype(int, errors='ignore')
-                dma_volume_df.index = dma_volume_df.index.astype(int, errors='ignore')
-
-                # Similarly, ensure that water_demand_zone and water_demand_dma indices are also integers
-                water_demand_zone.index = water_demand_zone.index.astype(int, errors='ignore')
-                water_demand_dma.index = water_demand_dma.index.astype(int, errors='ignore')
 
 
                 # Step 1: Create a month column from the index in the billed tables (zone_volume_df and dma_volume_df)
