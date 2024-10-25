@@ -875,9 +875,7 @@ with tab1:
                                     "colorField": {
                                         "name": visualization_type,
                                         "type": "integer"  # Change to 'string' for categorical coloring
-                                    },
-                                    "colorScale": {
-                                        "type": "ordinal"  # Use ordinal for discrete color mapping
+                                    }
 
                                     }
                                 }
