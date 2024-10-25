@@ -769,27 +769,23 @@ with tab1:
                 zone_merged_df
                 st.write("Until Here it works, maybe I have to change the index from the water demand")
                 zone_volume_df.columns
-                
-                def join_billed_with_demand_and_calculate_percentage(billed_df, demand_df):
-                    # Ensure demand_df has a 'Month' column for merging if needed
-                    demand_df = demand_df.reset_index().rename(columns={'index': 'Month'}) if demand_df.index.name == 'Month' else demand_df
 
-                    # Merge on 'Month' and keep the original index of billed_df
-                    merged_df = pd.merge(billed_df.reset_index(), demand_df, on='Month', how='left', suffixes=('', '_demand')).set_index(billed_df.index.name)
+                def calculate_percentage_billed(merged_df):
+                    # Calculate the percentage of billed volumes compared to demand directly on the existing merged DataFrame
+                    for column in merged_df.columns:
+                        if column.endswith('_demand'):  # Ensure we are working with demand columns
+                            base_column = column.replace('_demand', '')  # Get the original column name
+                            if base_column in merged_df.columns:
+                                merged_df[f'{base_column} % Billed'] = (merged_df[base_column] / merged_df[column]) * 100
 
-                    # Calculate the percentage of billed volumes compared to demand
-                    for column in billed_df.columns:
-                        if column != 'Month' and column in demand_df.columns:
-                            merged_df[f'{column} % Billed'] = (merged_df[column] / merged_df[column + '_demand']) * 100
-
-                    # Handle cases where division results in NaN or inf values
+                    # Replace NaN or infinite values with zeroes
                     merged_df = merged_df.replace([float('inf'), -float('inf')], 0).fillna(0)
-
+                    
                     return merged_df
 
-                # Join the zone_volume_df and dma_volume_df with the water demand
-                zone_merged_df = join_billed_with_demand_and_calculate_percentage(zone_volume_df, water_demand_zone)
-                dma_merged_df = join_billed_with_demand_and_calculate_percentage(dma_volume_df, water_demand_dma)
+                # Calculate the percentage for the already-merged zone and DMA dataframes
+                zone_merged_df = calculate_percentage_billed(zone_merged_df)
+                dma_merged_df = calculate_percentage_billed(dma_merged_df)
 
                 # Display the merged dataframes with calculated percentages
                 st.markdown("### Merged DataFrame for Zone with Percentage Billed")
