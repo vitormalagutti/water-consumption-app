@@ -540,10 +540,10 @@ with tab1:
                 # Prepare population and non-user percentages for DMAs
                 population_dma = user_summary_dma['Total Population']
                 non_users_dma = user_summary_dma['Non-user %'] / 100  
-                st.write(f"Data type of DMA after processing: {filtered_df['DMA'].dtype}")
+                
                 # Create an empty DataFrame to store the results
                 water_demand_dma = pd.DataFrame(columns=['DMA'] + df_factors['Month'].tolist())
-
+                st.write(f"Data type of DMA after processing: {water_demand_dma['DMA'].dtype}")
                 # Calculate the water consumption for each DMA and month
                 for dma in population_dma.index:
                     # For each DMA, calculate monthly consumption
