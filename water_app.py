@@ -572,11 +572,18 @@ with tab1:
 
                 
                 water_demand_dma.set_index('DMA', inplace=True)        
+                # Step 1: Define columns as numeric before transposing
+                water_demand_dma.columns = pd.to_numeric(water_demand_dma.columns, errors='coerce')
+
+                # Step 2: Transpose the DataFrame
                 water_demand_dma = water_demand_dma.transpose()
-                water_demand_dma
-                # Re-cast the column headers to ensure they are numeric (if they should be integers, for example)
-                water_demand_dma.columns = pd.to_numeric(water_demand_dma.columns, errors='ignore')
-                water_demand_dma
+
+                # Step 3: Explicitly set the columns as integers or floats after transposing
+                # Assuming DMA values should be integers
+                water_demand_dma.index = water_demand_dma.index.astype(int, errors='ignore')
+
+                # To confirm, print the data types after enforcing the changes
+                print("Data types after forcing integer conversion:", water_demand_dma.dtypes)
 
                 st.write(f"DMA index types: {water_demand_dma.index.map(type)}")
             
