@@ -797,11 +797,9 @@ with tab1:
 
                         plot_multiple_demand_billed(dma_merged_df, title="DMA Demand vs Billed Volumes with % Billed")
 
-
                     elif visualization_type == "Zone" and "Zone" in available_options:
 
                         # Group by Zone for Volume
-
                         zone_volume_df = pd.merge(merged_df[['Block Number', 'Zone']], volume_summed, on='Block Number', how='left')
                         zone_volume_df = zone_volume_df.groupby('Zone').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
                         zone_volume_df = zone_volume_df.round(0).astype(int)
@@ -831,9 +829,8 @@ with tab1:
 
                         plot_multiple_demand_billed(zone_merged_df, title="Zone Demand vs Billed Volumes with % Billed")
 
-
-                else:
-                    st.error("Please upload all the necessary files (volume, value, correlation, and buildings files).")
+            else:
+                st.error("Please upload all the necessary files (volume, value, correlation, and buildings files).")
 
 
 
