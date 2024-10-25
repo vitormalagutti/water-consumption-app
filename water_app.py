@@ -631,13 +631,13 @@ with tab1:
 
                 # Group by Zone if available
                 if 'Zone' in billed_df.columns:
-                    zone_billed_df = billed_df.groupby('Zone').sum(numeric_only=True).reset_index()
+                    zone_billed_df = billed_df.groupby('Zone').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "X", "Y", "DMA"])
                     st.markdown("### Billed Data Summed by Zone")
                     st.dataframe(zone_billed_df)
 
                 # Group by DMA if available
                 if 'DMA' in billed_df.columns:
-                    dma_billed_df = billed_df.groupby('DMA').sum(numeric_only=True).reset_index()
+                    dma_billed_df = billed_df.groupby('DMA').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "X", "Y", "Zone"])
                     st.markdown("### Billed Data Summed by DMA")
                     st.dataframe(dma_billed_df)
 
