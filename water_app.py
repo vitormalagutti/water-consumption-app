@@ -629,6 +629,18 @@ with tab1:
                 st.markdown("### Final Merged DataFrame")
                 st.dataframe(billed_df)
 
+                # Group by Zone if available
+                if 'Zone' in billed_df.columns:
+                    zone_billed_df = billed_df.groupby('Zone').sum(numeric_only=True).reset_index()
+                    st.markdown("### Billed Data Summed by Zone")
+                    st.dataframe(zone_billed_df)
+
+                # Group by DMA if available
+                if 'DMA' in billed_df.columns:
+                    dma_billed_df = billed_df.groupby('DMA').sum(numeric_only=True).reset_index()
+                    st.markdown("### Billed Data Summed by DMA")
+                    st.dataframe(dma_billed_df)
+
             else:
                 st.error("Please upload all the necessary files (volume, value, correlation, and buildings files).")
 
