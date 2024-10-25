@@ -851,39 +851,6 @@ with tab1:
             # Create dynamic KeplerGL configuration
  
             config_1 = {
-            'version': 'v1',
-            'config': {
-                'mapState': {
-                    'latitude': center_lat,
-                    'longitude': center_lon,
-                    'zoom': 15
-                },
-                "mapStyle": {
-                    "styleType": "satellite"
-                },
-                "visState": {
-                    "layers": [
-                        {
-                            "id": "building_layer",
-                            "type": "point",  
-                            "config": {
-                                "dataId": "Water Consumption Data",
-                                "label": "Building Locations",
-                                "color": [150, 20, 255],  # Color of points
-                                "columns": {
-                                    "lat": "Y",
-                                    "lng": "X"
-                                },
-                                "visConfig": {
-                                    "radius": 8,
-                                    "opacity": 0.8,
-                                },
-                                "isVisible" : True
-                            }
-                        }]}}}
-
- 
-            config_2 = {
                 'version': 'v1',
                 'config': {
                     'mapState': {
@@ -918,7 +885,44 @@ with tab1:
                                     "colorField": {
                                         "name": visualization_type,
                                         "type": "string"  # Use 'string' for categorical coloring
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+
+ 
+            config_2 = {
+                'version': 'v1',
+                'config': {
+                    'mapState': {
+                        'latitude': center_lat,
+                        'longitude': center_lon,
+                        'zoom': 15
+                    },
+                    "mapStyle": {
+                        "styleType": "satellite"
+                    },
+                    "visState": {
+                        "layers": [
+                            {
+                                "id": "building_layer",
+                                "type": "point",  
+                                "config": {
+                                    "dataId": "Water Consumption Data",
+                                    "label": "Building Locations",
+                                    "color": [150, 20, 255],  # Color of points
+                                    "columns": {
+                                        "lat": "Y",
+                                        "lng": "X"
                                     },
+                                    "visConfig": {
+                                        "radius": 8,
+                                        "opacity": 0.8,
+                                    },
+                                    "isVisible": True
                                 }
                             },
                             # Second layer for the gdf_config GeoDataFrame
