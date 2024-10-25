@@ -619,7 +619,7 @@ with tab1:
                         # Transpose the DataFrame
                         water_demand_dma = water_demand_dma.transpose()
                         water_demand_dma.columns = pd.to_numeric(water_demand_dma.columns, errors='coerce').astype('Int64')
-                        st.markdown("### 💧 Monthly Water Consumption per DMA")
+                        st.markdown("### 💧 Monthly Water Demand per DMA")
                         st.dataframe(water_demand_dma, height=500)
 
                     with col2:
@@ -668,7 +668,7 @@ with tab1:
                         water_demand_zone.set_index('Zone', inplace=True)        
                         water_demand_zone = water_demand_zone.transpose()
                         water_demand_zone.columns = pd.to_numeric(water_demand_zone.columns, errors='coerce').astype('Int64')                    
-                        st.markdown("### 💧 Monthly Water Consumption per Zone")
+                        st.markdown("### 💧 Monthly Water Demand per Zone")
                         st.dataframe(water_demand_zone, height=500)
 
                     with col2:
