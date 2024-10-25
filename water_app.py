@@ -940,7 +940,6 @@ with tab1:
                 folium_static(m, width=None, height=900)
             
             with col2:
-                test = 100 / 1000
                 config_grid = {
                 'version': 'v1',
                 'config': {
@@ -966,7 +965,7 @@ with tab1:
                                         "lng": "X"
                                     },
                                     "visConfig": {
-                                        "radius": test,
+                                        "radius": 3,
                                         "opacity": 0.8,
                                     },
                                     "isVisible" : True
