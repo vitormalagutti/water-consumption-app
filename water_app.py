@@ -551,7 +551,8 @@ with tab1:
                         dma_consumption.append(round(consumption_m3, -2))  # Round to the nearest 100
 
                     # Add the DMA and its monthly consumption to the DataFrame
-                    water_demand_dma.loc[len(water_demand_dma)] = [dma] + dma_consumption
+                    water_demand_dma.loc[len(water_demand_dma)] = [int(dma)] + dma_consumption  # Fixing float DMA to integer
+
                     
                 water_demand_dma.set_index('DMA', inplace=True)        
                 water_demand_dma = water_demand_dma.transpose()
