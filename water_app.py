@@ -782,8 +782,6 @@ with tab1:
                 st.markdown("### Merged DataFrame for DMA with Percentage Billed")
                 st.dataframe(dma_merged_df)
 
-                demand_positions = np.arange(len(unique_zones))
-                demand_positions
                 def plot_combined_demand_billed(df, unique_labels, title="Water Demand vs Billed Volumes with % Billed"):
                     # Separate columns into demand, billed, and percentage columns
                     demand_columns = [col for col in df.columns if col.endswith('_demand')]
@@ -795,7 +793,7 @@ with tab1:
                     # Widths and positions for the bars
                     bar_width = 0.3
                     demand_positions = np.arange(len(unique_labels))
-
+                    demand_positions
                     # Check column lengths to prevent broadcasting errors
                     for column in demand_columns + billed_columns + percent_columns:
                         if len(df[column]) != len(demand_positions):
