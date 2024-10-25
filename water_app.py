@@ -1037,7 +1037,7 @@ with tab1:
                 }
             }
 
-
+            kepler_map = KeplerGl(height=800, config=config_2)   
             st.markdown("### 🗺️ Interactive Map with Google Satellite Basemap")
             # Create heatmaps based on selection
            
@@ -1053,7 +1053,7 @@ with tab1:
             elif heatmap_type == "Non-Users":
                 kepler_map.add_data(data=gdf_non_user, name="Dynamic Data")
             
-            kepler_map = KeplerGl(height=800, config=config_2)                 
+              
             kepler_map.add_data(data=gdf, name="Water Consumption Data")
             keplergl_static(kepler_map)
 
