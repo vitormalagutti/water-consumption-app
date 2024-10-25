@@ -619,7 +619,7 @@ with tab1:
 
                 # Step 5: Merge the summed volumes and values back to the original df
                 final_df = pd.merge(merged_df, volume_summed, on='Block Number', how='left')
-                final_df = pd.merge(final_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value')).drop("Population")
+                final_df = pd.merge(final_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value'))
 
                 # Display the final merged dataframe
                 st.markdown("### Final Merged DataFrame")
