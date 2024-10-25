@@ -751,15 +751,6 @@ with tab1:
                 st.write("Until Here it works, maybe I have to change the index from the water demand")
 
                 def join_billed_with_demand_and_calculate_percentage(billed_df, demand_df):
-                    # Reset index for demand_df to expose the 'Month' (which is the index)
-                    demand_df = demand_df.reset_index()  # 'Month' becomes a column here
-                    
-                    # Ensure we have the correct column for 'Month' - the first column should now be the Month
-                    if 'index' in demand_df.columns:
-                        demand_df.rename(columns={'index': 'Month'}, inplace=True)
-                    
-                    # Proceed with the merge on the 'Month' column
-                    merged_df = pd.merge(billed_df, demand_df, on='Month', how='left')
 
                     # Calculate the percentage of billed volumes compared to demand
                     for column in billed_df.columns:
