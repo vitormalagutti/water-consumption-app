@@ -860,8 +860,7 @@ with tab1:
                                 "config": {
                                     "dataId": "Water Consumption Data",
                                     "label": "Building Locations",
-                                    "colorScale": "quantile",  # Adjust color scale as desired
-                                    "color": [150, 200, 255],  # Default color of points
+                                    "color": [150, 200, 255],  # Default color if no category matches
                                     "columns": {
                                         "lat": "Y",
                                         "lng": "X"
@@ -875,7 +874,12 @@ with tab1:
                                 "visualChannels": {
                                     "colorField": {
                                         "name": visualization_type,
-                                        "type": "float"  # Adjust type as needed
+                                        "type": "string"  # Change to 'string' for categorical coloring
+                                    },
+                                    "colorScale": {
+                                        "type": "ordinal",  # Use ordinal for discrete color mapping
+                                        "domain": ["Category1", "Category2", "Category3"],  # Replace with actual categories
+                                        "range": [[255, 99, 71], [60, 179, 113], [135, 206, 250]]  # RGB values for each category
                                     }
                                 }
                             }
