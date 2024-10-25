@@ -413,7 +413,7 @@ with tab1:
             st.write(f"Legal %: {legal_sum_dma:.1f}%")
             st.write(f"Illegal %: {illegal_sum_dma:.1f}%")
             st.write(f"Non-user %: {non_user_sum_dma:.1f}%")
-            
+
             # Title for Population by User Type
             st.markdown("### 📈 Population by User Type")
 
@@ -573,6 +573,8 @@ with tab1:
                     
                 water_demand_dma.set_index('DMA', inplace=True)        
                 water_demand_dma = water_demand_dma.transpose()
+                population_dma
+                
                 st.write(f"DMA index types: {water_demand_dma.index.map(type)}")
             
             if 'Zone' in filtered_df.columns:
