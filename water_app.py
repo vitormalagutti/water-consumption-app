@@ -688,40 +688,9 @@ with tab1:
                         plt.tight_layout()
                         st.pyplot(fig)
 
-            
-
         with tab5:
 
              if volume_file and value_file and correlation_file and buildings_file:
-
-                # Process each file
-                volume_df = process_volume_or_value_file(volume_file)
-                value_df = process_volume_or_value_file(value_file)
-                correlation_df = process_block_subscription_file(correlation_file)
-
-                # Step 2: Join the correlation file with the original buildings file on 'Block Number'
-                merged_df = pd.merge(buildings_df, correlation_df, on='Block Number', how='left')
-
-                # Step 3: Merge volume_df and value_df on 'Subscription Number'
-                volume_df = pd.merge(correlation_df, volume_df, on='Subscription Number', how='left')
-                value_df = pd.merge(correlation_df, value_df, on='Subscription Number', how='left')
-
-                # Step 4: Group by 'Block Number' and sum Volume and Value
-                volume_summed = volume_df.groupby('Block Number').sum(numeric_only=True).reset_index()
-                value_summed = value_df.groupby('Block Number').sum(numeric_only=True).reset_index()
-
-                # Step 5: Merge the summed volumes and values back to the original df
-                billed_df = pd.merge(merged_df, volume_summed, on='Block Number', how='left')
-                billed_df = pd.merge(billed_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value'))
-
-                # Drop unnecessary columns
-                columns_to_drop = ['Population', 'Status', 'Subscription Number_x', 'Subscription Number_y', "Subscription Number"]
-                billed_df = billed_df.drop(columns=columns_to_drop, errors='ignore')
-
-                
-                # Display the final merged dataframe
-                # st.markdown("### Final Merged DataFrame")
-                # st.dataframe(billed_df)
 
                 def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
                     # Identify demand and billed columns
@@ -760,6 +729,35 @@ with tab1:
                     
                     plt.tight_layout()
                     st.pyplot(fig)
+                
+                # Process each file
+                volume_df = process_volume_or_value_file(volume_file)
+                value_df = process_volume_or_value_file(value_file)
+                correlation_df = process_block_subscription_file(correlation_file)
+
+                # Step 2: Join the correlation file with the original buildings file on 'Block Number'
+                merged_df = pd.merge(buildings_df, correlation_df, on='Block Number', how='left')
+
+                # Step 3: Merge volume_df and value_df on 'Subscription Number'
+                volume_df = pd.merge(correlation_df, volume_df, on='Subscription Number', how='left')
+                value_df = pd.merge(correlation_df, value_df, on='Subscription Number', how='left')
+
+                # Step 4: Group by 'Block Number' and sum Volume and Value
+                volume_summed = volume_df.groupby('Block Number').sum(numeric_only=True).reset_index()
+                value_summed = value_df.groupby('Block Number').sum(numeric_only=True).reset_index()
+
+                # Step 5: Merge the summed volumes and values back to the original df
+                billed_df = pd.merge(merged_df, volume_summed, on='Block Number', how='left')
+                billed_df = pd.merge(billed_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value'))
+
+                # Drop unnecessary columns
+                columns_to_drop = ['Population', 'Status', 'Subscription Number_x', 'Subscription Number_y', "Subscription Number"]
+                billed_df = billed_df.drop(columns=columns_to_drop, errors='ignore')
+
+                
+                # Display the final merged dataframe
+                # st.markdown("### Final Merged DataFrame")
+                # st.dataframe(billed_df)
 
                 if 'visualization_type' in locals():
                     
@@ -789,9 +787,7 @@ with tab1:
                     
 
                         dma_merged_df = calculate_percentage_billed(dma_merged_df)
-
                         dma_merged_df = dma_merged_df.drop(columns="Month")
-
 
                         n = len(unique_dmas)
                         st.markdown("### Percentage of Billed Volume per DMA")
@@ -800,8 +796,6 @@ with tab1:
                         # Call the function for both zone and DMA merged dataframes
 
                         plot_multiple_demand_billed(dma_merged_df, title="DMA Demand vs Billed Volumes with % Billed")
-
-
 
 
                     elif visualization_type == "Zone" and "Zone" in available_options:
@@ -816,10 +810,7 @@ with tab1:
                         # st.markdown("### Zone Billed Data Summed by Volume")
                         # st.dataframe(zone_volume_df)
 
-
-                        
                         # Group by Zone for Value
-
                         zone_value_df = pd.merge(merged_df[['Block Number', 'Zone']], value_summed, on='Block Number', how='left')
                         zone_value_df = zone_value_df.groupby('Zone').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
                         zone_value_df = zone_value_df.round(0).astype(int)
@@ -829,18 +820,14 @@ with tab1:
                         # st.dataframe(zone_value_df)
                         zone_volume_df = add_month_column_from_index(zone_volume_df)
                         zone_merged_df = join_billed_with_demand(zone_volume_df, water_demand_zone)
-
                         n = len(unique_zones)
-                        st.markdown("### Percentage of Billed Volume per Zone")
-                        st.dataframe(zone_merged_df.iloc[:,-n:])
-                    
-                        
 
                         # Calculate the percentage for the already-merged zone and DMA dataframes
                         zone_merged_df = calculate_percentage_billed(zone_merged_df)
                         zone_merged_df = zone_merged_df.drop(columns="Month")
 
-
+                        st.markdown("### Percentage of Billed Volume per Zone")
+                        st.dataframe(zone_merged_df.iloc[:,-n:])
 
                         plot_multiple_demand_billed(zone_merged_df, title="Zone Demand vs Billed Volumes with % Billed")
 
