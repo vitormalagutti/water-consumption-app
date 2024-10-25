@@ -782,7 +782,11 @@ with tab1:
                 st.markdown("### Merged DataFrame for DMA with Percentage Billed")
                 st.dataframe(dma_merged_df)
 
-                def simple_plot_demand_billed(df, demand_column, billed_column, unique_labels, title="Water Demand vs Billed Volumes"):
+                def simple_plot_demand_billed(df, unique_labels, title="Water Demand vs Billed Volumes"):
+                    # Separate columns into demand and billed columns
+                    demand_columns = [col for col in df.columns if col.endswith('_demand')]
+                    billed_columns = [col for col in df.columns if col not in demand_columns]
+
                     fig, ax = plt.subplots(figsize=(10, 6))
                     
                     # Set bar width and positions
