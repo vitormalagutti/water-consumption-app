@@ -154,11 +154,11 @@ with tab1:
     correlation_file = st.file_uploader("Choose a CSV file for Block Number - Subscription Number", type=["csv", "xlsx"])
 
     st.markdown("### 📂 Upload Your Billed Value File")
-    st.markdown("It must include the following column names [Subscription Number, mm/yy, mm/yy, ...]")
+    st.markdown("It must include the following column names [Subscription Number, mm/yy, mm/yy, ...]. Check carefully the date format!")
     value_file = st.file_uploader("Choose a CSV file for Billed Value", type=["csv", "xlsx"])
 
     st.markdown("### 📂 Upload Your Billed Volume File")
-    st.markdown("It must include the following column names [Subscription Number, mm/yy, mm/yy, ...]")
+    st.markdown("It must include the following column names [Subscription Number, mm/yy, mm/yy, ...]. Check carefully the date format!")
     volume_file = st.file_uploader("Choose a CSV file for Billed Volume", type=["csv", "xlsx"])
 
     if buildings_file:
@@ -670,6 +670,62 @@ with tab1:
                     dma_value_df = dma_value_df.transpose()
                     st.markdown("### DMA Billed Data Summed by Value")
                     st.dataframe(dma_value_df)
+
+
+                # Ensure the date formats are consistent (MM/YY or MMM/YYYY)
+                def convert_billed_dates_to_standard(df):
+                    # Convert columns from mm/yy to mmm.yy or any other consistent format
+                    df.columns = [pd.to_datetime(col, format="%m/%y", errors='coerce').strftime('%b.%y') if 'Unnamed' not in col else col for col in df.columns]
+                    return df
+
+                # Transpose the water demand data (if not already transposed)
+                water_demand_dma_t = water_demand_dma.T
+                water_demand_zone_t = water_demand_zone.T
+
+                # Ensure that billed volume data is in a standard format
+                zone_volume = convert_billed_dates_to_standard(zone_volume.T)
+                dma_volume = convert_billed_dates_to_standard(dma_volume.T)
+
+                # Transpose the water demand data (if needed)
+                dma_volume = dma_volume.T
+                zone_volume = zone_volume.T
+
+                # Now merge water demand with billed volumes
+                merged_dma_df = pd.concat([water_demand_dma_t, dma_volume], axis=1, keys=['Water Demand', 'Billed Volume'])
+                merged_zone_df = pd.concat([water_demand_zone_t, zone_volume], axis=1, keys=['Water Demand', 'Billed Volume'])
+
+                # Ensure dates are aligned properly for plotting and calculations
+
+                # Calculate the percentage billed / water demand for each DMA and Zone
+                merged_dma_df['Percentage Billed'] = (merged_dma_df['Billed Volume'] / merged_dma_df['Water Demand']) * 100
+                merged_zone_df['Percentage Billed'] = (merged_zone_df['Billed Volume'] / merged_zone_df['Water Demand']) * 100
+
+                # Plot the results (example for DMAs)
+                st.markdown("### Percentage of Billed Volume to Water Demand (DMA)")
+                st.dataframe(merged_dma_df)
+
+                # Example graph: Plot the percentage billed by DMA
+                fig_dma, ax_dma = plt.subplots(figsize=(10, 6))
+                merged_dma_df['Percentage Billed'].plot(kind='bar', ax=ax_dma, color='skyblue', edgecolor='black')
+                ax_dma.set_title("Percentage of Billed Volume to Water Demand (DMA)")
+                ax_dma.set_xlabel("DMA")
+                ax_dma.set_ylabel("Percentage Billed (%)")
+                st.pyplot(fig_dma)
+
+                # Similar process for Zones
+                fig_zone, ax_zone = plt.subplots(figsize=(10, 6))
+                merged_zone_df['Percentage Billed'].plot(kind='bar', ax=ax_zone, color='lightgreen', edgecolor='black')
+                ax_zone.set_title("Percentage of Billed Volume to Water Demand (Zone)")
+                ax_zone.set_xlabel("Zone")
+                ax_zone.set_ylabel("Percentage Billed (%)")
+                st.pyplot(fig_zone)
+
+
+
+
+
+
+
 
             else:
                 st.error("Please upload all the necessary files (volume, value, correlation, and buildings files).")
