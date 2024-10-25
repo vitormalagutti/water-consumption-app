@@ -601,9 +601,6 @@ with tab1:
                 water_demand_zone.set_index('Zone', inplace=True)        
                 water_demand_zone = water_demand_zone.transpose()
                 water_demand_zone.columns = pd.to_numeric(water_demand_zone.columns, errors='coerce').astype('Int64')
-                
-            
-
             
             
             # Create columns for side-by-side layout
@@ -615,7 +612,7 @@ with tab1:
                     st.dataframe(water_demand_dma, height=500)
                     # Plot the stacked bars
                     fig, ax = plt.subplots(figsize=(10, 6))
-                    columns_to_plot = water_demand_dma.columns[:-1]
+                    columns_to_plot = water_demand_dma.columns
                     water_demand_dma[columns_to_plot].plot(kind='bar', stacked=True, ax=ax)
                     ax.set_title('Monthly Water Demand by DMA', fontsize=15)
                     ax.set_xlabel('Month', fontsize=12)
@@ -640,7 +637,7 @@ with tab1:
 
                     # Plot the stacked bars
                     fig, ax = plt.subplots(figsize=(10, 6))
-                    columns_to_plot = water_demand_zone.columns[:-1]
+                    columns_to_plot = water_demand_zone.columns
                     water_demand_zone[columns_to_plot].plot(kind='bar', stacked=True, ax=ax)
                     ax.set_title('Monthly Water Demand by Zone', fontsize=15)
                     ax.set_xlabel('Month', fontsize=12)
