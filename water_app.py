@@ -46,15 +46,15 @@ def convert_to_csv(uploaded_file):
 
 def process_volume_or_value_file(uploaded_file):
     """
-    This function processes volume or value files by ensuring that a 'Subscriber Number' column
+    This function processes volume or value files by ensuring that a 'Subscription Number' column
     is present, identifying date columns automatically, and converting them into a standard format.
     """
     if uploaded_file is not None:
         df = convert_to_csv(uploaded_file)
-        df
-        # Ensure that we have a 'Subscriber Number' column
-        if 'Subscriber Number' not in df.columns:
-            st.error("The file does not contain a 'Subscriber Number' column.")
+
+        # Ensure that we have a 'Subscription Number' column
+        if 'Subscription Number' not in df.columns:
+            st.error("The file does not contain a 'Subscription Number' column.")
             return None
 
         # Function to identify and standardize date columns
@@ -73,15 +73,15 @@ def process_volume_or_value_file(uploaded_file):
             standardized_date = standardize_date(col)
             if standardized_date:
                 standardized_date_columns.append(standardized_date)
-            elif col == 'Subscriber Number':
+            elif col == 'Subscription Number':
                 non_date_columns.append(col)
 
-        # Keep only 'Subscriber Number' and standardized date columns
+        # Keep only 'Subscription Number' and standardized date columns
         df = df[non_date_columns + [col for col in df.columns if standardize_date(col)]]
 
         # Rename columns with standardized date formats
         if len(standardized_date_columns) == len(df.columns) - 1:
-            df.columns = ['Subscriber Number'] + standardized_date_columns
+            df.columns = ['Subscription Number'] + standardized_date_columns
         else:
             st.warning("Some columns were not recognized as dates. Extra columns have been removed.")
 
