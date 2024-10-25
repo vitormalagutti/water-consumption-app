@@ -351,14 +351,20 @@ with tab1:
             #st.write(f"Data type of Zone after enforcing numeric: {user_summary_dma['DMA'].dtype}")
             user_summary_dma
             
-            # Add a final row with the sum of all DMAs (weighted average for percentages)
+            # Calculate totals as before
             total_population_all_dmas = total_population_by_dma.sum()
-
             legal_sum_dma = (legal_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
             illegal_sum_dma = (illegal_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
             non_user_sum_dma = (non_user_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
-            
-            user_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
+
+            # Convert the calculated values to floats to ensure type consistency
+            total_values = [float(total_population_all_dmas), float(legal_sum_dma), float(illegal_sum_dma), float(non_user_sum_dma)]
+
+            # Add the total row, ensuring that all values are floats
+            user_summary_dma.loc['Total'] = total_values
+
+            # Optionally, force the entire DataFrame's columns to remain floats
+            user_summary_dma = user_summary_dma.astype(float)
             
 
             
