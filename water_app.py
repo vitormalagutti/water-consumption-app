@@ -823,69 +823,6 @@ with tab1:
                     plt.tight_layout()
                     st.pyplot(fig)
 
-                def plot_combined_demand_billed(df, unique_labels, title="Water Demand vs Billed Volumes with % Billed"):
-                    # Separate columns into demand, billed, and percentage columns
-                    demand_columns = [col for col in df.columns if col.endswith('_demand')]
-                    billed_columns = [col for col in df.columns if col not in demand_columns and not col.endswith('% Billed')]
-                    percent_columns = [col for col in df.columns if col.endswith('% Billed')]
-                    
-                    fig, ax1 = plt.subplots(figsize=(12, 6))
-
-                    # Widths and positions for the bars
-                    bar_width = 0.3
-                    positions = np.arange(len(unique_labels))
-
-                    # Plot Demand Bars
-                    for i, column in enumerate(demand_columns):
-                        ax1.bar(
-                            positions + i * bar_width,
-                            df[column].values,
-                            width=bar_width,
-                            label=f"{column} Demand",
-                            color='blue',
-                            alpha=0.6
-                        )
-
-                    # Plot Billed Bars
-                    for i, column in enumerate(billed_columns):
-                        ax1.bar(
-                            positions + (i + len(demand_columns)) * bar_width,
-                            df[column].values,
-                            width=bar_width,
-                            label=f"{column} Billed",
-                            color='green',
-                            alpha=0.6
-                        )
-
-                    # Plot Percentage Billed as Lines on Secondary Y-axis
-                    ax2 = ax1.twinx()
-                    for i, column in enumerate(percent_columns):
-                        ax2.plot(
-                            positions,
-                            df[column].values,
-                            label=f"{column} % Billed",
-                            marker='o',
-                            linestyle='--'
-                        )
-
-                    # Set labels and title
-                    ax1.set_xlabel("Zone/DMA")
-                    ax1.set_ylabel("Volume")
-                    ax2.set_ylabel("Percentage Billed (%)")
-                    ax1.set_title(title)
-
-                    # Set x-ticks and labels
-                    ax1.set_xticks(positions + bar_width * (len(demand_columns) - 1) / 2)
-                    ax1.set_xticklabels(unique_labels, rotation=45)
-
-                    # Legends
-                    ax1.legend(loc='upper left')
-                    ax2.legend(loc='upper right')
-
-                    plt.tight_layout()
-                    st.pyplot(fig)
-
-                plot_combined_demand_billed(zone_merged_df,unique_zones, title="Zone Demand vs Billed Volumes with % Billed")
 
                 # Call the function for both zone and DMA merged dataframes
                 plot_multiple_demand_billed(zone_merged_df, title="Zone Demand vs Billed Volumes with % Billed")
