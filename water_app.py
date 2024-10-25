@@ -201,7 +201,8 @@ with tab1:
     if buildings_file:
         # Read the CSV file
         df = convert_to_csv(buildings_file)
-
+        
+        st.write(f"Data type of DMA column: {df['DMA'].dtype}")
         # Define the expected columns
         expected_columns = ["X", "Y", "Zone", "Block Number", "DMA", "Status"]
 
