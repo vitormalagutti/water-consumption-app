@@ -874,7 +874,7 @@ with tab1:
                                 "visualChannels": {
                                     "colorField": {
                                         "name": visualization_type,
-                                        "type": "string"  # Change to 'string' for categorical coloring
+                                        "type": "integer"  # Change to 'string' for categorical coloring
                                     },
                                     "colorScale": {
                                         "type": "ordinal"  # Use ordinal for discrete color mapping
