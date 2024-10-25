@@ -775,6 +775,8 @@ with tab1:
                 # Calculate the percentage for the already-merged zone and DMA dataframes
                 zone_merged_df = calculate_percentage_billed(zone_merged_df)
                 dma_merged_df = calculate_percentage_billed(dma_merged_df)
+                zone_merged_df = zone_merged_df.drop(columns="Month")
+                dma_merged_df = dma_merged_df.drop(columns="Month")
 
                 # Display the merged dataframes with calculated percentages
                 st.markdown("### Merged DataFrame for Zone with Percentage Billed")
