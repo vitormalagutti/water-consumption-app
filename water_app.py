@@ -141,26 +141,41 @@ def process_block_subscription_file(uploaded_file):
     else:
         return None
 
-def align_and_calculate_percentage(water_demand_df, billed_df):
-    # Convert the columns to a comparable date format
-    water_demand_df.columns = pd.to_datetime(water_demand_df.columns, errors='coerce').strftime('%m/%y')
+def align_and_calculate_percentage_separately(water_demand_df, billed_df):
+    # Convert the columns in billed_df to the comparable month and year format (e.g., 'mm/yy')
     billed_df.columns = pd.to_datetime(billed_df.columns, errors='coerce').strftime('%m/%y')
 
-    # Ensure both have common columns (months)
-    common_months = water_demand_df.columns.intersection(billed_df.columns)
+    # Extract only the month part for water demand data (assuming same year for water demand)
+    water_demand_df.columns = pd.to_datetime(water_demand_df.columns + " 2023", format='%b %Y', errors='coerce').strftime('%m')
 
-    # Slice data to only include common months
-    water_demand_df = water_demand_df[common_months]
-    billed_df = billed_df[common_months]
+    # Prepare a result dictionary to store percentages for each year-month separately
+    percentage_results = {}
 
-    # Calculate percentage billed
-    percentage_billed = (billed_df / water_demand_df) * 100
+    # Loop over the years in the billed data
+    for year in pd.to_datetime(billed_df.columns, format='%m/%y', errors='coerce').year.unique():
+        # Filter billed_df for the specific year
+        billed_for_year = billed_df[[col for col in billed_df.columns if pd.to_datetime(col, errors='coerce').year == year]]
+        
+        # Extract the months (without the year) to align with water demand
+        billed_df_months = pd.to_datetime(billed_for_year.columns, errors='coerce').strftime('%m')
 
-    # Fill any NaN or infinite values with 0, and ensure numeric type
-    percentage_billed = percentage_billed.fillna(0).replace([float('inf'), -float('inf')], 0)
-    percentage_billed = percentage_billed.astype(float)  # Ensure the type is float
+        # Align with water demand by filtering only common months
+        common_months = billed_df_months.intersection(water_demand_df.columns)
 
-    return percentage_billed
+        # Slice data to include only common months
+        water_demand_for_months = water_demand_df[common_months]
+        billed_for_months = billed_for_year[[col for col, month in zip(billed_for_year.columns, billed_df_months) if month in common_months]]
+
+        # Calculate percentage billed
+        percentage_billed = (billed_for_months / water_demand_for_months) * 100
+
+        # Fill any NaN or infinite values with 0, and ensure numeric type
+        percentage_billed = percentage_billed.fillna(0).replace([float('inf'), -float('inf')], 0).astype(float)
+        
+        # Store the result for the specific year
+        percentage_results[f'Year {year}'] = percentage_billed
+
+    return percentage_results
 
 
 with tab1:
@@ -697,18 +712,19 @@ with tab1:
 
 
 
-  
-
-            # Align water demand and billed data, and ensure no NaN or infinite values
+    
+            # Align water demand and billed data separately for each year
             if 'Zone' in merged_df.columns:
-                zone_percentage_billed_volume = align_and_calculate_percentage(water_demand_zone, zone_volume_df)
-                st.markdown("### Zone Percentage Billed by Volume")
-                st.dataframe(zone_percentage_billed_volume)
+                zone_percentage_billed_volume = align_and_calculate_percentage_separately(water_demand_zone, zone_volume_df)
+                for year, percentage_df in zone_percentage_billed_volume.items():
+                    st.markdown(f"### Zone Percentage Billed by Volume ({year})")
+                    st.dataframe(percentage_df)
 
             if 'DMA' in merged_df.columns:
-                dma_percentage_billed_volume = align_and_calculate_percentage(water_demand_dma, dma_volume_df)
-                st.markdown("### DMA Percentage Billed by Volume")
-                st.dataframe(dma_percentage_billed_volume)
+                dma_percentage_billed_volume = align_and_calculate_percentage_separately(water_demand_dma, dma_volume_df)
+                for year, percentage_df in dma_percentage_billed_volume.items():
+                    st.markdown(f"### DMA Percentage Billed by Volume ({year})")
+                    st.dataframe(percentage_df)
 
 
 
