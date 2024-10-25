@@ -723,10 +723,6 @@ with tab1:
                     # st.markdown("### DMA Billed Data Summed by Value")
                     # st.dataframe(dma_value_df)
 
-
-
-
-
                 # Step 1: Create a month column from the index in the billed tables (zone_volume_df and dma_volume_df)
 
                 # Function to add month column based on the index
@@ -772,6 +768,8 @@ with tab1:
                 dma_merged_df
                 zone_merged_df
                 st.write("Until Here it works, maybe I have to change the index from the water demand")
+                
+                zone_volume_df
 
                 def join_billed_with_demand_and_calculate_percentage(billed_df, demand_df):
 
