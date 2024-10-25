@@ -720,26 +720,26 @@ with tab1:
                 zone_volume_df = add_month_column_from_index(zone_volume_df)
                 dma_volume_df = add_month_column_from_index(dma_volume_df)
 
-                zone_volume_df
-                dma_volume_df
-
                 # Step 2: Join the tables by the month column and add suffix
                 # We are joining the zone and DMA volume DataFrames with the corresponding water demand DataFrames
 
-                def join_billed_with_demand(billed_df, demand_df, suffix):
+                def join_billed_with_demand(billed_df, demand_df):
                     # Add month column to the demand DataFrame (no year assumption, so we only have the month)
                     demand_df = demand_df.reset_index()  # Move index (Month) to a column if it's not already a column
                     demand_df['Month'] = demand_df.columns  # Assuming the columns in demand_df are the months in 'mmm' format
                     demand_df = demand_df.drop(columns=['index'])  # Drop the original index
 
                     # Merge billed_df and demand_df on the 'Month' column
-                    merged_df = pd.merge(billed_df, demand_df, on='Month', how='left', suffixes=('', f'_{suffix}_demand'))
+                    merged_df = pd.merge(billed_df, demand_df, on='Month', how='left', suffixes=('_demand'))
 
                     return merged_df
 
                 # Join the zone_volume_df and dma_volume_df with the water demand
-                zone_merged_df = join_billed_with_demand(zone_volume_df, water_demand_zone, 'zone')
-                dma_merged_df = join_billed_with_demand(dma_volume_df, water_demand_dma, 'dma')
+                zone_merged_df = join_billed_with_demand(zone_volume_df, water_demand_zone)
+                dma_merged_df = join_billed_with_demand(dma_volume_df, water_demand_dma)
+
+                dma_merged_df
+                zone_merged_df
 
                 # Step 3: Create new columns to calculate the % billed for each zone/dma
                 def calculate_percentage_billed(merged_df, suffix):
