@@ -551,7 +551,7 @@ with tab1:
                         dma_consumption.append(round(consumption_m3, -2))  # Round to the nearest 100
 
                     # Add the DMA and its monthly consumption to the DataFrame
-                    water_demand_dma.loc[len(water_demand_dma)] = [int(dma)] + dma_consumption  # Fixing float DMA to integer
+                    water_demand_dma.loc[len(water_demand_dma)] = [dma] + dma_consumption  # Fixing float DMA to integer
 
                     
                 water_demand_dma.set_index('DMA', inplace=True)        
@@ -579,7 +579,9 @@ with tab1:
                 water_demand_zone.set_index('Zone', inplace=True)        
                 water_demand_zone = water_demand_zone.transpose()
             
-            
+            # Checking data types in your indexes
+            print(f"DMA index types: {population_dma.index.map(type)}")
+            print(f"Zone index types: {population_zone.index.map(type)}")
             # Create columns for side-by-side layout
             col1, col2 = st.columns(2)
 
