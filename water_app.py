@@ -787,13 +787,13 @@ with tab1:
                     demand_columns = [col for col in df.columns if col.endswith('_demand')]
                     billed_columns = [col for col in df.columns if col not in demand_columns and not col.endswith('% Billed')]
                     percent_columns = [col for col in df.columns if col.endswith('% Billed')]
-                    
+                    demand_columns
                     fig, ax1 = plt.subplots(figsize=(12, 6))
 
                     # Widths and positions for the bars
                     bar_width = 0.3
                     demand_positions = np.arange(len(unique_labels))
-                    demand_positions
+
                     # Check column lengths to prevent broadcasting errors
                     for column in demand_columns + billed_columns + percent_columns:
                         if len(df[column]) != len(demand_positions):
