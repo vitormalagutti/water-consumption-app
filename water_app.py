@@ -447,21 +447,88 @@ with tab1:
             col1, col2 = st.columns(2)
 
             # Place the two tables in the side-by-side layout
-            with col1:
-                if 'Zone' in filtered_df.columns:
-                    st.markdown("#### 📊 Water Network Summary - Zone")
-                    st.dataframe(user_summary_zone)
+            
+            if 'visualization_type' in locals():
+                if visualization_type == "DMA" and "DMA" in available_options:
+                    # Calculate the number of people for each user type by multiplying Total Population with percentages
+                    user_summary_zone['Legal'] = (user_summary_zone['Total Population'] * user_summary_zone['Legal %'] / 100).astype(int)
+                    user_summary_zone['Illegal'] = (user_summary_zone['Total Population'] * user_summary_zone['Illegal %'] / 100).astype(int)
+                    user_summary_zone['Non-user'] = (user_summary_zone['Total Population'] * user_summary_zone['Non-user %'] / 100).astype(int)
+                    user_summary_zone_plot = user_summary_zone[user_summary_zone.index != 'Total']
 
-                else:
-                    st.markdown("Your file does not have 'Zone' column")
 
-            with col2:
-                if 'DMA' in filtered_df.columns:
-                    st.markdown("#### 📊 Water Network Summary - DMA")
-                    st.dataframe(user_summary_dma)
 
-                else:
-                    st.markdown("Your file does not have 'DMA' column")
+                    with col1:
+                        st.markdown("#### 📊 Water Network Summary - Zone")
+                        st.dataframe(user_summary_zone)
+
+                    with col2:
+                        # Title for Population by User Type
+                        st.markdown("### 📈 Population by User Type")
+                        fig, ax = plt.subplots(figsize=(7, 5))  # Adjust figure size
+                        user_summary_zone_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].plot(
+                            kind='bar', 
+                            stacked=False, 
+                            color=['#A9A9A9', '#FFA500', '#90EE90', '#87CEEB'],  
+                            ax=ax, 
+                            edgecolor='black'
+                        )
+                        ax.set_title('Network Users Summary - Zones', fontsize=12)
+                        ax.set_xlabel('Zones')
+                        ax.set_ylabel('Number of Users')
+                        ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
+                        ax.set_xticklabels(user_summary_zone_plot.index, rotation=0)
+                        y_max = user_summary_zone_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
+                        ax.set_yticks(range(0, int(y_max) + 5000, 5000))
+                        st.pyplot(fig)
+
+                        
+
+
+
+
+
+
+
+                elif visualization_type == "Zone" and "Zone" in available_options:
+                    # Calculate the number of people for each user type by multiplying Total Population with percentages
+                    user_summary_dma['Legal'] = (user_summary_dma['Total Population'] * user_summary_dma['Legal %'] / 100).astype(int)
+                    user_summary_dma['Illegal'] = (user_summary_dma['Total Population'] * user_summary_dma['Illegal %'] / 100).astype(int)
+                    user_summary_dma['Non-user'] = (user_summary_dma['Total Population'] * user_summary_dma['Non-user %'] / 100).astype(int)
+                    user_summary_dma_plot = user_summary_dma[user_summary_dma.index != 'Total']
+
+
+
+
+
+
+                    with col1:
+                        st.markdown("#### 📊 Water Network Summary - DMA")
+                        st.dataframe(user_summary_dma)
+
+                    with col2:
+                        # Title for Population by User Type
+                        st.markdown("### 📈 Population by User Type")
+                        fig, ax = plt.subplots(figsize=(7, 5))  # Adjust figure size
+                        user_summary_dma_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].plot(
+                            kind='bar', 
+                            stacked=False, 
+                            color=['#A9A9A9', '#FFA500', '#90EE90', '#87CEEB'],  
+                            ax=ax, 
+                            edgecolor='black'
+                        )
+                        ax.set_title('Network Users Summary - DMAs', fontsize=12)
+                        ax.set_xlabel('DMAs')
+                        ax.set_ylabel('Number of Users')
+                        ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
+                        y_max = user_summary_dma_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
+                        ax.set_yticks(range(0, int(y_max) + 5000, 5000))
+                        ax.set_xticklabels(user_summary_dma_plot.index, rotation=0)
+                        st.pyplot(fig)
+
+
+
+
 
             # Display the calculated total values
             st.write(f"Total Population: {round(total_population_all_dmas,-2)}")
@@ -469,73 +536,7 @@ with tab1:
             st.write(f"Illegal %: {illegal_sum_dma:.1f}%")
             st.write(f"Non-user %: {non_user_sum_dma:.1f}%")
 
-            # Title for Population by User Type
-            st.markdown("### 📈 Population by User Type")
 
-            # Create columns for side-by-side layout for the graphs
-            col1, col2 = st.columns(2)
-            if 'Zone' in filtered_df.columns:
-                # Calculate the number of people for each user type by multiplying Total Population with percentages
-                user_summary_zone['Legal'] = (user_summary_zone['Total Population'] * user_summary_zone['Legal %'] / 100).astype(int)
-                user_summary_zone['Illegal'] = (user_summary_zone['Total Population'] * user_summary_zone['Illegal %'] / 100).astype(int)
-                user_summary_zone['Non-user'] = (user_summary_zone['Total Population'] * user_summary_zone['Non-user %'] / 100).astype(int)
-                user_summary_zone_plot = user_summary_zone[user_summary_zone.index != 'Total']       
-            else:
-                st.markdown("Your file does not have 'Zone' column")
-
-            if 'DMA' in filtered_df.columns:
-                # Calculate the number of people for each user type by multiplying Total Population with percentages
-                user_summary_dma['Legal'] = (user_summary_dma['Total Population'] * user_summary_dma['Legal %'] / 100).astype(int)
-                user_summary_dma['Illegal'] = (user_summary_dma['Total Population'] * user_summary_dma['Illegal %'] / 100).astype(int)
-                user_summary_dma['Non-user'] = (user_summary_dma['Total Population'] * user_summary_dma['Non-user %'] / 100).astype(int)
-                user_summary_dma_plot = user_summary_dma[user_summary_dma.index != 'Total']
-            else:
-                st.markdown("Your file does not have 'DMA' column")
-
-            # Place the two graphs in the side-by-side layout
-            if 'Zone' in filtered_df.columns:     
-                # First graph for Zone
-                with col1:
-                    fig, ax = plt.subplots(figsize=(7, 5))  # Adjust figure size
-                    user_summary_zone_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].plot(
-                        kind='bar', 
-                        stacked=False, 
-                        color=['#A9A9A9', '#FFA500', '#90EE90', '#87CEEB'],  
-                        ax=ax, 
-                        edgecolor='black'
-                    )
-                    ax.set_title('Network Users Summary - Zones', fontsize=12)
-                    ax.set_xlabel('Zones')
-                    ax.set_ylabel('Number of Users')
-                    ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
-                    ax.set_xticklabels(user_summary_zone_plot.index, rotation=0)
-                    y_max = user_summary_zone_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
-                    ax.set_yticks(range(0, int(y_max) + 5000, 5000))
-                    st.pyplot(fig)
-            else:
-                st.markdown("Your file does not have 'Zone' column")
-
-            if 'DMA' in filtered_df.columns: 
-            # Second graph for DMA
-                with col2:
-                    fig, ax = plt.subplots(figsize=(7, 5))  # Adjust figure size
-                    user_summary_dma_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].plot(
-                        kind='bar', 
-                        stacked=False, 
-                        color=['#A9A9A9', '#FFA500', '#90EE90', '#87CEEB'],  
-                        ax=ax, 
-                        edgecolor='black'
-                    )
-                    ax.set_title('Network Users Summary - DMAs', fontsize=12)
-                    ax.set_xlabel('DMAs')
-                    ax.set_ylabel('Number of Users')
-                    ax.legend(['Non users', 'Illegal Users', 'Legal Users', 'Total Population'])
-                    y_max = user_summary_dma_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
-                    ax.set_yticks(range(0, int(y_max) + 5000, 5000))
-                    ax.set_xticklabels(user_summary_dma_plot.index, rotation=0)
-                    st.pyplot(fig)
-            else:
-                st.markdown("Your file does not have 'DMA' column")
 
         with tab3:
             st.markdown("### 📅 Monthly Water Consumption Calculation")
