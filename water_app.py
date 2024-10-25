@@ -357,8 +357,7 @@ with tab1:
 
     # Calculate total population and percentages per DMA (if 'DMA' column exists)
         if 'DMA' in filtered_df.columns:
-            # Extract unique DMA and Zone values
-            unique_dmas = filtered_df['DMA'].unique().tolist()
+
             # Calculate total population for each DMA, including all inputs (with or without User Type)
             dma_counts = df.groupby('DMA').size()  # Count the number of inputs per DMA
             total_population_by_dma = dma_counts * avg_floors * avg_people_per_family  # Calculate total population
@@ -390,9 +389,8 @@ with tab1:
             # Handle cases where no known users exist to avoid division by zero
             user_summary_dma[['Legal %', 'Illegal %', 'Non-user %']] = user_summary_dma[['Legal %', 'Illegal %', 'Non-user %']].fillna(0)
 
-            st.markdown("test here")
-            #st.write(f"Data type of Zone after enforcing numeric: {user_summary_dma['DMA'].dtype}")
-            user_summary_dma
+            # Extract unique DMA and Zone values
+            unique_dmas = filtered_df['DMA'].unique().tolist()
             
             # # Add a final row with the sum of all DMAs (weighted average for percentages)
             total_population_all_dmas = total_population_by_dma.sum()
