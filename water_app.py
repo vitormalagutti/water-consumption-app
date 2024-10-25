@@ -1023,7 +1023,7 @@ with tab1:
                                         "radius": 6,
                                         "opacity": 1,
                                     },
-                                    "isVisible": True
+                                    "isVisible": False
                                 },
                                 "visualChannels": {
                                     "colorField": {
