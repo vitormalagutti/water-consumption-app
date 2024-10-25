@@ -860,6 +860,7 @@ with tab1:
                                 "config": {
                                     "dataId": "Water Consumption Data",
                                     "label": "Building Locations",
+                                    "colorField": {"name": visualization_type, "type": "string"}, 
                                     "color": [150, 200, 255],  # Color of points
                                     "columns": {
                                         "lat": "Y",
