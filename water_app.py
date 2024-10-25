@@ -919,7 +919,7 @@ with tab1:
                                         "lng": "X"
                                     },
                                     "visConfig": {
-                                        "radius": 2,
+                                        "radius": 4,
                                         "opacity": 0.2,
                                     },
                                     "isVisible": True
