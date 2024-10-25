@@ -960,7 +960,7 @@ with tab1:
                                 "config": {
                                     "dataId": "Water Consumption Data",
                                     "label": "Building Locations",
-                                    "color": [30, 144, 255],  # Color of points
+                                    "color": [150, 20, 255],  # Color of points
                                     "columns": {
                                         "lat": "Y",
                                         "lng": "X"
