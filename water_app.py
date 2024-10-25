@@ -396,11 +396,7 @@ with tab1:
                 if 'Zone' in filtered_df.columns:
                     st.markdown("#### 📊 Water Network Summary - Zone")
                     st.dataframe(user_summary_zone)
-                    # Display the calculated total values
-                    st.write(f"Total Population: {round(total_population_all_dmas,-2)}")
-                    st.write(f"Legal %: {legal_sum_dma:.1f}%")
-                    st.write(f"Illegal %: {illegal_sum_dma:.1f}%")
-                    st.write(f"Non-user %: {non_user_sum_dma:.1f}%")
+
                 else:
                     st.markdown("Your file does not have 'Zone' column")
 
@@ -408,13 +404,16 @@ with tab1:
                 if 'DMA' in filtered_df.columns:
                     st.markdown("#### 📊 Water Network Summary - DMA")
                     st.dataframe(user_summary_dma)
-                    st.write(f"Total Population: {round(total_population_all_dmas,-2)}")
-                    st.write(f"Legal %: {legal_sum_dma:.1f}%")
-                    st.write(f"Illegal %: {illegal_sum_dma:.1f}%")
-                    st.write(f"Non-user %: {non_user_sum_dma:.1f}%")
+
                 else:
                     st.markdown("Your file does not have 'DMA' column")
 
+            # Display the calculated total values
+            st.write(f"Total Population: {round(total_population_all_dmas,-2)}")
+            st.write(f"Legal %: {legal_sum_dma:.1f}%")
+            st.write(f"Illegal %: {illegal_sum_dma:.1f}%")
+            st.write(f"Non-user %: {non_user_sum_dma:.1f}%")
+            
             # Title for Population by User Type
             st.markdown("### 📈 Population by User Type")
 
