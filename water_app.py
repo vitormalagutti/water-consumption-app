@@ -861,8 +861,8 @@ with tab1:
                                     "dataId": "Water Consumption Data",
                                     "label": "Building Locations",
                                     "columns": {
-                                        "lat": "lat",
-                                        "lng": "lng"
+                                        "lat": "Y",
+                                        "lng": "X"
                                     },
                                     "visConfig": {
                                         "radius": 3,
