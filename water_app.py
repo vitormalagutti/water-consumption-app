@@ -633,7 +633,9 @@ with tab1:
                 if 'Zone' in merged_df.columns:
                     zone_volume_df = pd.merge(merged_df[['Block Number', 'Zone']], volume_summed, on='Block Number', how='left')
                     zone_volume_df = zone_volume_df.groupby('Zone').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
-                    zone_volume_df = zone_volume_df.round(0).astype(int).set_index('Zone', inplace=True)
+                    zone_volume_df = zone_volume_df.round(0).astype(int)
+                    zone_volume_df.set_index('Zone', inplace=True)        
+                    zone_volume_df = zone_volume_df.transpose()
                     st.markdown("### Zone Billed Data Summed by Volume")
                     st.dataframe(zone_volume_df)
 
@@ -641,7 +643,7 @@ with tab1:
                 if 'Zone' in merged_df.columns:
                     zone_value_df = pd.merge(merged_df[['Block Number', 'Zone']], value_summed, on='Block Number', how='left')
                     zone_value_df = zone_value_df.groupby('Zone').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
-                    zone_value_df = zone_value_df.round(0).astype(int).set_index('Zone', inplace=True)
+                    zone_value_df = zone_value_df.round(0).astype(int) 
                     st.markdown("### Zone Billed Data Summed by Value")
                     st.dataframe(zone_value_df)
 
@@ -649,7 +651,7 @@ with tab1:
                 if 'DMA' in merged_df.columns:
                     dma_volume_df = pd.merge(merged_df[['Block Number', 'DMA']], volume_summed, on='Block Number', how='left')
                     dma_volume_df = dma_volume_df.groupby('DMA').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
-                    dma_volume_df = dma_volume_df.round(0).astype(int).set_index('DMA', inplace=True)
+                    dma_volume_df = dma_volume_df.round(0).astype(int)
                     st.markdown("### DMA Billed Data Summed by Volume")
                     st.dataframe(dma_volume_df)
 
@@ -657,7 +659,7 @@ with tab1:
                 if 'DMA' in merged_df.columns:
                     dma_value_df = pd.merge(merged_df[['Block Number', 'DMA']], value_summed, on='Block Number', how='left')
                     dma_value_df = dma_value_df.groupby('DMA').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
-                    dma_value_df = dma_value_df.round(0).astype(int).set_index('DMA', inplace=True)
+                    dma_value_df = dma_value_df.round(0).astype(int)
                     st.markdown("### DMA Billed Data Summed by Value")
                     st.dataframe(dma_value_df)
 
