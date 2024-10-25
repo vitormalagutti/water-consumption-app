@@ -786,7 +786,8 @@ with tab1:
                 st.markdown("### Merged DataFrame for DMA with Percentage Billed")
                 st.dataframe(dma_merged_df)
 
-
+                unique_dmas
+                unique_zones
 
                 def plot_combined_demand_billed(df, unique_labels, title="Water Demand vs Billed Volumes with % Billed"):
                     # Filter and sort the dataframe by unique_labels
