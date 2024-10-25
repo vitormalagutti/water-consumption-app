@@ -357,6 +357,7 @@ with tab1:
             user_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
             
             st.markdown("test here")
+            st.write(f"Data type of Zone after enforcing numeric: {user_summary_dma['DMA'].dtype}")
             user_summary_dma
             
         else:
