@@ -549,14 +549,9 @@ with tab1:
                     for i, month in enumerate(df_factors['Month']):
                         consumption_m3 = population_dma[dma] * (1 - non_users_dma[dma]) * monthly_consumption[i] * days_in_month[i] / 1000
                         dma_consumption.append(round(consumption_m3, -2))  # Round to the nearest 100
-                    # Safely convert Zone to int if possible
-                    try:
-                        zone_key = int(float(dma))
-                    except (ValueError, TypeError):
-                        zone_key = dma  # If conversion fails, keep the original value
 
-                    # Add the Zone and its monthly consumption to the DataFrame
-                    water_demand_dma.loc[len(water_demand_dma)] = [zone_key] + dma_consumption
+                    # Add the DMA and its monthly consumption to the DataFrame
+                    water_demand_dma.loc[len(water_demand_dma)] = [int(dma)] + dma_consumption  # Fixing float DMA to integer
 
                     
                 water_demand_dma.set_index('DMA', inplace=True)        
