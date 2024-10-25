@@ -787,6 +787,13 @@ with tab1:
                     demand_columns = [col for col in df.columns if col.endswith('_demand')]
                     billed_columns = [col for col in df.columns if col not in demand_columns]
 
+                    # Ensure there's only one demand and one billed column
+                    if len(demand_columns) != 1 or len(billed_columns) != 1:
+                        raise ValueError("Expected exactly one demand column and one billed column")
+
+                    demand_column = demand_columns[0]
+                    billed_column = billed_columns[0]
+
                     fig, ax = plt.subplots(figsize=(10, 6))
                     
                     # Set bar width and positions
@@ -794,10 +801,10 @@ with tab1:
                     positions = np.arange(len(unique_labels))
                     
                     # Plot Demand Bars
-                    ax.bar(positions - bar_width / 2, df[demand_columns], width=bar_width, label="Demand", color='blue', alpha=0.6)
+                    ax.bar(positions - bar_width / 2, df[demand_column], width=bar_width, label="Demand", color='blue', alpha=0.6)
                     
                     # Plot Billed Bars
-                    ax.bar(positions + bar_width / 2, df[billed_columns], width=bar_width, label="Billed", color='green', alpha=0.6)
+                    ax.bar(positions + bar_width / 2, df[billed_column], width=bar_width, label="Billed", color='green', alpha=0.6)
                     
                     # Set labels and title
                     ax.set_xlabel("Zone/DMA")
