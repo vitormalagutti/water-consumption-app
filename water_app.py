@@ -177,6 +177,18 @@ def align_and_calculate_percentage_separately(water_demand_df, billed_df):
 
     return percentage_results
 
+# Function to add month column based on the index
+def add_month_column_from_index(billed_df):
+    # Temporarily reset index
+    billed_df_temp = billed_df.reset_index()
+    # Add a Month column based on the current index, without permanently changing the index
+    billed_df_temp['Month'] = pd.to_datetime(billed_df_temp['index'], format='%m/%y', errors='coerce').dt.strftime('%b')
+    # Set the index back to its original column, if desired
+    billed_df_temp.set_index('index', inplace=True)
+    # Rename the index to the original name if needed
+    billed_df_temp.index.name = billed_df.index.name
+    return billed_df_temp
+
 
 with tab1:
 
@@ -725,17 +737,7 @@ with tab1:
 
                 # Step 1: Create a month column from the index in the billed tables (zone_volume_df and dma_volume_df)
 
-                # Function to add month column based on the index
-                def add_month_column_from_index(billed_df):
-                    # Temporarily reset index
-                    billed_df_temp = billed_df.reset_index()
-                    # Add a Month column based on the current index, without permanently changing the index
-                    billed_df_temp['Month'] = pd.to_datetime(billed_df_temp['index'], format='%m/%y', errors='coerce').dt.strftime('%b')
-                    # Set the index back to its original column, if desired
-                    billed_df_temp.set_index('index', inplace=True)
-                    # Rename the index to the original name if needed
-                    billed_df_temp.index.name = billed_df.index.name
-                    return billed_df_temp
+
 
                 # Apply this function to zone and DMA volume DataFrames
                 zone_volume_df = add_month_column_from_index(zone_volume_df)
