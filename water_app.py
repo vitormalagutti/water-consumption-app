@@ -567,7 +567,7 @@ with tab1:
                         consumption_m3 = population_dma[dma] * (1 - non_users_dma[dma]) * monthly_consumption[i] * days_in_month[i] / 1000
                         dma_consumption.append(round(consumption_m3, -2))  # Round to the nearest 100
 
-                        dma_consumption
+                    dma_consumption
 
                     # Add the DMA and its monthly consumption to the DataFrame
                     water_demand_dma.loc[len(water_demand_dma)] = [dma] + dma_consumption  # Fixing float DMA to integer
