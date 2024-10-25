@@ -11,6 +11,7 @@ import json
 import matplotlib.ticker as ticker
 import io
 import re
+import seaborn as sns
 from dateutil import parser
 from keplergl import KeplerGl
 from shapely.geometry import Point
@@ -583,6 +584,7 @@ with tab1:
             # Monthly Daily Consumption from Seasonal Distribution
             monthly_consumption = df_factors['Average Daily Consumption - l/p/d'] 
 
+            
             # Create columns for side-by-side layout
             col1, col2 = st.columns(2)
             
@@ -622,7 +624,11 @@ with tab1:
                         # Plot the stacked bars
                         fig, ax = plt.subplots(figsize=(10, 6))
                         columns_to_plot = water_demand_dma.columns
-                        water_demand_dma[columns_to_plot].plot(kind='bar', stacked=True, ax=ax)
+                        
+                        # Use a light blue color palette
+                        light_blue_palette = sns.color_palette("Blues", n_colors=len(columns_to_plot))
+            
+                        water_demand_dma[columns_to_plot].plot(kind='bar', stacked=True, color=light_blue_palette, ax=ax)
                         ax.set_title('Monthly Water Demand by DMA', fontsize=15)
                         ax.set_xlabel('Month', fontsize=12)
                         ax.set_ylabel('Water Demand (m3)', fontsize=13)
@@ -671,7 +677,10 @@ with tab1:
                         # Plot the stacked bars
                         fig, ax = plt.subplots(figsize=(10, 6))
                         columns_to_plot = water_demand_zone.columns
-                        water_demand_zone[columns_to_plot].plot(kind='bar', stacked=True, ax=ax)
+                        # Use a light blue color palette
+                        light_blue_palette = sns.color_palette("Blues", n_colors=len(columns_to_plot))
+                        
+                        water_demand_zone[columns_to_plot].plot(kind='bar', stacked=True, color=light_blue_palette, ax=ax)
                         ax.set_title('Monthly Water Demand by Zone', fontsize=15)
                         ax.set_xlabel('Month', fontsize=12)
                         ax.set_ylabel('Water Demand (m3)', fontsize=13)
