@@ -699,7 +699,7 @@ with tab1:
 
   
 
-            # Align water demand and billed data
+            # Align water demand and billed data, and ensure no NaN or infinite values
             if 'Zone' in merged_df.columns:
                 zone_percentage_billed_volume = align_and_calculate_percentage(water_demand_zone, zone_volume_df)
                 st.markdown("### Zone Percentage Billed by Volume")
