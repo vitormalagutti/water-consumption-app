@@ -837,8 +837,7 @@ with tab1:
                         st.dataframe(zone_merged_df.iloc[:,-n:])
 
                         plot_multiple_demand_billed(zone_merged_df, title="Zone Demand vs Billed Volumes with % Billed")
-            
-        
+             
         with tab6:  
             
             # Create a GeoDataFrame for processing
@@ -850,49 +849,8 @@ with tab1:
             center_lat, center_lon = gdf["Y"].mean(), gdf["X"].mean()
 
             # Create dynamic KeplerGL configuration
+ 
             config_1 = {
-                'version': 'v1',
-                'config': {
-                    'mapState': {
-                        'latitude': center_lat,
-                        'longitude': center_lon,
-                        'zoom': 15
-                    },
-                    "mapStyle": {
-                        "styleType": "satellite"
-                    },
-                    "visState": {
-                        "layers": [
-                            {
-                                "id": "building_layer",
-                                "type": "point",
-                                "config": {
-                                    "dataId": "Water Consumption Data",
-                                    "label": "Building Locations",
-                                    "color": [150, 200, 255],  # Default color if no category matches
-                                    "columns": {
-                                        "lat": "Y",
-                                        "lng": "X"
-                                    },
-                                    "visConfig": {
-                                        "radius": 6,
-                                        "opacity": 1,
-                                    },
-                                    "isVisible": True
-                                },
-                                "visualChannels": {
-                                    "colorField": {
-                                        "name": visualization_type,
-                                        "type": "string"  # Change to 'string' for categorical coloring
-                                    },
-                                }
-                            }
-                        ]
-                    }
-                }
-            }
-
-            config_2 = {
             'version': 'v1',
             'config': {
                 'mapState': {
@@ -924,6 +882,7 @@ with tab1:
                             }
                         }]}}}
 
+ 
 
             # Determine a reasonable zoom level based on data spread
             lat_range = gdf["Y"].max() - gdf["Y"].min()
@@ -934,7 +893,7 @@ with tab1:
 
             # Create columns for side-by-side layout
             col1, col2 = st.columns(2)
-
+            gdf_config = gdf
             with col1:
                 
                 # Set up the Folium map with Google Satellite layer
@@ -982,36 +941,118 @@ with tab1:
                 # Create heatmaps based on selection
                 if heatmap_type == "All Buildings":
                     st.markdown("#### 📍 Location of All Building Locations")
-                    kepler_map = KeplerGl(height=900, config=config_2)
+                    kepler_map = KeplerGl(height=900, config=config_1)
                     kepler_map.add_data(data=gdf, name="Water Consumption Data")
                     keplergl_static(kepler_map)
 
                 elif heatmap_type == "Illegal Connections":
                     st.markdown("#### 📍 Location of Illegal Connections")
-                    gdf_illegal = gdf[gdf['User Type'] == 'Illegal'] 
-                    kepler_map = KeplerGl(height=900, config=config_2)
+                    gdf_illegal = gdf[gdf['User Type'] == 'Illegal']
+                    gdf_config = gdf_illegal 
+                    kepler_map = KeplerGl(height=900, config=config_1)
                     kepler_map.add_data(data=gdf_illegal, name="Water Consumption Data")
                     keplergl_static(kepler_map)
 
                 elif heatmap_type == "Legal Connections":
                     st.markdown("#### 📍 Location of Legal Connections")
                     gdf_legal = gdf[gdf['User Type'] == 'Legal']
-                    kepler_map = KeplerGl(height=900, config=config_2)
+                    gdf_config = gdf_legal
+                    kepler_map = KeplerGl(height=900, config=config_1)
                     kepler_map.add_data(data=gdf_legal, name="Water Consumption Data")
                     keplergl_static(kepler_map)
                     
                 elif heatmap_type == "Non-Users":
                     st.markdown("#### 📍 Location of Non-Users")
                     gdf_non_user = gdf[gdf['User Type'] == 'Non-user']
-                    kepler_map = KeplerGl(height=900, config=config_2)
+                    gdf_config = gdf_non_user
+                    kepler_map = KeplerGl(height=900, config=config_1)
                     kepler_map.add_data(data=gdf_non_user, name="Water Consumption Data")
                     keplergl_static(kepler_map)
             
-            
+            config_2 = {
+                'version': 'v1',
+                'config': {
+                    'mapState': {
+                        'latitude': center_lat,
+                        'longitude': center_lon,
+                        'zoom': 15
+                    },
+                    "mapStyle": {
+                        "styleType": "satellite"
+                    },
+                    "visState": {
+                        "layers": [
+                            # First layer for the original GeoDataFrame
+                            {
+                                "id": "building_layer",
+                                "type": "point",
+                                "config": {
+                                    "dataId": "Water Consumption Data",  # Link to first GeoDataFrame
+                                    "label": "Building Locations",
+                                    "color": [150, 200, 255],  # Default color for first layer
+                                    "columns": {
+                                        "lat": "Y",
+                                        "lng": "X"
+                                    },
+                                    "visConfig": {
+                                        "radius": 6,
+                                        "opacity": 1,
+                                    },
+                                    "isVisible": True
+                                },
+                                "visualChannels": {
+                                    "colorField": {
+                                        "name": visualization_type,
+                                        "type": "string"  # Use 'string' for categorical coloring
+                                    },
+                                }
+                            },
+                            # Second layer for the gdf_config GeoDataFrame
+                            {
+                                "id": "dynamic_layer",
+                                "type": "point",
+                                "config": {
+                                    "dataId": "Dynamic Data",  # Link to the second GeoDataFrame (gdf_config)
+                                    "label": "Selected Buildings",
+                                    "color": [255, 180, 150],  # Different default color for this layer
+                                    "columns": {
+                                        "lat": "Y",
+                                        "lng": "X"
+                                    },
+                                    "visConfig": {
+                                        "radius": 6,
+                                        "opacity": 1,
+                                    },
+                                    "isVisible": True
+                                },
+                                "visualChannels": {
+                                    "colorField": {
+                                        "name": visualization_type,
+                                        "type": "string"  # Use 'string' for categorical coloring
+                                    },
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+
+
             st.markdown("### 🗺️ Interactive Map with Google Satellite Basemap")
-                        
-            
-            kepler_map = KeplerGl(height=800, config=config_1)
+            # Create heatmaps based on selection
+            kepler_map = KeplerGl(height=800, config=config_1)            
+            if heatmap_type == "All Buildings":
+                kepler_map.add_data(data=gdf, name="Water Consumption Data")
+
+            elif heatmap_type == "Illegal Connections":
+                kepler_map.add_data(data=gdf_illegal, name="Water Consumption Data")
+
+            elif heatmap_type == "Legal Connections":
+                kepler_map.add_data(data=gdf_legal, name="Water Consumption Data")
+ 
+            elif heatmap_type == "Non-Users":
+                kepler_map.add_data(data=gdf_non_user, name="Water Consumption Data")
+                 
             kepler_map.add_data(data=gdf, name="Water Consumption Data")
             keplergl_static(kepler_map)
 
