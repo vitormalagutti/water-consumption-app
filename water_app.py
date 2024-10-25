@@ -1012,7 +1012,7 @@ with tab1:
                                 "id": "dynamic_layer",
                                 "type": "hexagon",
                                 "config": {
-                                    "dataId": "Water Consumption Data",  # Use the appropriate data source ID
+                                    "dataId": "Dynamic Data",  # Use the appropriate data source ID
                                     "label": "Dynamic Data",
                                     "columns": {
                                         "lat": "Y",  # Replace with the latitude column name
