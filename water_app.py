@@ -749,30 +749,38 @@ with tab1:
                 dma_merged_df
                 zone_merged_df
                 st.write("Here works")
-                # Step 3: Create new columns to calculate the % billed for each zone/dma
-                def calculate_percentage_billed(merged_df, suffix):
-                    # For each zone/dma column, calculate the percentage billed
-                    for col in merged_df.columns:
-                        if col.endswith(f'_{suffix}_demand'):
-                            # Extract the original column name (without the '_demand' suffix)
-                            original_col = col.replace(f'_{suffix}_demand', '')
-                            # Create a new column for the percentage billed
-                            merged_df[f'{original_col}_percentage_billed'] = (merged_df[original_col] / merged_df[col]) * 100
-                            # Replace any NaN or inf values with 0
-                            merged_df[f'{original_col}_percentage_billed'] = merged_df[f'{original_col}_percentage_billed'].fillna(0).replace([float('inf'), -float('inf')], 0)
+
+                def join_billed_with_demand_and_calculate_percentage(billed_df, demand_df):
+                    # Reset index for demand_df to expose the 'Month' (which is the index)
+                    demand_df = demand_df.reset_index()  # 'Month' becomes a column here
+                    
+                    # Ensure we have the correct column for 'Month' - the first column should now be the Month
+                    if 'index' in demand_df.columns:
+                        demand_df.rename(columns={'index': 'Month'}, inplace=True)
+                    
+                    # Proceed with the merge on the 'Month' column
+                    merged_df = pd.merge(billed_df, demand_df, on='Month', how='left')
+
+                    # Calculate the percentage of billed volumes compared to demand
+                    for column in billed_df.columns:
+                        if column != 'Month':  # Avoid calculating percentage for 'Month' column
+                            # Check if this column exists in demand_df
+                            if column in demand_df.columns:
+                                # Calculate percentage and create a new column
+                                merged_df[f'{column} % Billed'] = (merged_df[column] / merged_df[column + '_demand']) * 100
 
                     return merged_df
 
-                # Apply percentage calculation to both zone and DMA DataFrames
-                zone_final_df = calculate_percentage_billed(zone_merged_df, 'zone')
-                dma_final_df = calculate_percentage_billed(dma_merged_df, 'dma')
+                # Join the zone_volume_df and dma_volume_df with the water demand
+                zone_merged_df = join_billed_with_demand_and_calculate_percentage(zone_volume_df, water_demand_zone)
+                dma_merged_df = join_billed_with_demand_and_calculate_percentage(dma_volume_df, water_demand_dma)
 
-                # Step 4: Display the final tables with DMAs, water demand, and % billed for each DMA/Zone
-                st.markdown("### Zone Percentage Billed by Volume")
-                st.dataframe(zone_final_df)
+                # Display the merged dataframes with calculated percentages
+                st.markdown("### Merged DataFrame for Zone with Percentage Billed")
+                st.dataframe(zone_merged_df)
 
-                st.markdown("### DMA Percentage Billed by Volume")
-                st.dataframe(dma_final_df)
+                st.markdown("### Merged DataFrame for DMA with Percentage Billed")
+                st.dataframe(dma_merged_df)
 
 
 
