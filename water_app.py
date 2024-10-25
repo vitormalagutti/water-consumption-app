@@ -1010,26 +1010,37 @@ with tab1:
                             # Second layer for the gdf_config GeoDataFrame
                             {
                                 "id": "dynamic_layer",
-                                "type": "point",
+                                "type": "hexagon",
                                 "config": {
-                                    "dataId": "Dynamic Data",  # Link to the second GeoDataFrame (gdf_config)
-                                    "label": "Selected Buildings",
-                                    "color": [255, 180, 150],  # Different default color for this layer
+                                    "dataId": "Water Consumption Data",  # Use the appropriate data source ID
+                                    "label": "Dynamic Data",
                                     "columns": {
-                                        "lat": "Y",
-                                        "lng": "X"
+                                        "lat": "Y",  # Replace with the latitude column name
+                                        "lng": "X"   # Replace with the longitude column name
                                     },
                                     "visConfig": {
-                                        "radius": 6,
-                                        "opacity": 1,
+                                        "opacity": 0.6,
+                                        "worldUnitSize": 1,  # Adjust to control the hex size (higher = smaller hexes)
+                                        "colorRange": {
+                                            "colors": [
+                                                "#edf8fb", "#b2e2e2", "#66c2a4", "#2ca25f", "#006d2c"
+                                            ]  # Color gradient for hex density
+                                        },
+                                        "coverage": 1,
+                                        "sizeRange": [0, 500],  # Adjust based on data density
+                                        "percentile": [0, 100]
                                     },
-                                    "isVisible": False
+                                    "isVisible": True
                                 },
                                 "visualChannels": {
                                     "colorField": {
-                                        "name": visualization_type,
-                                        "type": "string"  # Use 'string' for categorical coloring
+                                        "name": "density",  # KeplerGL automatically calculates density for hex layers
+                                        "type": "real"      # Use real or integer based on your needs
                                     },
+                                    "sizeField": {
+                                        "name": "density",
+                                        "type": "real"
+                                    }
                                 }
                             }
                         ]
