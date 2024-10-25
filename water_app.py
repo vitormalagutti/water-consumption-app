@@ -956,7 +956,7 @@ with tab1:
                         "layers": [
                             {
                                 "id": "building_layer",
-                                "type": "grid",  
+                                "type": "point",  
                                 "config": {
                                     "dataId": "Water Consumption Data",
                                     "label": "Building Locations",
