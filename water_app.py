@@ -883,6 +883,85 @@ with tab1:
                         }]}}}
 
  
+            config_2 = {
+                'version': 'v1',
+                'config': {
+                    'mapState': {
+                        'latitude': center_lat,
+                        'longitude': center_lon,
+                        'zoom': 15
+                    },
+                    "mapStyle": {
+                        "styleType": "satellite"
+                    },
+                    "visState": {
+                        "layers": [
+                            # First layer for the original GeoDataFrame
+                            {
+                                "id": "building_layer",
+                                "type": "point",
+                                "config": {
+                                    "dataId": "Water Consumption Data",  # Link to first GeoDataFrame
+                                    "label": "Building Locations",
+                                    "color": [150, 200, 255],  # Default color for first layer
+                                    "columns": {
+                                        "lat": "Y",
+                                        "lng": "X"
+                                    },
+                                    "visConfig": {
+                                        "radius": 6,
+                                        "opacity": 0.2,
+                                    },
+                                    "isVisible": True
+                                },
+                                "visualChannels": {
+                                    "colorField": {
+                                        "name": visualization_type,
+                                        "type": "string"  # Use 'string' for categorical coloring
+                                    },
+                                }
+                            },
+                            # Second layer for the gdf_config GeoDataFrame
+                            {
+                                "id": "dynamic_layer",
+                                "type": "hexagon",
+                                "config": {
+                                    "dataId": "Dynamic Data",  # Use the appropriate data source ID
+                                    "label": "Dynamic Data",
+                                    "columns": {
+                                        "lat": "Y",  # Replace with the latitude column name
+                                        "lng": "X"   # Replace with the longitude column name
+                                    },
+                                    "visConfig": {
+                                        "opacity": 0.6,
+                                        "worldUnitSize": 0.05,  # Adjust to control the hex size (higher = smaller hexes)
+                                        "colorRange": {
+                                            "colors": [
+                                                "#edf8fb", "#b2e2e2", "#66c2a4", "#2ca25f", "#006d2c"
+                                            ]  # Color gradient for hex density
+                                        },
+                                        "coverage": 1,
+                                        "sizeRange": [0, 500],  # Adjust based on data density
+                                        "percentile": [0, 100]
+                                    },
+                                    "isVisible": True
+                                },
+                                "visualChannels": {
+                                    "colorField": {
+                                        "name": "density",  # KeplerGL automatically calculates density for hex layers
+                                        "type": "real"      # Use real or integer based on your needs
+                                    },
+                                    "sizeField": {
+                                        "name": "density",
+                                        "type": "real"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+
 
             # Determine a reasonable zoom level based on data spread
             lat_range = gdf["Y"].max() - gdf["Y"].min()
@@ -941,113 +1020,38 @@ with tab1:
                 # Create heatmaps based on selection
                 if heatmap_type == "All Buildings":
                     st.markdown("#### 📍 Location of All Building Locations")
-                    kepler_map = KeplerGl(height=900, config=config_1)
+                    kepler_map = KeplerGl(height=900, config=config_2)
                     kepler_map.add_data(data=gdf, name="Water Consumption Data")
+                    kepler_map.add_data(data=gdf, name="Dynamic Data")
                     keplergl_static(kepler_map)
 
                 elif heatmap_type == "Illegal Connections":
                     st.markdown("#### 📍 Location of Illegal Connections")
                     gdf_illegal = gdf[gdf['User Type'] == 'Illegal']
                     gdf_config = gdf_illegal 
-                    kepler_map = KeplerGl(height=900, config=config_1)
+                    kepler_map = KeplerGl(height=900, config=config_2)
                     kepler_map.add_data(data=gdf_illegal, name="Water Consumption Data")
+                    kepler_map.add_data(data=gdf_illegal, name="Dynamic Data")
                     keplergl_static(kepler_map)
 
                 elif heatmap_type == "Legal Connections":
                     st.markdown("#### 📍 Location of Legal Connections")
                     gdf_legal = gdf[gdf['User Type'] == 'Legal']
                     gdf_config = gdf_legal
-                    kepler_map = KeplerGl(height=900, config=config_1)
+                    kepler_map = KeplerGl(height=900, config=config_2)
                     kepler_map.add_data(data=gdf_legal, name="Water Consumption Data")
+                    kepler_map.add_data(data=gdf_legal, name="Dynamic Data")
                     keplergl_static(kepler_map)
                     
                 elif heatmap_type == "Non-Users":
                     st.markdown("#### 📍 Location of Non-Users")
                     gdf_non_user = gdf[gdf['User Type'] == 'Non-user']
                     gdf_config = gdf_non_user
-                    kepler_map = KeplerGl(height=900, config=config_1)
+                    kepler_map = KeplerGl(height=900, config=config_2)
                     kepler_map.add_data(data=gdf_non_user, name="Water Consumption Data")
+                    kepler_map.add_data(data=gdf_non_user, name="Dynamic Data")
                     keplergl_static(kepler_map)
             
-            config_2 = {
-                'version': 'v1',
-                'config': {
-                    'mapState': {
-                        'latitude': center_lat,
-                        'longitude': center_lon,
-                        'zoom': 15
-                    },
-                    "mapStyle": {
-                        "styleType": "satellite"
-                    },
-                    "visState": {
-                        "layers": [
-                            # First layer for the original GeoDataFrame
-                            {
-                                "id": "building_layer",
-                                "type": "point",
-                                "config": {
-                                    "dataId": "Water Consumption Data",  # Link to first GeoDataFrame
-                                    "label": "Building Locations",
-                                    "color": [150, 200, 255],  # Default color for first layer
-                                    "columns": {
-                                        "lat": "Y",
-                                        "lng": "X"
-                                    },
-                                    "visConfig": {
-                                        "radius": 6,
-                                        "opacity": 0.6,
-                                    },
-                                    "isVisible": True
-                                },
-                                "visualChannels": {
-                                    "colorField": {
-                                        "name": visualization_type,
-                                        "type": "string"  # Use 'string' for categorical coloring
-                                    },
-                                }
-                            },
-                            # Second layer for the gdf_config GeoDataFrame
-                            {
-                                "id": "dynamic_layer",
-                                "type": "hexagon",
-                                "config": {
-                                    "dataId": "Dynamic Data",  # Use the appropriate data source ID
-                                    "label": "Dynamic Data",
-                                    "columns": {
-                                        "lat": "Y",  # Replace with the latitude column name
-                                        "lng": "X"   # Replace with the longitude column name
-                                    },
-                                    "visConfig": {
-                                        "opacity": 0.6,
-                                        "worldUnitSize": 0.05,  # Adjust to control the hex size (higher = smaller hexes)
-                                        "colorRange": {
-                                            "colors": [
-                                                "#edf8fb", "#b2e2e2", "#66c2a4", "#2ca25f", "#006d2c"
-                                            ]  # Color gradient for hex density
-                                        },
-                                        "coverage": 1,
-                                        "sizeRange": [0, 500],  # Adjust based on data density
-                                        "percentile": [0, 100]
-                                    },
-                                    "isVisible": True
-                                },
-                                "visualChannels": {
-                                    "colorField": {
-                                        "name": "density",  # KeplerGL automatically calculates density for hex layers
-                                        "type": "real"      # Use real or integer based on your needs
-                                    },
-                                    "sizeField": {
-                                        "name": "density",
-                                        "type": "real"
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                }
-            }
-
             kepler_map = KeplerGl(height=800, config=config_2)   
             st.markdown("### 🗺️ Interactive Map with Google Satellite Basemap")
             # Create heatmaps based on selection
