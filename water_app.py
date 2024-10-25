@@ -877,9 +877,8 @@ with tab1:
                                         "type": "string"  # Change to 'string' for categorical coloring
                                     },
                                     "colorScale": {
-                                        "type": "ordinal",  # Use ordinal for discrete color mapping
-                                        "domain": ["Category1", "Category2", "Category3"],  # Replace with actual categories
-                                        "range": [[255, 99, 71], [60, 179, 113], [135, 206, 250]]  # RGB values for each category
+                                        "type": "ordinal"  # Use ordinal for discrete color mapping
+
                                     }
                                 }
                             }
