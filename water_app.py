@@ -675,70 +675,44 @@ with tab1:
 
 
 
-                # Ensure the billed dates are converted properly to align with water demand
-                def convert_billed_dates(df):
-                    # Convert columns from mm/yy to mmm.yy format
-                    df.columns = [pd.to_datetime(col, format="%m/%y", errors='coerce').strftime('%b.%y') if 'Unnamed' not in col else col for col in df.columns]
-                    return df
-
-                # Transpose the water demand data to have months as columns
-                water_demand_dma_t = water_demand_dma.T
-                water_demand_zone_t = water_demand_zone.T
-
-                # Ensure the billed volume data has the correct date format
-                zone_volume = convert_billed_dates(zone_volume.T)
-                dma_volume = convert_billed_dates(dma_volume.T)
-
-                # Transpose the billed volumes back
-                dma_volume = dma_volume.T
-                zone_volume = zone_volume.T
-
-                # Now calculate the percentage billed for each month
-                # Align columns based on month names
-                def calculate_percentage_billed(water_demand_df, billed_df, group_name):
-                    # Ensure both water demand and billed volume have the same months
+  
+                # Align water demand and billed data
+                def align_and_calculate_percentage(water_demand_df, billed_df):
+                    # Ensure both have common columns
                     common_months = water_demand_df.columns.intersection(billed_df.columns)
-                    
+
                     # Slice data to only include common months
                     water_demand_df = water_demand_df[common_months]
                     billed_df = billed_df[common_months]
-                    
-                    # Calculate the percentage billed
+
+                    # Calculate percentage billed
                     percentage_billed = (billed_df / water_demand_df) * 100
-                    percentage_billed.fillna(0, inplace=True)  # Fill any NaNs with 0
+                    percentage_billed.fillna(0, inplace=True)
 
-                    # Create a combined result DataFrame
-                    result_df = pd.concat([water_demand_df, billed_df, percentage_billed], axis=1, keys=['Water Demand', 'Billed Volume', 'Percentage Billed'])
+                    return percentage_billed
 
-                    return result_df
+                # Calculate percentages for Zone
+                if 'Zone' in merged_df.columns:
+                    zone_percentage_billed_volume = align_and_calculate_percentage(water_demand_zone, zone_volume_df)
+                    zone_percentage_billed_value = align_and_calculate_percentage(water_demand_zone, zone_value_df)
 
-                # Calculate percentages for both DMA and Zone
-                dma_results = calculate_percentage_billed(water_demand_dma_t, dma_volume, "DMA")
-                zone_results = calculate_percentage_billed(water_demand_zone_t, zone_volume, "Zone")
+                    st.markdown("### Zone Percentage Billed by Volume")
+                    st.dataframe(zone_percentage_billed_volume)
 
-                # Display the results for DMA
-                st.markdown("### DMA Billed Volume vs Water Demand")
-                st.dataframe(dma_results)
+                    st.markdown("### Zone Percentage Billed by Value")
+                    st.dataframe(zone_percentage_billed_value)
 
-                # Display the results for Zone
-                st.markdown("### Zone Billed Volume vs Water Demand")
-                st.dataframe(zone_results)
+                # Calculate percentages for DMA
+                if 'DMA' in merged_df.columns:
+                    dma_percentage_billed_volume = align_and_calculate_percentage(water_demand_dma, dma_volume_df)
+                    dma_percentage_billed_value = align_and_calculate_percentage(water_demand_dma, dma_value_df)
 
-                # Example graph: Plotting the percentages for DMA
-                fig_dma, ax_dma = plt.subplots(figsize=(10, 6))
-                dma_results['Percentage Billed'].plot(kind='bar', ax=ax_dma, stacked=True, color=['skyblue'], edgecolor='black')
-                ax_dma.set_title("Percentage of Billed Volume to Water Demand (DMA)")
-                ax_dma.set_xlabel("DMA")
-                ax_dma.set_ylabel("Percentage Billed (%)")
-                st.pyplot(fig_dma)
+                    st.markdown("### DMA Percentage Billed by Volume")
+                    st.dataframe(dma_percentage_billed_volume)
 
-                # Plot for Zone
-                fig_zone, ax_zone = plt.subplots(figsize=(10, 6))
-                zone_results['Percentage Billed'].plot(kind='bar', ax=ax_zone, stacked=True, color=['lightgreen'], edgecolor='black')
-                ax_zone.set_title("Percentage of Billed Volume to Water Demand (Zone)")
-                ax_zone.set_xlabel("Zone")
-                ax_zone.set_ylabel("Percentage Billed (%)")
-                st.pyplot(fig_zone)
+                    st.markdown("### DMA Percentage Billed by Value")
+                    st.dataframe(dma_percentage_billed_value)
+
 
 
 
