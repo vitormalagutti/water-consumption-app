@@ -487,7 +487,7 @@ with tab1:
             
             #Seazonality factors
             month_factors = {
-                'Month': ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dez'],
+                'Month': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                 'Factor': [0.07, 0.07, 0.07, 0.08, 0.09, 0.09, 0.10, 0.10, 0.10, 0.08, 0.07, 0.07]
             }
             days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]  # Number of days in each month
@@ -733,16 +733,12 @@ with tab1:
                 def add_month_column_from_index(billed_df):
                     # Temporarily reset index
                     billed_df_temp = billed_df.reset_index()
-
                     # Add a Month column based on the current index, without permanently changing the index
                     billed_df_temp['Month'] = pd.to_datetime(billed_df_temp['index'], format='%m/%y', errors='coerce').dt.strftime('%b')
-
                     # Set the index back to its original column, if desired
                     billed_df_temp.set_index('index', inplace=True)
-
                     # Rename the index to the original name if needed
                     billed_df_temp.index.name = billed_df.index.name
-
                     return billed_df_temp
 
                 # Apply this function to zone and DMA volume DataFrames
