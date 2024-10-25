@@ -1020,7 +1020,7 @@ with tab1:
                                     },
                                     "visConfig": {
                                         "opacity": 0.6,
-                                        "worldUnitSize": 10,  # Adjust to control the hex size (higher = smaller hexes)
+                                        "worldUnitSize": 0.1,  # Adjust to control the hex size (higher = smaller hexes)
                                         "colorRange": {
                                             "colors": [
                                                 "#edf8fb", "#b2e2e2", "#66c2a4", "#2ca25f", "#006d2c"
