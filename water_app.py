@@ -461,8 +461,7 @@ with tab1:
                     with col1:
                         st.markdown("#### 📊 Water Network Summary - Zone")
                         st.dataframe(user_summary_zone)
-
-                    with col2:
+                        
                         # Title for Population by User Type
                         st.markdown("### 📈 Population by User Type")
                         fig, ax = plt.subplots(figsize=(7, 5))  # Adjust figure size
@@ -482,6 +481,14 @@ with tab1:
                         ax.set_yticks(range(0, int(y_max) + 5000, 5000))
                         st.pyplot(fig)
 
+                    with col2:
+
+
+                        # Display the calculated total values
+                        st.write(f"Total Population: {round(total_population_all_dmas,-2)}")
+                        st.write(f"Legal %: {legal_sum_dma:.1f}%")
+                        st.write(f"Illegal %: {illegal_sum_dma:.1f}%")
+                        st.write(f"Non-user %: {non_user_sum_dma:.1f}%")
                         
 
 
@@ -506,7 +513,6 @@ with tab1:
                         st.markdown("#### 📊 Water Network Summary - DMA")
                         st.dataframe(user_summary_dma)
 
-                    with col2:
                         # Title for Population by User Type
                         st.markdown("### 📈 Population by User Type")
                         fig, ax = plt.subplots(figsize=(7, 5))  # Adjust figure size
@@ -526,15 +532,17 @@ with tab1:
                         ax.set_xticklabels(user_summary_dma_plot.index, rotation=0)
                         st.pyplot(fig)
 
+                    with col2:
+                        
+                        # Display the calculated total values
+                        st.write(f"Total Population: {round(total_population_all_dmas,-2)}")
+                        st.write(f"Legal %: {legal_sum_dma:.1f}%")
+                        st.write(f"Illegal %: {illegal_sum_dma:.1f}%")
+                        st.write(f"Non-user %: {non_user_sum_dma:.1f}%")
 
 
 
 
-            # Display the calculated total values
-            st.write(f"Total Population: {round(total_population_all_dmas,-2)}")
-            st.write(f"Legal %: {legal_sum_dma:.1f}%")
-            st.write(f"Illegal %: {illegal_sum_dma:.1f}%")
-            st.write(f"Non-user %: {non_user_sum_dma:.1f}%")
 
 
 
