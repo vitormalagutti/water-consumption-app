@@ -570,28 +570,11 @@ with tab1:
                     # Add the DMA and its monthly consumption to the DataFrame
                     water_demand_dma.loc[len(water_demand_dma)] = [dma] + dma_consumption  # Fixing float DMA to integer
 
-                
-
-
                 # Set 'DMA' as the index first
                 water_demand_dma.set_index('DMA', inplace=True)
-
                 # Transpose the DataFrame
                 water_demand_dma = water_demand_dma.transpose()
-
-                # Ensure the index (which was previously columns) is numeric
-                # If DMA values should be integers:
                 water_demand_dma.columns = pd.to_numeric(water_demand_dma.columns, errors='coerce').astype('Int64')
-
-                # Display to verify the types
-                print("Data types after forcing integer conversion:", water_demand_dma.dtypes)
-                print("Index data type after transpose:", water_demand_dma.index.dtype)
-
-                # Display the dataframe to confirm the changes
-                water_demand_dma
-
-                st.write(f"DMA index types: {water_demand_dma.index.map(type)}")
-
 
 
 
@@ -617,8 +600,8 @@ with tab1:
                     
                 water_demand_zone.set_index('Zone', inplace=True)        
                 water_demand_zone = water_demand_zone.transpose()
+                water_demand_zone.columns = pd.to_numeric(water_demand_zone.columns, errors='coerce').astype('Int64')
                 
-                st.write(f"Zone index types: {water_demand_zone.index.map(type)}")
             
 
             
