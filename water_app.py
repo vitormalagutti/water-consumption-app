@@ -705,19 +705,66 @@ with tab1:
 
 
 
-    
-            # Align water demand and billed data separately for each year
-            if 'Zone' in merged_df.columns:
-                zone_percentage_billed_volume = align_and_calculate_percentage_separately(water_demand_zone, zone_volume_df)
-                for year, percentage_df in zone_percentage_billed_volume.items():
-                    st.markdown(f"### Zone Percentage Billed by Volume ({year})")
-                    st.dataframe(percentage_df)
 
-            if 'DMA' in merged_df.columns:
-                dma_percentage_billed_volume = align_and_calculate_percentage_separately(water_demand_dma, dma_volume_df)
-                for year, percentage_df in dma_percentage_billed_volume.items():
-                    st.markdown(f"### DMA Percentage Billed by Volume ({year})")
-                    st.dataframe(percentage_df)
+                # Step 1: Create a month column from the index in the billed tables (zone_volume_df and dma_volume_df)
+
+                # Function to add month column based on the index
+                def add_month_column_from_index(billed_df):
+                    # Assuming the index is in mm/yy format
+                    billed_df = billed_df.reset_index()  # Move the index to a column
+                    billed_df['Month'] = pd.to_datetime(billed_df['index'], format='%m/%y', errors='coerce').dt.strftime('%b')  # Convert to 'mmm' format
+                    billed_df = billed_df.drop(columns=['index'])  # Drop the original index
+                    return billed_df
+
+                # Apply this function to zone and DMA volume DataFrames
+                zone_volume_df = add_month_column_from_index(zone_volume_df)
+                dma_volume_df = add_month_column_from_index(dma_volume_df)
+
+                zone_volume_df
+                dma_volume_df
+
+                # Step 2: Join the tables by the month column and add suffix
+                # We are joining the zone and DMA volume DataFrames with the corresponding water demand DataFrames
+
+                def join_billed_with_demand(billed_df, demand_df, suffix):
+                    # Add month column to the demand DataFrame (no year assumption, so we only have the month)
+                    demand_df = demand_df.reset_index()  # Move index (Month) to a column if it's not already a column
+                    demand_df['Month'] = demand_df.columns  # Assuming the columns in demand_df are the months in 'mmm' format
+                    demand_df = demand_df.drop(columns=['index'])  # Drop the original index
+
+                    # Merge billed_df and demand_df on the 'Month' column
+                    merged_df = pd.merge(billed_df, demand_df, on='Month', how='left', suffixes=('', f'_{suffix}_demand'))
+
+                    return merged_df
+
+                # Join the zone_volume_df and dma_volume_df with the water demand
+                zone_merged_df = join_billed_with_demand(zone_volume_df, water_demand_zone, 'zone')
+                dma_merged_df = join_billed_with_demand(dma_volume_df, water_demand_dma, 'dma')
+
+                # Step 3: Create new columns to calculate the % billed for each zone/dma
+                def calculate_percentage_billed(merged_df, suffix):
+                    # For each zone/dma column, calculate the percentage billed
+                    for col in merged_df.columns:
+                        if col.endswith(f'_{suffix}_demand'):
+                            # Extract the original column name (without the '_demand' suffix)
+                            original_col = col.replace(f'_{suffix}_demand', '')
+                            # Create a new column for the percentage billed
+                            merged_df[f'{original_col}_percentage_billed'] = (merged_df[original_col] / merged_df[col]) * 100
+                            # Replace any NaN or inf values with 0
+                            merged_df[f'{original_col}_percentage_billed'] = merged_df[f'{original_col}_percentage_billed'].fillna(0).replace([float('inf'), -float('inf')], 0)
+
+                    return merged_df
+
+                # Apply percentage calculation to both zone and DMA DataFrames
+                zone_final_df = calculate_percentage_billed(zone_merged_df, 'zone')
+                dma_final_df = calculate_percentage_billed(dma_merged_df, 'dma')
+
+                # Step 4: Display the final tables with DMAs, water demand, and % billed for each DMA/Zone
+                st.markdown("### Zone Percentage Billed by Volume")
+                st.dataframe(zone_final_df)
+
+                st.markdown("### DMA Percentage Billed by Volume")
+                st.dataframe(dma_final_df)
 
 
 
