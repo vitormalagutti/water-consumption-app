@@ -408,7 +408,7 @@ with tab1:
                 if 'DMA' in filtered_df.columns:
                     st.markdown("#### 📊 Water Network Summary - DMA")
                     st.dataframe(user_summary_dma)
-                    st.write(f"Total Population: {total_population_all_dmas}")
+                    st.write(f"Total Population: {round(total_population_all_dmas,-2)}")
                     st.write(f"Legal %: {legal_sum_dma:.1f}%")
                     st.write(f"Illegal %: {illegal_sum_dma:.1f}%")
                     st.write(f"Non-user %: {non_user_sum_dma:.1f}%")
