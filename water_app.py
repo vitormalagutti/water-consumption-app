@@ -51,7 +51,7 @@ def process_volume_or_value_file(uploaded_file):
     """
     if uploaded_file is not None:
         df = convert_to_csv(uploaded_file)
-        df
+
         # Ensure that we have a 'Subscription Number' column
         if 'Subscription Number' not in df.columns:
             st.error("The file does not contain a 'Subscription Number' column.")
@@ -59,11 +59,20 @@ def process_volume_or_value_file(uploaded_file):
 
         # Function to identify and standardize date columns
         def standardize_date(col):
+            col_str = str(col)  # Ensure the column is a string
             try:
-                parsed_date = parser.parse(col, fuzzy=True, dayfirst=False)  # Handles various formats
-                return parsed_date.strftime('%m/%y')  # Convert to 'mm/yy' format
+                # If the column contains a time part, split it and use only the date part
+                if ' ' in col_str:
+                    col_str = col_str.split(' ')[0]
+
+                # Try parsing the column as a date
+                parsed_date = parser.parse(col_str, fuzzy=True, dayfirst=False)
+
+                # Convert the date to 'mm/yy' format
+                return parsed_date.strftime('%m/%y')
+
             except (ValueError, TypeError):
-                return None
+                return None  # Return None if the column is not a date
 
         # Separate out date and non-date columns
         standardized_date_columns = []
