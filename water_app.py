@@ -784,7 +784,6 @@ with tab1:
 
 
                 def plot_combined_demand_billed(df, unique_labels, title="Water Demand vs Billed Volumes with % Billed"):
-
                     # Separate columns into demand, billed, and percentage columns
                     demand_columns = [col for col in df.columns if col.endswith('_demand')]
                     billed_columns = [col for col in df.columns if col not in demand_columns and not col.endswith('% Billed')]
@@ -796,11 +795,16 @@ with tab1:
                     bar_width = 0.3
                     demand_positions = np.arange(len(unique_labels))
 
+                    # Check column lengths to prevent broadcasting errors
+                    for column in demand_columns + billed_columns + percent_columns:
+                        if len(df[column]) != len(demand_positions):
+                            df = df[df[column].notna()]  # Remove NaNs to ensure matching lengths
+
                     # Plot Demand Bars
                     for i, column in enumerate(demand_columns):
                         ax1.bar(
                             [p + i * bar_width for p in demand_positions],
-                            df[column],
+                            df[column].values,
                             width=bar_width,
                             label=f"{column} Demand",
                             color='blue',
@@ -811,7 +815,7 @@ with tab1:
                     for i, column in enumerate(billed_columns):
                         ax1.bar(
                             [p + (i + len(demand_columns)) * bar_width for p in demand_positions],
-                            df[column],
+                            df[column].values,
                             width=bar_width,
                             label=f"{column} Billed",
                             color='green',
@@ -823,7 +827,7 @@ with tab1:
                     for i, column in enumerate(percent_columns):
                         ax2.plot(
                             demand_positions,
-                            df[column],
+                            df[column].values,
                             label=f"{column} % Billed",
                             marker='o',
                             linestyle='--'
