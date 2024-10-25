@@ -776,13 +776,13 @@ with tab1:
                 dma_merged_df = dma_merged_df.drop(columns="Month")
 
 
-
+                n = len(unique_zones)
                 # Display the merged dataframes with calculated percentages
                 st.markdown("### Merged DataFrame for Zone with Percentage Billed")
-                st.dataframe(zone_merged_df[:,-(len(unique_zones))])
-
+                st.dataframe(zone_merged_df.iloc[:,-n:])
+                n = len(unique_dmas)
                 st.markdown("### Merged DataFrame for DMA with Percentage Billed")
-                st.dataframe(dma_merged_df)
+                st.dataframe(dma_merged_df.iloc[:,-n:])
 
 
                 def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
