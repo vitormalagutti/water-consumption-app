@@ -634,8 +634,8 @@ with tab1:
                     zone_volume_df = pd.merge(merged_df[['Block Number', 'Zone']], volume_summed, on='Block Number', how='left')
                     zone_volume_df = zone_volume_df.groupby('Zone').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
                     zone_volume_df = zone_volume_df.round(0).astype(int)
-                    zone_volume_df.set_index('Zone', inplace=True)        
-                    zone_volume_df = zone_volume_df.transpose()
+                    #zone_volume_df        
+                    zone_volume_df = zone_volume_df.set_index('Zone', inplace=True).transpose()
                     st.markdown("### Zone Billed Data Summed by Volume")
                     st.dataframe(zone_volume_df)
 
