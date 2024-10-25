@@ -784,10 +784,7 @@ with tab1:
 
 
                 def plot_combined_demand_billed(df, unique_labels, title="Water Demand vs Billed Volumes with % Billed"):
-                    # Filter and sort the dataframe by unique_labels
-                    df_filtered = df[df.index.isin(unique_labels)].sort_index()
-                    df
-                    
+
                     # Separate columns into demand, billed, and percentage columns
                     demand_columns = [col for col in df.columns if col.endswith('_demand')]
                     billed_columns = [col for col in df.columns if col not in demand_columns and not col.endswith('% Billed')]
