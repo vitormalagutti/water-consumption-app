@@ -836,7 +836,7 @@ with tab1:
             gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
             gdf = gdf.set_crs(epsg=4326)
             gdf = gdf.drop(columns="Population")
-            
+
             # Calculate the center of the uploaded data
             center_lat, center_lon = gdf["Y"].mean(), gdf["X"].mean()
 
@@ -996,7 +996,7 @@ with tab1:
                         
             
             kepler_map = KeplerGl(height=800, config=config_1)
-            kepler_map.add_data(data=df, name="Water Consumption Data")
+            kepler_map.add_data(data=gdf, name="Water Consumption Data")
             keplergl_static(kepler_map)
 
 
