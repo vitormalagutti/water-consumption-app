@@ -882,7 +882,8 @@ with tab1:
                     ax1.legend(loc='upper left')
                     ax2.legend(loc='upper right')
 
-                    plt.show()
+                    plt.tight_layout()
+                    st.pyplot(fig)
 
                 plot_combined_demand_billed(zone_merged_df,unique_zones, title="Zone Demand vs Billed Volumes with % Billed")
 
