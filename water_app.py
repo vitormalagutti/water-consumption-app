@@ -817,7 +817,8 @@ with tab1:
                     # Add legend
                     ax.legend(loc='upper left')
                     
-                    plt.show()
+                    plt.tight_layout()
+                    st.pyplot(fig)
 
 
                 # Call the function for both zone and DMA merged dataframes
