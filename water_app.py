@@ -347,6 +347,10 @@ with tab1:
             # Handle cases where no known users exist to avoid division by zero
             user_summary_dma[['Legal %', 'Illegal %', 'Non-user %']] = user_summary_dma[['Legal %', 'Illegal %', 'Non-user %']].fillna(0)
 
+            st.markdown("test here")
+            #st.write(f"Data type of Zone after enforcing numeric: {user_summary_dma['DMA'].dtype}")
+            user_summary_dma
+            
             # Add a final row with the sum of all DMAs (weighted average for percentages)
             total_population_all_dmas = total_population_by_dma.sum()
 
@@ -356,9 +360,7 @@ with tab1:
             
             user_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
             
-            st.markdown("test here")
-            #st.write(f"Data type of Zone after enforcing numeric: {user_summary_dma['DMA'].dtype}")
-            user_summary_dma
+
             
         else:
             st.markdown("Your file does not have 'DMA' column")
