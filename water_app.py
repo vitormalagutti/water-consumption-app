@@ -573,6 +573,7 @@ with tab1:
                 
                 water_demand_dma.set_index('DMA', inplace=True)        
                 water_demand_dma
+                st.write(f"DMA index types: {water_demand_dma.index.map(type)}")
                 water_demand_dma = water_demand_dma.transpose()
 
 
