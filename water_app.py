@@ -860,12 +860,13 @@ with tab1:
                                 "config": {
                                     "dataId": "Water Consumption Data",
                                     "label": "Building Locations",
+                                    "color": [150, 200, 255],  # Color of points
                                     "columns": {
                                         "lat": "Y",
                                         "lng": "X"
                                     },
                                     "visConfig": {
-                                        "radius": 3,
+                                        "radius": 6,
                                         "opacity": 1,
                                     },
                                     "isVisible": True
