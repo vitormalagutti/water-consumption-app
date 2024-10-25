@@ -141,6 +141,25 @@ def process_block_subscription_file(uploaded_file):
     else:
         return None
 
+def align_and_calculate_percentage(water_demand_df, billed_df):
+    # Convert the columns to a comparable date format
+    water_demand_df.columns = pd.to_datetime(water_demand_df.columns, errors='coerce').strftime('%m/%y')
+    billed_df.columns = pd.to_datetime(billed_df.columns, errors='coerce').strftime('%m/%y')
+
+    # Ensure both have common columns (months)
+    common_months = water_demand_df.columns.intersection(billed_df.columns)
+
+    # Slice data to only include common months
+    water_demand_df = water_demand_df[common_months]
+    billed_df = billed_df[common_months]
+
+    # Calculate percentage billed
+    percentage_billed = (billed_df / water_demand_df) * 100
+    percentage_billed.fillna(0, inplace=True)  # Replace any NaN values with 0
+
+    return percentage_billed
+
+
 with tab1:
 
     # File upload section with icon
@@ -676,42 +695,17 @@ with tab1:
 
 
   
-                # Align water demand and billed data
-                def align_and_calculate_percentage(water_demand_df, billed_df):
-                    # Ensure both have common columns
-                    common_months = water_demand_df.columns.intersection(billed_df.columns)
 
-                    # Slice data to only include common months
-                    water_demand_df = water_demand_df[common_months]
-                    billed_df = billed_df[common_months]
+            # Align water demand and billed data
+            if 'Zone' in merged_df.columns:
+                zone_percentage_billed_volume = align_and_calculate_percentage(water_demand_zone, zone_volume_df)
+                st.markdown("### Zone Percentage Billed by Volume")
+                st.dataframe(zone_percentage_billed_volume)
 
-                    # Calculate percentage billed
-                    percentage_billed = (billed_df / water_demand_df) * 100
-                    percentage_billed.fillna(0, inplace=True)
-
-                    return percentage_billed
-
-                # Calculate percentages for Zone
-                if 'Zone' in merged_df.columns:
-                    zone_percentage_billed_volume = align_and_calculate_percentage(water_demand_zone, zone_volume_df)
-                    zone_percentage_billed_value = align_and_calculate_percentage(water_demand_zone, zone_value_df)
-
-                    st.markdown("### Zone Percentage Billed by Volume")
-                    st.dataframe(zone_percentage_billed_volume)
-
-                    st.markdown("### Zone Percentage Billed by Value")
-                    st.dataframe(zone_percentage_billed_value)
-
-                # Calculate percentages for DMA
-                if 'DMA' in merged_df.columns:
-                    dma_percentage_billed_volume = align_and_calculate_percentage(water_demand_dma, dma_volume_df)
-                    dma_percentage_billed_value = align_and_calculate_percentage(water_demand_dma, dma_value_df)
-
-                    st.markdown("### DMA Percentage Billed by Volume")
-                    st.dataframe(dma_percentage_billed_volume)
-
-                    st.markdown("### DMA Percentage Billed by Value")
-                    st.dataframe(dma_percentage_billed_value)
+            if 'DMA' in merged_df.columns:
+                dma_percentage_billed_volume = align_and_calculate_percentage(water_demand_dma, dma_volume_df)
+                st.markdown("### DMA Percentage Billed by Volume")
+                st.dataframe(dma_percentage_billed_volume)
 
 
 
