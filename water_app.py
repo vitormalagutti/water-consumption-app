@@ -544,7 +544,7 @@ with tab1:
                 # Specify 'DMA' as float or integer when initializing
                 water_demand_dma = pd.DataFrame(columns=['DMA'] + df_factors['Month'].tolist())
                 water_demand_dma['DMA'] = pd.Series(dtype='int')  # Specify the desired numeric type
-
+                water_demand_dma
                 st.write(f"Data type of DMA after processing: {water_demand_dma['DMA'].dtype}")
                 # Calculate the water consumption for each DMA and month
                 for dma in population_dma.index:
