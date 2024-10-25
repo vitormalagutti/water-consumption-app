@@ -626,8 +626,8 @@ with tab1:
                 billed_df = billed_df.drop(columns=columns_to_drop, errors='ignore')  # 'errors=ignore' avoids issues if a column is missing
 
                 # Display the final merged dataframe
-                st.markdown("### Final Merged DataFrame")
-                st.dataframe(billed_df)
+                # st.markdown("### Final Merged DataFrame")
+                # st.dataframe(billed_df)
 
                 # Group by Zone for Volume
                 if 'Zone' in merged_df.columns:
