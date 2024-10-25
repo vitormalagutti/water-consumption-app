@@ -804,16 +804,14 @@ with tab1:
                         positions = demand_positions + i * bar_width  # Create positions based on demand_positions
                         len(df[column].values)
                         positions 
-
-                        if len(df[column].values) == len(positions):
-                            ax1.bar(
-                                positions,
-                                df[column].values,
-                                width=bar_width,
-                                label=f"{column} Demand",
-                                color='blue',
-                                alpha=0.6
-                            )
+                        ax1.bar(
+                            positions,
+                            df[column].values,
+                            width=bar_width,
+                            label=f"{column} Demand",
+                            color='blue',
+                            alpha=0.6
+                        )
 
 
                     # Plot Billed Bars
