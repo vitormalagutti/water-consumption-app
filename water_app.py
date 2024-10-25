@@ -595,7 +595,6 @@ with tab1:
 
         with tab5:
            
-
             # Check if all files are present before proceeding
             if volume_file and value_file and correlation_file and buildings_file:
 
@@ -620,7 +619,7 @@ with tab1:
 
                 # Step 5: Merge the summed volumes and values back to the original df
                 final_df = pd.merge(merged_df, volume_summed, on='Block Number', how='left')
-                final_df = pd.merge(final_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value'))
+                final_df = pd.merge(final_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value')).drop("Population")
 
                 # Display the final merged dataframe
                 st.markdown("### Final Merged DataFrame")
