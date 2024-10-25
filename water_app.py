@@ -822,10 +822,10 @@ with tab1:
                     
                     plt.title(title)
                     plt.show()
-                    
-            # Call the function for both zone and DMA merged dataframes
-            plot_combined_demand_billed(zone_merged_df, title="Zone Demand vs Billed Volumes with % Billed")
-            plot_combined_demand_billed(dma_merged_df, title="DMA Demand vs Billed Volumes with % Billed")
+
+                # Call the function for both zone and DMA merged dataframes
+                plot_combined_demand_billed(zone_merged_df, title="Zone Demand vs Billed Volumes with % Billed")
+                plot_combined_demand_billed(dma_merged_df, title="DMA Demand vs Billed Volumes with % Billed")
 
 
 
