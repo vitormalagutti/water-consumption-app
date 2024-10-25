@@ -621,6 +621,10 @@ with tab1:
                 final_df = pd.merge(merged_df, volume_summed, on='Block Number', how='left')
                 final_df = pd.merge(final_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value'))
 
+                # Drop unnecessary columns from final_df
+                columns_to_drop = ['Population', 'Status', 'Subscription Number_x', 'Subscription Number_y']
+                final_df = final_df.drop(columns=columns_to_drop, errors='ignore')  # 'errors=ignore' avoids issues if a column is missing
+
                 # Display the final merged dataframe
                 st.markdown("### Final Merged DataFrame")
                 st.dataframe(final_df)
