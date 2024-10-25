@@ -51,7 +51,7 @@ def process_volume_or_value_file(uploaded_file):
     """
     if uploaded_file is not None:
         df = convert_to_csv(uploaded_file)
-
+        df
         # Ensure that we have a 'Subscriber Number' column
         if 'Subscriber Number' not in df.columns:
             st.error("The file does not contain a 'Subscriber Number' column.")
