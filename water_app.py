@@ -618,16 +618,16 @@ with tab1:
                 value_summed = value_df.groupby('Block Number').sum(numeric_only=True).reset_index()
 
                 # Step 5: Merge the summed volumes and values back to the original df
-                final_df = pd.merge(merged_df, volume_summed, on='Block Number', how='left')
-                final_df = pd.merge(final_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value'))
+                billed_df = pd.merge(merged_df, volume_summed, on='Block Number', how='left')
+                billed_df = pd.merge(billed_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value'))
 
                 # Drop unnecessary columns from final_df
                 columns_to_drop = ['Population', 'Status', 'Subscription Number_x', 'Subscription Number_y', "Subscription Number"]
-                final_df = final_df.drop(columns=columns_to_drop, errors='ignore')  # 'errors=ignore' avoids issues if a column is missing
+                billed_df = billed_df.drop(columns=columns_to_drop, errors='ignore')  # 'errors=ignore' avoids issues if a column is missing
 
                 # Display the final merged dataframe
                 st.markdown("### Final Merged DataFrame")
-                st.dataframe(final_df)
+                st.dataframe(billed_df)
 
             else:
                 st.error("Please upload all the necessary files (volume, value, correlation, and buildings files).")
