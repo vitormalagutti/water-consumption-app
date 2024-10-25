@@ -202,7 +202,6 @@ with tab1:
         # Read the CSV file
         df = convert_to_csv(buildings_file)
 
-        st.write(f"Data type of DMA column: {df['Zone'].dtype}")
         # Define the expected columns
         expected_columns = ["X", "Y", "Zone", "Block Number", "DMA", "Status"]
 
@@ -316,7 +315,7 @@ with tab1:
 
     # Calculate total population and percentages per DMA (if 'DMA' column exists)
         if 'DMA' in filtered_df.columns:
-            
+            st.write(f"Data type of DMA after processing: {df['DMA'].dtype}")
             # Calculate total population for each DMA, including all inputs (with or without User Type)
             dma_counts = df.groupby('DMA').size()  # Count the number of inputs per DMA
             total_population_by_dma = dma_counts * avg_floors * avg_people_per_family  # Calculate total population
