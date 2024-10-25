@@ -401,8 +401,6 @@ with tab1:
             non_user_sum_dma = (non_user_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
 
             
-
-            
         else:
             st.markdown("Your file does not have 'DMA' column")
 
@@ -784,8 +782,6 @@ with tab1:
                 st.markdown("### Merged DataFrame for DMA with Percentage Billed")
                 st.dataframe(dma_merged_df)
 
-                unique_dmas
-                unique_zones
 
                 def plot_combined_demand_billed(df, unique_labels, title="Water Demand vs Billed Volumes with % Billed"):
                     # Filter and sort the dataframe by unique_labels
@@ -798,6 +794,11 @@ with tab1:
                     
                     fig, ax1 = plt.subplots(figsize=(12, 6))
                     
+                    demand_columns
+                    billed_columns
+                    percent_columns
+
+
                     # Plot demand columns as bars
                     demand_bar_width = 0.3
                     demand_positions = range(len(unique_labels))
