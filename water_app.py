@@ -941,11 +941,7 @@ with tab1:
                                         "worldUnitSize": 0.05,  # Adjust to control the hex size (higher = smaller hexes)
                                         "colorRange": {
                                             "colors": [
-                                            "#0000FF",  # Blue
-                                            "#00FF00",  # Green
-                                            "#FFFF00",  # Yellow
-                                            "#FFA500",  # Orange
-                                            "#FF0000"   # Red
+                                                "#edf8fb", "#b2e2e2", "#66c2a4", "#2ca25f", "#006d2c"
                                             ]  # Color gradient for hex density
                                         },
                                         "coverage": 1,
