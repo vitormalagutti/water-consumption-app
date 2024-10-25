@@ -626,9 +626,9 @@ with tab1:
                         columns_to_plot = water_demand_dma.columns
                         
                         # Use a light blue color palette
-                        light_blue_palette = sns.color_palette("GnBu", n_colors=len(columns_to_plot))
+                        light_blue_palette = sns.color_palette("pastel", n_colors=len(columns_to_plot))
             
-                        water_demand_dma[columns_to_plot].plot(kind='bar', stacked=True, color="pastel", ax=ax)
+                        water_demand_dma[columns_to_plot].plot(kind='bar', stacked=True, color=light_blue_palette, ax=ax)
                         ax.set_title('Monthly Water Demand by DMA', fontsize=15)
                         ax.set_xlabel('Month', fontsize=12)
                         ax.set_ylabel('Water Demand (m3)', fontsize=13)
