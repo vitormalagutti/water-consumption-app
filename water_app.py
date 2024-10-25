@@ -835,7 +835,8 @@ with tab1:
             # Create a GeoDataFrame for processing
             gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
             gdf = gdf.set_crs(epsg=4326)
-
+            gdf = gdf.drop(columns="Population")
+            
             # Calculate the center of the uploaded data
             center_lat, center_lon = gdf["Y"].mean(), gdf["X"].mean()
 
