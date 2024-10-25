@@ -571,22 +571,31 @@ with tab1:
                     water_demand_dma.loc[len(water_demand_dma)] = [dma] + dma_consumption  # Fixing float DMA to integer
 
                 
-                water_demand_dma.set_index('DMA', inplace=True)        
-                # Step 1: Define columns as numeric before transposing
-                water_demand_dma.columns = pd.to_numeric(water_demand_dma.columns, errors='coerce')
 
-                # Step 2: Transpose the DataFrame
+
+                # Set 'DMA' as the index first
+                water_demand_dma.set_index('DMA', inplace=True)
+
+                # Transpose the DataFrame
                 water_demand_dma = water_demand_dma.transpose()
 
-                # Step 3: Explicitly set the columns as integers or floats after transposing
-                # Assuming DMA values should be integers
-                water_demand_dma.index = water_demand_dma.index.astype(int, errors='ignore')
+                # Ensure the index (which was previously columns) is numeric
+                # If DMA values should be integers:
+                water_demand_dma.columns = pd.to_numeric(water_demand_dma.columns, errors='coerce').astype('Int64')
 
-                # To confirm, print the data types after enforcing the changes
+                # Display to verify the types
                 print("Data types after forcing integer conversion:", water_demand_dma.dtypes)
+                print("Index data type after transpose:", water_demand_dma.index.dtype)
+
+                # Display the dataframe to confirm the changes
+                water_demand_dma
 
                 st.write(f"DMA index types: {water_demand_dma.index.map(type)}")
-            
+
+
+
+
+
             if 'Zone' in filtered_df.columns:
                 # Prepare population and non-user percentages for Zones
                 population_zone = user_summary_zone['Total Population']
