@@ -313,7 +313,7 @@ with tab1:
         # Calculate total population and percentages per Zone (if 'Zone' column exists)
         if 'Zone' in filtered_df.columns:
             # Extract unique DMA and Zone values
-            unique_zones = filtered_df['Zone'].unique().tolist()
+            unique_zones = [int(zone) for zone in billed_df['Zone'].unique() if pd.notnull(zone)]
             # Calculate total population for each zone, including all inputs (with or without User Type)
             zone_counts = df.groupby('Zone').size()  # Count the number of inputs per Zone
             total_population_by_zone = zone_counts * avg_floors * avg_people_per_family  # Calculate total population
