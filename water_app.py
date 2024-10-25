@@ -320,6 +320,8 @@ with tab1:
             dma_counts = df.groupby('DMA').size()  # Count the number of inputs per DMA
             total_population_by_dma = dma_counts * avg_floors * avg_people_per_family  # Calculate total population
 
+            dma_counts
+
             # Count the number of Legal, Illegal, and Non-user inputs per DMA
             legal_count_dma = filtered_df[filtered_df['User Type'] == 'Legal'].groupby('DMA').size()
             illegal_count_dma = filtered_df[filtered_df['User Type'] == 'Illegal'].groupby('DMA').size()
@@ -544,8 +546,7 @@ with tab1:
                 # Specify 'DMA' as float or integer when initializing
                 water_demand_dma = pd.DataFrame(columns=['DMA'] + df_factors['Month'].tolist())
                 water_demand_dma['DMA'] = pd.Series(dtype='int')  # Specify the desired numeric type
-                population_dma
-                st.write(f"Data type of DMA after processing: {population_dma['DMA'].dtype}")
+
                 # Calculate the water consumption for each DMA and month
                 for dma in population_dma.index:
                     # For each DMA, calculate monthly consumption
