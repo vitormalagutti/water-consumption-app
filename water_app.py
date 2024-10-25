@@ -629,17 +629,33 @@ with tab1:
                 st.markdown("### Final Merged DataFrame")
                 st.dataframe(billed_df)
 
-                # Group by Zone if available
+                # Group by Zone for Volume
                 if 'Zone' in billed_df.columns:
-                    zone_billed_df = billed_df.groupby('Zone').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "X", "Y", "DMA"])
-                    st.markdown("### Billed Data Summed by Zone")
-                    st.dataframe(zone_billed_df)
+                    zone_volume_df = billed_df.groupby('Zone').sum(numeric_only=True).reset_index()
+                    zone_volume_df = zone_volume_df.filter(regex='_volume|Zone')  # Keep only volume columns and Zone
+                    st.markdown("### Zone Billed Data Summed by Volume")
+                    st.dataframe(zone_volume_df)
 
-                # Group by DMA if available
+                # Group by Zone for Value
+                if 'Zone' in billed_df.columns:
+                    zone_value_df = billed_df.groupby('Zone').sum(numeric_only=True).reset_index()
+                    zone_value_df = zone_value_df.filter(regex='_value|Zone')  # Keep only value columns and Zone
+                    st.markdown("### Zone Billed Data Summed by Value")
+                    st.dataframe(zone_value_df)
+
+                # Group by DMA for Volume
                 if 'DMA' in billed_df.columns:
-                    dma_billed_df = billed_df.groupby('DMA').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "X", "Y", "Zone"])
-                    st.markdown("### Billed Data Summed by DMA")
-                    st.dataframe(dma_billed_df)
+                    dma_volume_df = billed_df.groupby('DMA').sum(numeric_only=True).reset_index()
+                    dma_volume_df = dma_volume_df.filter(regex='_volume|DMA')  # Keep only volume columns and DMA
+                    st.markdown("### DMA Billed Data Summed by Volume")
+                    st.dataframe(dma_volume_df)
+
+                # Group by DMA for Value
+                if 'DMA' in billed_df.columns:
+                    dma_value_df = billed_df.groupby('DMA').sum(numeric_only=True).reset_index()
+                    dma_value_df = dma_value_df.filter(regex='_value|DMA')  # Keep only value columns and DMA
+                    st.markdown("### DMA Billed Data Summed by Value")
+                    st.dataframe(dma_value_df)
 
             else:
                 st.error("Please upload all the necessary files (volume, value, correlation, and buildings files).")
