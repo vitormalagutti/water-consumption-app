@@ -802,7 +802,9 @@ with tab1:
                     # Plot Demand Bars
                     for i, column in enumerate(demand_columns):
                         positions = demand_positions + i * bar_width  # Create positions based on demand_positions
+                        len(df[column].values)
                         positions 
+
                         if len(df[column].values) == len(positions):
                             ax1.bar(
                                 positions,
