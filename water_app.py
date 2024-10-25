@@ -315,7 +315,7 @@ with tab1:
 
     # Calculate total population and percentages per DMA (if 'DMA' column exists)
         if 'DMA' in filtered_df.columns:
-            st.write(f"Data type of DMA after processing: {df['DMA'].dtype}")
+            
             # Calculate total population for each DMA, including all inputs (with or without User Type)
             dma_counts = df.groupby('DMA').size()  # Count the number of inputs per DMA
             total_population_by_dma = dma_counts * avg_floors * avg_people_per_family  # Calculate total population
@@ -355,6 +355,7 @@ with tab1:
             non_user_sum_dma = (non_user_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
             
             user_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
+            st.write(f"Data type of DMA after processing: {df['DMA'].dtype}")
         else:
             st.markdown("Your file does not have 'DMA' column")
 
