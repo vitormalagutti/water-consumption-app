@@ -444,7 +444,7 @@ with tab1:
                 st.markdown("Your file does not have 'DMA' column")
 
             # Create columns for side-by-side layout for the tables
-            col1, col2, col3 = st.columns(4,1,1)
+            col1, col2, col3 = st.columns([4,1, 1])
 
             # Place the two tables in the side-by-side layout
             
