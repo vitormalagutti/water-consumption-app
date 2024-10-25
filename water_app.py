@@ -177,7 +177,7 @@ def align_and_calculate_percentage_separately(water_demand_df, billed_df):
 
     return percentage_results
 
-# Function to add month column based on the index
+# Functions to merge water demand and billed based on month
 def add_month_column_from_index(billed_df):
     # Temporarily reset index
     billed_df_temp = billed_df.reset_index()
@@ -188,7 +188,6 @@ def add_month_column_from_index(billed_df):
     # Rename the index to the original name if needed
     billed_df_temp.index.name = billed_df.index.name
     return billed_df_temp
-
 
 def join_billed_with_demand(billed_df, demand_df):
     # Temporarily reset index on billed_df and demand_df to expose 'Month' column for merging
@@ -206,7 +205,6 @@ def join_billed_with_demand(billed_df, demand_df):
     merged_df.set_index("index", inplace=True)
 
     return merged_df
-
 
 def calculate_percentage_billed(merged_df):
     # Calculate the percentage of billed volumes compared to demand directly on the existing merged DataFrame
@@ -724,8 +722,8 @@ with tab1:
                 billed_df = billed_df.drop(columns=columns_to_drop, errors='ignore')
 
                 # Display the final merged dataframe
-                st.markdown("### Final Merged DataFrame")
-                st.dataframe(billed_df)
+                # st.markdown("### Final Merged DataFrame")
+                # st.dataframe(billed_df)
 
                 # Group by Zone for Volume
                 if 'Zone' in merged_df.columns:
@@ -767,26 +765,12 @@ with tab1:
                     # st.markdown("### DMA Billed Data Summed by Value")
                     # st.dataframe(dma_value_df)
 
-                # Step 1: Create a month column from the index in the billed tables (zone_volume_df and dma_volume_df)
-
-
-
                 # Apply this function to zone and DMA volume DataFrames
                 zone_volume_df = add_month_column_from_index(zone_volume_df)
                 dma_volume_df = add_month_column_from_index(dma_volume_df)
-
-                # Step 2: Join the tables by the month column and add suffix
-                # We are joining the zone and DMA volume DataFrames with the corresponding water demand DataFrames
-
-
                 # Join the zone_volume_df and dma_volume_df with the water demand
                 zone_merged_df = join_billed_with_demand(zone_volume_df, water_demand_zone)
                 dma_merged_df = join_billed_with_demand(dma_volume_df, water_demand_dma)
-
-                dma_merged_df
-                zone_merged_df
-                st.write("Until Here it works, maybe I have to change the index from the water demand")
-                zone_volume_df.columns
 
                 # Calculate the percentage for the already-merged zone and DMA dataframes
                 zone_merged_df = calculate_percentage_billed(zone_merged_df)
