@@ -787,6 +787,10 @@ with tab1:
                     demand_columns = [col for col in df.columns if col.endswith('_demand')]
                     billed_columns = [col for col in df.columns if col not in demand_columns]
 
+                    # Debugging information
+                    print("Demand columns identified:", demand_columns)
+                    print("Billed columns identified:", billed_columns)
+
                     # Ensure there's only one demand and one billed column
                     if len(demand_columns) != 1 or len(billed_columns) != 1:
                         raise ValueError("Expected exactly one demand column and one billed column")
