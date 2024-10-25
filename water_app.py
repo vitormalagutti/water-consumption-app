@@ -793,26 +793,56 @@ with tab1:
                     fig, ax1 = plt.subplots(figsize=(12, 6))
 
                     # Widths and positions for the bars
-                    demand_bar_width = 0.4
-                    billed_bar_width = 0.4
+                    bar_width = 0.3
                     demand_positions = np.arange(len(unique_labels))
 
-                    # Debugging: Check lengths
-                    st.write("Length of demand_positions:", len(demand_positions))
-                    st.write("Length of df_filtered for each column (should match):")
-                    for column in df.columns:
-                        st.write(f"Column {column}: {len(df[column])}")
-
-                    for i, column in enumerate(df.columns):
+                    # Plot Demand Bars
+                    for i, column in enumerate(demand_columns):
                         ax1.bar(
-                            [p + i * demand_bar_width for p in demand_positions],
+                            [p + i * bar_width for p in demand_positions],
                             df[column],
-                            width=demand_bar_width,
-                            label=f"{column}",
-                            alpha=0.7
+                            width=bar_width,
+                            label=f"{column} Demand",
+                            color='blue',
+                            alpha=0.6
                         )
 
+                    # Plot Billed Bars
+                    for i, column in enumerate(billed_columns):
+                        ax1.bar(
+                            [p + (i + len(demand_columns)) * bar_width for p in demand_positions],
+                            df[column],
+                            width=bar_width,
+                            label=f"{column} Billed",
+                            color='green',
+                            alpha=0.6
+                        )
+
+                    # Plot Percentage Billed as Lines on Secondary Y-axis
+                    ax2 = ax1.twinx()
+                    for i, column in enumerate(percent_columns):
+                        ax2.plot(
+                            demand_positions,
+                            df[column],
+                            label=f"{column} % Billed",
+                            marker='o',
+                            linestyle='--'
+                        )
+
+                    # Set labels and title
+                    ax1.set_xlabel("Zone/DMA")
+                    ax1.set_ylabel("Volume")
+                    ax2.set_ylabel("Percentage Billed (%)")
                     ax1.set_title(title)
+                    
+                    # Set x-ticks and labels
+                    ax1.set_xticks(demand_positions + bar_width * (len(demand_columns) - 1) / 2)
+                    ax1.set_xticklabels(unique_labels, rotation=45)
+                    
+                    # Legends
+                    ax1.legend(loc='upper left')
+                    ax2.legend(loc='upper right')
+                    
                     plt.show()
 
                 # Call the function for both zone and DMA merged dataframes
