@@ -831,7 +831,14 @@ with tab1:
             
         
         with tab6:  
-                        
+            
+            # Create a GeoDataFrame for processing
+            gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
+            gdf = gdf.set_crs(epsg=4326)
+
+            # Calculate the center of the uploaded data
+            center_lat, center_lon = gdf["Y"].mean(), gdf["X"].mean()
+
             # Create dynamic KeplerGL configuration
             config_1 = {
                 'version': 'v1',
@@ -900,12 +907,6 @@ with tab1:
                             }
                         }]}}}
 
-            # Create a GeoDataFrame for processing
-            gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['X'], df['Y']))
-            gdf = gdf.set_crs(epsg=4326)
-
-            # Calculate the center of the uploaded data
-            center_lat, center_lon = gdf["Y"].mean(), gdf["X"].mean()
 
             # Determine a reasonable zoom level based on data spread
             lat_range = gdf["Y"].max() - gdf["Y"].min()
@@ -990,7 +991,7 @@ with tab1:
                     keplergl_static(kepler_map)
             
             
-            st.markdown("### 🗺️ Interactive Maps with Google Satellite Basemap")
+            st.markdown("### 🗺️ Interactive Map with Google Satellite Basemap")
                         
             
             kepler_map = KeplerGl(height=800, config=config_1)
