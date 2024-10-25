@@ -287,29 +287,28 @@ with tab1:
 
             # Calculate the percentages for each user type (based on counts of Legal, Illegal, and Non-user)
             total_known_users = legal_count + illegal_count + non_user_count
-            legal_percentage = (legal_count / total_known_users) * 100
-            illegal_percentage = (illegal_count / total_known_users) * 100
-            non_user_percentage = (non_user_count / total_known_users) * 100
+            legal_percentage_zone = (legal_count / total_known_users) * 100
+            illegal_percentage_zone = (illegal_count / total_known_users) * 100
+            non_user_percentage_zone = (non_user_count / total_known_users) * 100
 
             # Create a DataFrame to store the results
             user_summary_zone = pd.DataFrame({
                 'Total Population': total_population_by_zone,
-                'Legal %': legal_percentage,
-                'Illegal %': illegal_percentage,
-                'Non-user %': non_user_percentage
+                'Legal %': legal_percentage_zone,
+                'Illegal %': illegal_percentage_zone,
+                'Non-user %': non_user_percentage_zone
             })
 
             # Handle cases where no known users exist to avoid division by zero
             user_summary_zone[['Legal %', 'Illegal %', 'Non-user %']] = user_summary_zone[['Legal %', 'Illegal %', 'Non-user %']].fillna(0)
 
             # # Add a final row with the sum of all Zones (weighted average for percentages)
-            # total_population_all_zones = total_population_by_zone.sum()
+            total_population_all_zone = total_population_by_zone.sum()
 
-            # legal_sum_zone = (legal_percentage * total_population_by_zone).sum() / total_population_all_zones
-            # illegal_sum_zone = (illegal_percentage * total_population_by_zone).sum() / total_population_all_zones
-            # non_user_sum_zone = (non_user_percentage * total_population_by_zone).sum() / total_population_all_zones
-            
-            # user_summary_zone.loc['Total'] = [total_population_all_zones, legal_sum_zone, illegal_sum_zone, non_user_sum_zone]
+            # Calculate the weighted average for legal, illegal, and non-user percentages
+            legal_sum_zone = (legal_percentage_zone * total_population_by_zone).sum() / total_population_all_zone
+            illegal_sum_zone = (illegal_percentage_zone * total_population_by_zone).sum() / total_population_all_zone
+            non_user_sum_zone = (non_user_percentage_zone * total_population_by_zone).sum() / total_population_all_zone
         else:
             st.markdown("Your file does not have 'Zone' column")
 
@@ -354,11 +353,11 @@ with tab1:
             # # Add a final row with the sum of all DMAs (weighted average for percentages)
             total_population_all_dmas = total_population_by_dma.sum()
 
-            # legal_sum_dma = (legal_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
-            # illegal_sum_dma = (illegal_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
-            # non_user_sum_dma = (non_user_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
-            
-            # user_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
+            # Calculate the weighted average for legal, illegal, and non-user percentages
+            legal_sum_dma = (legal_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
+            illegal_sum_dma = (illegal_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
+            non_user_sum_dma = (non_user_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
+
             
 
             
@@ -375,6 +374,13 @@ with tab1:
                 user_summary_zone['Legal %'] = user_summary_zone['Legal %'].round(1)  # Round percentages to 1 decimal place
                 user_summary_zone['Illegal %'] = user_summary_zone['Illegal %'].round(1)
                 user_summary_zone['Non-user %'] = user_summary_zone['Non-user %'].round(1)
+
+                # Display the calculated total values
+                st.markdown("### Total Values Across All DMAs")
+                st.write(f"Total Population: {total_population_all_dmas}")
+                st.write(f"Legal %: {legal_sum_dma:.1f}%")
+                st.write(f"Illegal %: {illegal_sum_dma:.1f}%")
+                st.write(f"Non-user %: {non_user_sum_dma:.1f}%")
             else:
                 st.markdown("Your file does not have 'Zone' column")
 
@@ -384,6 +390,12 @@ with tab1:
                 user_summary_dma['Legal %'] = user_summary_dma['Legal %'].round(1)  # Round percentages to 1 decimal place
                 user_summary_dma['Illegal %'] = user_summary_dma['Illegal %'].round(1)
                 user_summary_dma['Non-user %'] = user_summary_dma['Non-user %'].round(1)
+                # Display the calculated total values
+                st.markdown("### Total Values Across All DMAs")
+                st.write(f"Total Population: {total_population_all_dmas}")
+                st.write(f"Legal %: {legal_sum_dma:.1f}%")
+                st.write(f"Illegal %: {illegal_sum_dma:.1f}%")
+                st.write(f"Non-user %: {non_user_sum_dma:.1f}%")
                 
             else:
                 st.markdown("Your file does not have 'DMA' column")
