@@ -750,21 +750,19 @@ with tab1:
                 # We are joining the zone and DMA volume DataFrames with the corresponding water demand DataFrames
 
                 def join_billed_with_demand(billed_df, demand_df):
-                    # Reset index for demand_df to expose the 'Month' (which is the index)
-                    demand_df = demand_df.reset_index()  # 'Month' becomes a column here
-                    
-                    # Print the columns to check the structure
-                    st.write("Demand DataFrame columns after reset_index:", demand_df.columns)
-                    
-                    # Ensure we have the correct column for 'Month' - the first column should now be the Month
+                    # Temporarily reset index on billed_df and demand_df to expose 'Month' column for merging
+                    billed_df_temp = billed_df.reset_index()
+                    demand_df = demand_df.reset_index()  # 'Month' becomes a column here in demand_df
+
+                    # Ensure the first column in demand_df is now 'Month'
                     if 'index' in demand_df.columns:
                         demand_df.rename(columns={'index': 'Month'}, inplace=True)
-                    
-                    # Print to check if 'Month' column was renamed successfully
-                    st.write("Demand DataFrame after renaming 'index' to 'Month':", demand_df.head())
 
-                    # Proceed with the merge on the 'Month' column
-                    merged_df = pd.merge(billed_df, demand_df, on='Month', how='left', suffixes=('', '_demand'))
+                    # Perform the merge on 'Month' column
+                    merged_df = pd.merge(billed_df_temp, demand_df, on='Month', how='left', suffixes=('', '_demand'))
+
+                    # Restore the original index on billed_df (after merge)
+                    merged_df.set_index(billed_df.index.name, inplace=True)
 
                     return merged_df
 
