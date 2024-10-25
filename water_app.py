@@ -1040,19 +1040,20 @@ with tab1:
 
             st.markdown("### 🗺️ Interactive Map with Google Satellite Basemap")
             # Create heatmaps based on selection
-            kepler_map = KeplerGl(height=800, config=config_2)            
+           
             if heatmap_type == "All Buildings":
-                kepler_map.add_data(data=gdf, name="Water Consumption Data")
+                kepler_map.add_data(data=gdf, name="Dynamic Data")
 
             elif heatmap_type == "Illegal Connections":
-                kepler_map.add_data(data=gdf_illegal, name="Water Consumption Data")
+                kepler_map.add_data(data=gdf_illegal, name="Dynamic Data")
 
             elif heatmap_type == "Legal Connections":
-                kepler_map.add_data(data=gdf_legal, name="Water Consumption Data")
+                kepler_map.add_data(data=gdf_legal, name="Dynamic Data")
  
             elif heatmap_type == "Non-Users":
-                kepler_map.add_data(data=gdf_non_user, name="Water Consumption Data")
-                 
+                kepler_map.add_data(data=gdf_non_user, name="Dynamic Data")
+            
+            kepler_map = KeplerGl(height=800, config=config_2)                 
             kepler_map.add_data(data=gdf, name="Water Consumption Data")
             keplergl_static(kepler_map)
 
