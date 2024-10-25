@@ -779,7 +779,7 @@ with tab1:
 
                 # Display the merged dataframes with calculated percentages
                 st.markdown("### Merged DataFrame for Zone with Percentage Billed")
-                st.dataframe(zone_merged_df[:-range(len(unique_zones))])
+                st.dataframe(zone_merged_df[:,-(len(unique_zones))])
 
                 st.markdown("### Merged DataFrame for DMA with Percentage Billed")
                 st.dataframe(dma_merged_df)
