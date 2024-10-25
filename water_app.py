@@ -720,6 +720,9 @@ with tab1:
                 zone_volume_df = add_month_column_from_index(zone_volume_df)
                 dma_volume_df = add_month_column_from_index(dma_volume_df)
 
+                zone_volume_df
+                dma_volume_df
+
                 # Step 2: Join the tables by the month column and add suffix
                 # We are joining the zone and DMA volume DataFrames with the corresponding water demand DataFrames
 
@@ -738,8 +741,6 @@ with tab1:
                 zone_merged_df = join_billed_with_demand(zone_volume_df, water_demand_zone, 'zone')
                 dma_merged_df = join_billed_with_demand(dma_volume_df, water_demand_dma, 'dma')
 
-                zone_merged_df
-                dma_merged_df
                 # Step 3: Create new columns to calculate the % billed for each zone/dma
                 def calculate_percentage_billed(merged_df, suffix):
                     # For each zone/dma column, calculate the percentage billed
