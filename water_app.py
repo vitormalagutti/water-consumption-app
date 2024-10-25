@@ -783,7 +783,7 @@ with tab1:
                 st.dataframe(dma_merged_df)
 
 
-                def plot_combined_demand_billed(df, unique_labels, title="Water Demand vs Billed Volumes with % Billed"):
+                def plot_combined_demand_billed(df, title="Water Demand vs Billed Volumes with % Billed"):
 
                     # Separate columns into demand, billed, and percentage columns
                     demand_columns = [col for col in df.columns if col.endswith('_demand')]
