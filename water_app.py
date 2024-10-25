@@ -343,8 +343,6 @@ with tab1:
                 'Illegal %': illegal_percentage_dma,
                 'Non-user %': non_user_percentage_dma
             })
-            st.markdown("test here")
-            user_summary_dma
 
             # Handle cases where no known users exist to avoid division by zero
             user_summary_dma[['Legal %', 'Illegal %', 'Non-user %']] = user_summary_dma[['Legal %', 'Illegal %', 'Non-user %']].fillna(0)
@@ -357,6 +355,9 @@ with tab1:
             non_user_sum_dma = (non_user_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
             
             user_summary_dma.loc['Total'] = [total_population_all_dmas, legal_sum_dma, illegal_sum_dma, non_user_sum_dma]
+            
+            st.markdown("test here")
+            user_summary_dma
             
         else:
             st.markdown("Your file does not have 'DMA' column")
