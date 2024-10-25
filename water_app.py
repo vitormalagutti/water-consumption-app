@@ -803,13 +803,13 @@ with tab1:
                     # Debugging: Check lengths
                     st.write("Length of demand_positions:", len(demand_positions))
                     st.write("Length of df_filtered for each column (should match):")
-                    for column in df_filtered.columns:
-                        st.write(f"Column {column}: {len(df_filtered[column])}")
+                    for column in df.columns:
+                        st.write(f"Column {column}: {len(df[column])}")
 
-                    for i, column in enumerate(df_filtered.columns):
+                    for i, column in enumerate(df.columns):
                         ax1.bar(
                             [p + i * demand_bar_width for p in demand_positions],
-                            df_filtered[column],
+                            df[column],
                             width=demand_bar_width,
                             label=f"{column}",
                             alpha=0.7
