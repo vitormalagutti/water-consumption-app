@@ -782,37 +782,29 @@ with tab1:
                 st.markdown("### Merged DataFrame for DMA with Percentage Billed")
                 st.dataframe(dma_merged_df)
 
-                def simple_plot_demand_billed(df, unique_labels, title="Water Demand vs Billed Volumes"):
-                    # Separate columns into demand and billed columns
+
+                def plot_multiple_demand_billed(df, unique_labels, title="Water Demand vs Billed Volumes"):
+                    # Identify demand and billed columns
                     demand_columns = [col for col in df.columns if col.endswith('_demand')]
-                    billed_columns = [col for col in df.columns if col not in demand_columns]
-
-                    # Debugging information
-                    print("Demand columns identified:", demand_columns)
-                    print("Billed columns identified:", billed_columns)
-
-                    # Ensure there's only one demand and one billed column
-                    if len(demand_columns) != 1 or len(billed_columns) != 1:
-                        raise ValueError("Expected exactly one demand column and one billed column")
-
-                    demand_column = demand_columns[0]
-                    billed_column = billed_columns[0]
-
-                    fig, ax = plt.subplots(figsize=(10, 6))
+                    billed_columns = [col for col in df.columns if col.endswith('% Billed')]
+                    
+                    fig, ax = plt.subplots(figsize=(12, 6))
                     
                     # Set bar width and positions
-                    bar_width = 0.4
+                    bar_width = 0.2
                     positions = np.arange(len(unique_labels))
                     
-                    # Plot Demand Bars
-                    ax.bar(positions - bar_width / 2, df[demand_column], width=bar_width, label="Demand", color='blue', alpha=0.6)
+                    # Plot Demand Bars for each demand column
+                    for i, demand_column in enumerate(demand_columns):
+                        ax.bar(positions - bar_width + i * bar_width, df[demand_column], width=bar_width, label=f"Demand {i+1}", alpha=0.6)
                     
-                    # Plot Billed Bars
-                    ax.bar(positions + bar_width / 2, df[billed_column], width=bar_width, label="Billed", color='green', alpha=0.6)
-                    
+                    # Plot Billed Percentages as lines on the same plot
+                    for i, billed_column in enumerate(billed_columns):
+                        ax.plot(positions, df[billed_column], marker='o', label=f"Billed {i+1}", linestyle='--')
+
                     # Set labels and title
                     ax.set_xlabel("Zone/DMA")
-                    ax.set_ylabel("Volume")
+                    ax.set_ylabel("Volume and Percentage")
                     ax.set_title(title)
                     
                     # Set x-ticks and labels
@@ -826,8 +818,8 @@ with tab1:
 
 
                 # Call the function for both zone and DMA merged dataframes
-                simple_plot_demand_billed(zone_merged_df,unique_zones, title="Zone Demand vs Billed Volumes with % Billed")
-                simple_plot_demand_billed(dma_merged_df,unique_dmas, title="DMA Demand vs Billed Volumes with % Billed")
+                plot_multiple_demand_billed(zone_merged_df,unique_zones, title="Zone Demand vs Billed Volumes with % Billed")
+                plot_multiple_demand_billed(dma_merged_df,unique_dmas, title="DMA Demand vs Billed Volumes with % Billed")
 
 
 
