@@ -761,6 +761,8 @@ with tab1:
                     # Perform the merge on 'Month' column
                     merged_df = pd.merge(billed_df_temp, demand_df, on='Month', how='left', suffixes=('', '_demand'))
 
+                    merged_df
+
                     # Restore the original index on billed_df (after merge)
                     merged_df.set_index(billed_df.index.name, inplace=True)
 
