@@ -34,25 +34,15 @@ def convert_to_csv(uploaded_file):
         file_extension = uploaded_file.name.split('.')[-1]
         try:
             if file_extension == 'xlsx':
-                df = pd.read_excel(uploaded_file, sheet_name=0)  # Read Excel file
+                return pd.read_excel(uploaded_file, sheet_name=0)  # Ensure you're reading the correct sheet
             elif file_extension == 'csv':
-                df = pd.read_csv(uploaded_file)  # Read CSV file
+                return pd.read_csv(uploaded_file)
             else:
                 st.error("Unsupported file format. Please upload a CSV or Excel file.")
                 return None
-            
-            # Check and convert DMA and Zone columns to integers if they exist
-            if 'DMA' in df.columns:
-                df['DMA'] = pd.to_numeric(df['DMA'], errors='coerce').astype(int)
-            if 'Zone' in df.columns:
-                df['Zone'] = pd.to_numeric(df['Zone'], errors='coerce').astype(int)
-
-            return df
         except Exception as e:
             st.error(f"Error reading file: {e}")
             return None
-    else:
-        return None
 
 def process_volume_or_value_file(uploaded_file):
     """
