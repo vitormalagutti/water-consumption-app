@@ -57,20 +57,18 @@ def process_volume_or_value_file(uploaded_file):
             st.error("The file does not contain a 'Subscription Number' column.")
             return None
 
-        # Function to detect and clean date columns
+        # Function to detect and clean various date columns
         def extract_date_from_column(col):
             col_str = str(col)  # Ensure the column is a string
-            # Match columns that have a recognizable date format
-            match = re.match(r'(\d{4}-\d{2}-\d{2})', col_str)  # Matches 'YYYY-MM-DD' format
+            # Recognize 'mm/yy', 'mmm.yy', 'mm/yyyy', 'YYYY-MM-DD' patterns
+            match = re.match(r'^\d{2}/\d{2}$|^\d{2}/\d{4}$|^[A-Za-z]{3}\.\d{2}$|^\d{4}-\d{2}-\d{2}$', col_str)
             if match:
-                date_part = match.group(1)  # Extract the date part
-                # Convert 'YYYY-MM-DD' to 'mm/yy' format
-                cleaned_date = pd.to_datetime(date_part).strftime('%m/%y')
-                return cleaned_date
-            # Extend this to check for 'mmm.yy' formats
-            match_2 = re.match(r'([A-Za-z]{3}\.\d{2})', col_str)
-            if match_2:
-                return match_2.group(1)
+                try:
+                    # Convert to 'mm/yy' format for consistency
+                    cleaned_date = pd.to_datetime(col_str, errors='coerce').strftime('%m/%y')
+                    return cleaned_date
+                except ValueError:
+                    return None
             return None
 
         # Initialize lists for columns
