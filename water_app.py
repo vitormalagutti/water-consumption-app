@@ -1040,7 +1040,7 @@ with tab1:
 
             st.markdown("### 🗺️ Interactive Map with Google Satellite Basemap")
             # Create heatmaps based on selection
-            kepler_map = KeplerGl(height=800, config=config_1)            
+            kepler_map = KeplerGl(height=800, config=config_2)            
             if heatmap_type == "All Buildings":
                 kepler_map.add_data(data=gdf, name="Water Consumption Data")
 
