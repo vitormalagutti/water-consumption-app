@@ -801,10 +801,10 @@ with tab1:
                     demand_positions = np.arange(len(unique_labels))
 
                     # Debugging: Check lengths
-                    print("Length of demand_positions:", len(demand_positions))
-                    print("Length of df_filtered for each column (should match):")
+                    st.write("Length of demand_positions:", len(demand_positions))
+                    st.write("Length of df_filtered for each column (should match):")
                     for column in df_filtered.columns:
-                        print(f"Column {column}: {len(df_filtered[column])}")
+                        st.write(f"Column {column}: {len(df_filtered[column])}")
 
                     for i, column in enumerate(df_filtered.columns):
                         ax1.bar(
