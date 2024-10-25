@@ -908,7 +908,7 @@ with tab1:
                                     "lng": "X"
                                 },
                                 "visConfig": {
-                                    "radius": 5,
+                                    "radius": 8,
                                     "opacity": 0.8,
                                 },
                                 "isVisible" : True
