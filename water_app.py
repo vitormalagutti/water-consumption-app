@@ -696,147 +696,266 @@ with tab1:
             
 
         with tab5:
-            if volume_file and value_file and correlation_file and buildings_file:
 
-                # Process each file
-                volume_df = process_volume_or_value_file(volume_file)
-                value_df = process_volume_or_value_file(value_file)
-                correlation_df = process_block_subscription_file(correlation_file)
-
-                # Step 2: Join the correlation file with the original buildings file on 'Block Number'
-                merged_df = pd.merge(buildings_df, correlation_df, on='Block Number', how='left')
-
-                # Step 3: Merge volume_df and value_df on 'Subscription Number'
-                volume_df = pd.merge(correlation_df, volume_df, on='Subscription Number', how='left')
-                value_df = pd.merge(correlation_df, value_df, on='Subscription Number', how='left')
-
-                # Step 4: Group by 'Block Number' and sum Volume and Value
-                volume_summed = volume_df.groupby('Block Number').sum(numeric_only=True).reset_index()
-                value_summed = value_df.groupby('Block Number').sum(numeric_only=True).reset_index()
-
-                # Step 5: Merge the summed volumes and values back to the original df
-                billed_df = pd.merge(merged_df, volume_summed, on='Block Number', how='left')
-                billed_df = pd.merge(billed_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value'))
-
-                # Drop unnecessary columns
-                columns_to_drop = ['Population', 'Status', 'Subscription Number_x', 'Subscription Number_y', "Subscription Number"]
-                billed_df = billed_df.drop(columns=columns_to_drop, errors='ignore')
-
-                # Display the final merged dataframe
-                # st.markdown("### Final Merged DataFrame")
-                # st.dataframe(billed_df)
-
-                # Group by Zone for Volume
-                if 'Zone' in merged_df.columns:
-                    zone_volume_df = pd.merge(merged_df[['Block Number', 'Zone']], volume_summed, on='Block Number', how='left')
-                    zone_volume_df = zone_volume_df.groupby('Zone').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
-                    zone_volume_df = zone_volume_df.round(0).astype(int)
-                    zone_volume_df.set_index('Zone', inplace=True)        
-                    zone_volume_df = zone_volume_df.transpose()
-                    # st.markdown("### Zone Billed Data Summed by Volume")
-                    # st.dataframe(zone_volume_df)
-
-                # Group by DMA for Volume
-                if 'DMA' in merged_df.columns:
-                    dma_volume_df = pd.merge(merged_df[['Block Number', 'DMA']], volume_summed, on='Block Number', how='left')
-                    dma_volume_df = dma_volume_df.groupby('DMA').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
-                    dma_volume_df = dma_volume_df.round(0).astype(int)
-                    dma_volume_df.set_index('DMA', inplace=True)        
-                    dma_volume_df = dma_volume_df.transpose()
-                    # st.markdown("### DMA Billed Data Summed by Volume")
-                    # st.dataframe(dma_volume_df)
-                
-                # Group by Zone for Value
-                if 'Zone' in merged_df.columns:
-                    zone_value_df = pd.merge(merged_df[['Block Number', 'Zone']], value_summed, on='Block Number', how='left')
-                    zone_value_df = zone_value_df.groupby('Zone').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
-                    zone_value_df = zone_value_df.round(0).astype(int)
-                    zone_value_df.set_index('Zone', inplace=True)        
-                    zone_value_df = zone_value_df.transpose()
-                    # st.markdown("### Zone Billed Data Summed by Value")
-                    # st.dataframe(zone_value_df)
-                    zone_volume_df = add_month_column_from_index(zone_volume_df)
-                    zone_merged_df = join_billed_with_demand(zone_volume_df, water_demand_zone)
-
-                # Group by DMA for Value
-                if 'DMA' in merged_df.columns:
-                    dma_value_df = pd.merge(merged_df[['Block Number', 'DMA']], value_summed, on='Block Number', how='left')
-                    dma_value_df = dma_value_df.groupby('DMA').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
-                    dma_value_df = dma_value_df.round(0).astype(int)
-                    dma_value_df.set_index('DMA', inplace=True)        
-                    dma_value_df = dma_value_df.transpose()
-                    # st.markdown("### DMA Billed Data Summed by Value")
-                    # st.dataframe(dma_value_df)
-                    dma_volume_df = add_month_column_from_index(dma_volume_df)
-                    dma_merged_df = join_billed_with_demand(dma_volume_df, water_demand_dma)
-              
-                
-
-                # Calculate the percentage for the already-merged zone and DMA dataframes
-                zone_merged_df = calculate_percentage_billed(zone_merged_df)
-                dma_merged_df = calculate_percentage_billed(dma_merged_df)
-                zone_merged_df = zone_merged_df.drop(columns="Month")
-                dma_merged_df = dma_merged_df.drop(columns="Month")
-
-                col1, col2 = st.columns(2)
-                with col1:
-                    # Display the merged dataframes with calculated percentages
-                    n = len(unique_zones)
-                    st.markdown("### Percentage of Billed Volume per Zone")
-                    st.dataframe(zone_merged_df.iloc[:,-n:])
-                with col2:
-                    n = len(unique_dmas)
-                    st.markdown("### Percentage of Billed Volume per DMA")
-                    st.dataframe(dma_merged_df.iloc[:,-n:])
+            if 'visualization_type' in locals():
+                if visualization_type == "DMA" and "DMA" in available_options:
 
 
-                def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
-                    # Identify demand and billed columns
-                    demand_columns = [col for col in df.columns if col.endswith('_demand')]
-                    billed_columns = [col for col in df.columns if col not in demand_columns and not col.endswith('% Billed')]
-                    percent_columns = [col for col in df.columns if col.endswith('% Billed')]
+                    if volume_file and value_file and correlation_file and buildings_file:
 
-                    # Use the DataFrame index as the x-axis labels (assuming it's the dates)
-                    x_labels = df.index
-                    positions = np.arange(len(x_labels))  # Positions should match the number of index entries (rows)
+                        # Process each file
+                        volume_df = process_volume_or_value_file(volume_file)
+                        value_df = process_volume_or_value_file(value_file)
+                        correlation_df = process_block_subscription_file(correlation_file)
 
-                    fig, ax = plt.subplots(figsize=(12, 6))
+                        # Step 2: Join the correlation file with the original buildings file on 'Block Number'
+                        merged_df = pd.merge(buildings_df, correlation_df, on='Block Number', how='left')
 
-                    # Set bar width
-                    bar_width = 0.2
+                        # Step 3: Merge volume_df and value_df on 'Subscription Number'
+                        volume_df = pd.merge(correlation_df, volume_df, on='Subscription Number', how='left')
+                        value_df = pd.merge(correlation_df, value_df, on='Subscription Number', how='left')
+
+                        # Step 4: Group by 'Block Number' and sum Volume and Value
+                        volume_summed = volume_df.groupby('Block Number').sum(numeric_only=True).reset_index()
+                        value_summed = value_df.groupby('Block Number').sum(numeric_only=True).reset_index()
+
+                        # Step 5: Merge the summed volumes and values back to the original df
+                        billed_df = pd.merge(merged_df, volume_summed, on='Block Number', how='left')
+                        billed_df = pd.merge(billed_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value'))
+
+                        # Drop unnecessary columns
+                        columns_to_drop = ['Population', 'Status', 'Subscription Number_x', 'Subscription Number_y', "Subscription Number"]
+                        billed_df = billed_df.drop(columns=columns_to_drop, errors='ignore')
+
+                        # Display the final merged dataframe
+                        # st.markdown("### Final Merged DataFrame")
+                        # st.dataframe(billed_df)
+
+
+                        # Group by DMA for Volume
+                        if 'DMA' in merged_df.columns:
+                            dma_volume_df = pd.merge(merged_df[['Block Number', 'DMA']], volume_summed, on='Block Number', how='left')
+                            dma_volume_df = dma_volume_df.groupby('DMA').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
+                            dma_volume_df = dma_volume_df.round(0).astype(int)
+                            dma_volume_df.set_index('DMA', inplace=True)        
+                            dma_volume_df = dma_volume_df.transpose()
+                            # st.markdown("### DMA Billed Data Summed by Volume")
+                            # st.dataframe(dma_volume_df)
+                        
+                        # Group by DMA for Value
+                        if 'DMA' in merged_df.columns:
+                            dma_value_df = pd.merge(merged_df[['Block Number', 'DMA']], value_summed, on='Block Number', how='left')
+                            dma_value_df = dma_value_df.groupby('DMA').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
+                            dma_value_df = dma_value_df.round(0).astype(int)
+                            dma_value_df.set_index('DMA', inplace=True)        
+                            dma_value_df = dma_value_df.transpose()
+                            # st.markdown("### DMA Billed Data Summed by Value")
+                            # st.dataframe(dma_value_df)
+                            dma_volume_df = add_month_column_from_index(dma_volume_df)
+                            dma_merged_df = join_billed_with_demand(dma_volume_df, water_demand_dma)
                     
-                    # Plot Demand Bars for each demand column
-                    for i, demand_column in enumerate(demand_columns):
-                        ax.bar(positions - bar_width + i * bar_width, df[demand_column], width=bar_width, label=f"Demand {i+1}", alpha=0.6)
+
+                        dma_merged_df = calculate_percentage_billed(dma_merged_df)
+
+                        dma_merged_df = dma_merged_df.drop(columns="Month")
+
+
+                        n = len(unique_dmas)
+                        st.markdown("### Percentage of Billed Volume per DMA")
+                        st.dataframe(dma_merged_df.iloc[:,-n:])
+
+
+                        def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
+                            # Identify demand and billed columns
+                            demand_columns = [col for col in df.columns if col.endswith('_demand')]
+                            billed_columns = [col for col in df.columns if col not in demand_columns and not col.endswith('% Billed')]
+                            percent_columns = [col for col in df.columns if col.endswith('% Billed')]
+
+                            # Use the DataFrame index as the x-axis labels (assuming it's the dates)
+                            x_labels = df.index
+                            positions = np.arange(len(x_labels))  # Positions should match the number of index entries (rows)
+
+                            fig, ax = plt.subplots(figsize=(12, 6))
+
+                            # Set bar width
+                            bar_width = 0.2
+                            
+                            # Plot Demand Bars for each demand column
+                            for i, demand_column in enumerate(demand_columns):
+                                ax.bar(positions - bar_width + i * bar_width, df[demand_column], width=bar_width, label=f"Demand {i+1}", alpha=0.6)
+                            
+                            # Plot Billed Percentages as lines on the same plot
+                            for i, billed_column in enumerate(billed_columns):
+                                ax.plot(positions, df[billed_column], marker='o', label=f"Billed {i+1}", linestyle='--')
+
+                            # Set labels and title
+                            ax.set_xlabel("Date")
+                            ax.set_ylabel("Volume and Percentage")
+                            ax.set_title(title)
+                            
+                            # Set x-ticks and labels
+                            ax.set_xticks(positions)
+                            ax.set_xticklabels(x_labels, rotation=45)
+
+                            # Add legend
+                            ax.legend(loc='upper left')
+                            
+                            plt.tight_layout()
+                            st.pyplot(fig)
+
+
+                        # Call the function for both zone and DMA merged dataframes
+
+                        plot_multiple_demand_billed(dma_merged_df, title="DMA Demand vs Billed Volumes with % Billed")
+
+
+
+
+
+
+
+
+
+
+                elif visualization_type == "Zone" and "Zone" in available_options:
+
+
+                    if volume_file and value_file and correlation_file and buildings_file:
+
+                        # Process each file
+                        volume_df = process_volume_or_value_file(volume_file)
+                        value_df = process_volume_or_value_file(value_file)
+                        correlation_df = process_block_subscription_file(correlation_file)
+
+                        # Step 2: Join the correlation file with the original buildings file on 'Block Number'
+                        merged_df = pd.merge(buildings_df, correlation_df, on='Block Number', how='left')
+
+                        # Step 3: Merge volume_df and value_df on 'Subscription Number'
+                        volume_df = pd.merge(correlation_df, volume_df, on='Subscription Number', how='left')
+                        value_df = pd.merge(correlation_df, value_df, on='Subscription Number', how='left')
+
+                        # Step 4: Group by 'Block Number' and sum Volume and Value
+                        volume_summed = volume_df.groupby('Block Number').sum(numeric_only=True).reset_index()
+                        value_summed = value_df.groupby('Block Number').sum(numeric_only=True).reset_index()
+
+                        # Step 5: Merge the summed volumes and values back to the original df
+                        billed_df = pd.merge(merged_df, volume_summed, on='Block Number', how='left')
+                        billed_df = pd.merge(billed_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value'))
+
+                        # Drop unnecessary columns
+                        columns_to_drop = ['Population', 'Status', 'Subscription Number_x', 'Subscription Number_y', "Subscription Number"]
+                        billed_df = billed_df.drop(columns=columns_to_drop, errors='ignore')
+
+                        # Display the final merged dataframe
+                        # st.markdown("### Final Merged DataFrame")
+                        # st.dataframe(billed_df)
+
+                        # Group by Zone for Volume
+                        if 'Zone' in merged_df.columns:
+                            zone_volume_df = pd.merge(merged_df[['Block Number', 'Zone']], volume_summed, on='Block Number', how='left')
+                            zone_volume_df = zone_volume_df.groupby('Zone').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
+                            zone_volume_df = zone_volume_df.round(0).astype(int)
+                            zone_volume_df.set_index('Zone', inplace=True)        
+                            zone_volume_df = zone_volume_df.transpose()
+                            # st.markdown("### Zone Billed Data Summed by Volume")
+                            # st.dataframe(zone_volume_df)
+
+                        # Group by DMA for Volume
+                        if 'DMA' in merged_df.columns:
+                            dma_volume_df = pd.merge(merged_df[['Block Number', 'DMA']], volume_summed, on='Block Number', how='left')
+                            dma_volume_df = dma_volume_df.groupby('DMA').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
+                            dma_volume_df = dma_volume_df.round(0).astype(int)
+                            dma_volume_df.set_index('DMA', inplace=True)        
+                            dma_volume_df = dma_volume_df.transpose()
+                            # st.markdown("### DMA Billed Data Summed by Volume")
+                            # st.dataframe(dma_volume_df)
+                        
+                        # Group by Zone for Value
+                        if 'Zone' in merged_df.columns:
+                            zone_value_df = pd.merge(merged_df[['Block Number', 'Zone']], value_summed, on='Block Number', how='left')
+                            zone_value_df = zone_value_df.groupby('Zone').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
+                            zone_value_df = zone_value_df.round(0).astype(int)
+                            zone_value_df.set_index('Zone', inplace=True)        
+                            zone_value_df = zone_value_df.transpose()
+                            # st.markdown("### Zone Billed Data Summed by Value")
+                            # st.dataframe(zone_value_df)
+                            zone_volume_df = add_month_column_from_index(zone_volume_df)
+                            zone_merged_df = join_billed_with_demand(zone_volume_df, water_demand_zone)
+
+                        # Group by DMA for Value
+                        if 'DMA' in merged_df.columns:
+                            dma_value_df = pd.merge(merged_df[['Block Number', 'DMA']], value_summed, on='Block Number', how='left')
+                            dma_value_df = dma_value_df.groupby('DMA').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
+                            dma_value_df = dma_value_df.round(0).astype(int)
+                            dma_value_df.set_index('DMA', inplace=True)        
+                            dma_value_df = dma_value_df.transpose()
+                            # st.markdown("### DMA Billed Data Summed by Value")
+                            # st.dataframe(dma_value_df)
+                            dma_volume_df = add_month_column_from_index(dma_volume_df)
+                            dma_merged_df = join_billed_with_demand(dma_volume_df, water_demand_dma)
                     
-                    # Plot Billed Percentages as lines on the same plot
-                    for i, billed_column in enumerate(billed_columns):
-                        ax.plot(positions, df[billed_column], marker='o', label=f"Billed {i+1}", linestyle='--')
+                        
 
-                    # Set labels and title
-                    ax.set_xlabel("Date")
-                    ax.set_ylabel("Volume and Percentage")
-                    ax.set_title(title)
-                    
-                    # Set x-ticks and labels
-                    ax.set_xticks(positions)
-                    ax.set_xticklabels(x_labels, rotation=45)
+                        # Calculate the percentage for the already-merged zone and DMA dataframes
+                        zone_merged_df = calculate_percentage_billed(zone_merged_df)
+                        dma_merged_df = calculate_percentage_billed(dma_merged_df)
+                        zone_merged_df = zone_merged_df.drop(columns="Month")
+                        dma_merged_df = dma_merged_df.drop(columns="Month")
 
-                    # Add legend
-                    ax.legend(loc='upper left')
-                    
-                    plt.tight_layout()
-                    st.pyplot(fig)
-
-
-                # Call the function for both zone and DMA merged dataframes
-                plot_multiple_demand_billed(zone_merged_df, title="Zone Demand vs Billed Volumes with % Billed")
-                plot_multiple_demand_billed(dma_merged_df, title="DMA Demand vs Billed Volumes with % Billed")
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            # Display the merged dataframes with calculated percentages
+                            n = len(unique_zones)
+                            st.markdown("### Percentage of Billed Volume per Zone")
+                            st.dataframe(zone_merged_df.iloc[:,-n:])
+                        with col2:
+                            n = len(unique_dmas)
+                            st.markdown("### Percentage of Billed Volume per DMA")
+                            st.dataframe(dma_merged_df.iloc[:,-n:])
 
 
+                        def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
+                            # Identify demand and billed columns
+                            demand_columns = [col for col in df.columns if col.endswith('_demand')]
+                            billed_columns = [col for col in df.columns if col not in demand_columns and not col.endswith('% Billed')]
+                            percent_columns = [col for col in df.columns if col.endswith('% Billed')]
+
+                            # Use the DataFrame index as the x-axis labels (assuming it's the dates)
+                            x_labels = df.index
+                            positions = np.arange(len(x_labels))  # Positions should match the number of index entries (rows)
+
+                            fig, ax = plt.subplots(figsize=(12, 6))
+
+                            # Set bar width
+                            bar_width = 0.2
+                            
+                            # Plot Demand Bars for each demand column
+                            for i, demand_column in enumerate(demand_columns):
+                                ax.bar(positions - bar_width + i * bar_width, df[demand_column], width=bar_width, label=f"Demand {i+1}", alpha=0.6)
+                            
+                            # Plot Billed Percentages as lines on the same plot
+                            for i, billed_column in enumerate(billed_columns):
+                                ax.plot(positions, df[billed_column], marker='o', label=f"Billed {i+1}", linestyle='--')
+
+                            # Set labels and title
+                            ax.set_xlabel("Date")
+                            ax.set_ylabel("Volume and Percentage")
+                            ax.set_title(title)
+                            
+                            # Set x-ticks and labels
+                            ax.set_xticks(positions)
+                            ax.set_xticklabels(x_labels, rotation=45)
+
+                            # Add legend
+                            ax.legend(loc='upper left')
+                            
+                            plt.tight_layout()
+                            st.pyplot(fig)
 
 
-
+                        # Call the function for both zone and DMA merged dataframes
+                        plot_multiple_demand_billed(zone_merged_df, title="Zone Demand vs Billed Volumes with % Billed")
+                        plot_multiple_demand_billed(dma_merged_df, title="DMA Demand vs Billed Volumes with % Billed")
 
 
 
