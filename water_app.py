@@ -754,6 +754,8 @@ with tab1:
                     zone_value_df = zone_value_df.transpose()
                     # st.markdown("### Zone Billed Data Summed by Value")
                     # st.dataframe(zone_value_df)
+                    zone_volume_df = add_month_column_from_index(zone_volume_df)
+                    zone_merged_df = join_billed_with_demand(zone_volume_df, water_demand_zone)
 
                 # Group by DMA for Value
                 if 'DMA' in merged_df.columns:
@@ -764,13 +766,10 @@ with tab1:
                     dma_value_df = dma_value_df.transpose()
                     # st.markdown("### DMA Billed Data Summed by Value")
                     # st.dataframe(dma_value_df)
-
-                # Apply this function to zone and DMA volume DataFrames
-                zone_volume_df = add_month_column_from_index(zone_volume_df)
-                dma_volume_df = add_month_column_from_index(dma_volume_df)
-                # Join the zone_volume_df and dma_volume_df with the water demand
-                zone_merged_df = join_billed_with_demand(zone_volume_df, water_demand_zone)
-                dma_merged_df = join_billed_with_demand(dma_volume_df, water_demand_dma)
+                    dma_volume_df = add_month_column_from_index(dma_volume_df)
+                    dma_merged_df = join_billed_with_demand(dma_volume_df, water_demand_dma)
+              
+                
 
                 # Calculate the percentage for the already-merged zone and DMA dataframes
                 zone_merged_df = calculate_percentage_billed(zone_merged_df)
@@ -784,6 +783,50 @@ with tab1:
 
                 st.markdown("### Merged DataFrame for DMA with Percentage Billed")
                 st.dataframe(dma_merged_df)
+
+
+
+                def plot_combined_demand_billed(df, title="Water Demand vs Billed Volumes with % Billed"):
+                    # Separate columns into demand, billed, and percentage columns
+                    demand_columns = [col for col in df.columns if col.endswith('_demand')]
+                    billed_columns = [col for col in df.columns if col in demand_columns]
+                    percent_columns = [col for col in df.columns if col.endswith('% Billed')]
+                    
+                    fig, ax1 = plt.subplots(figsize=(10, 6))
+                    
+                    # Plot demand columns as bars
+                    demand_bar_width = 0.3
+                    demand_positions = range(len(demand_columns))
+                    for i, column in enumerate(demand_columns):
+                        ax1.bar([p + i * demand_bar_width for p in demand_positions], df[column], width=demand_bar_width, label=f"{column}", alpha=0.7)
+                    
+                    # Overlay DMA/Zone columns as bars with a different color
+                    for i, column in enumerate(billed_columns):
+                        ax1.bar([p + (i + len(demand_columns)) * demand_bar_width for p in demand_positions], df[column], width=demand_bar_width, label=f"{column}", alpha=0.5)
+                    
+                    # Plot the % Billed columns as lines on the secondary y-axis
+                    ax2 = ax1.twinx()
+                    for column in percent_columns:
+                        ax2.plot(demand_positions, df[column], marker='o', label=f"{column} % Billed", linestyle='-', linewidth=2)
+                    
+                    # Labels and legend
+                    ax1.set_xlabel('DMA/Zone')
+                    ax1.set_ylabel('Volume (m3)')
+                    ax2.set_ylabel('% Billed')
+                    ax1.set_xticks(demand_positions)
+                    ax1.set_xticklabels(df.index)  # Set x-axis labels as DMA/Zones
+                    
+                    # Add legends for both axes
+                    ax1.legend(loc='upper left')
+                    ax2.legend(loc='upper right')
+                    
+                    plt.title(title)
+                    plt.show()
+                    
+            # Call the function for both zone and DMA merged dataframes
+            plot_combined_demand_billed(zone_merged_df, title="Zone Demand vs Billed Volumes with % Billed")
+            plot_combined_demand_billed(dma_merged_df, title="DMA Demand vs Billed Volumes with % Billed")
+
 
 
 
