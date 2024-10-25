@@ -690,8 +690,8 @@ with tab1:
                     zone_volume_df = zone_volume_df.round(0).astype(int)
                     zone_volume_df.set_index('Zone', inplace=True)        
                     zone_volume_df = zone_volume_df.transpose()
-                    st.markdown("### Zone Billed Data Summed by Volume")
-                    st.dataframe(zone_volume_df)
+                    # st.markdown("### Zone Billed Data Summed by Volume")
+                    # st.dataframe(zone_volume_df)
 
                 # Group by DMA for Volume
                 if 'DMA' in merged_df.columns:
@@ -700,8 +700,8 @@ with tab1:
                     dma_volume_df = dma_volume_df.round(0).astype(int)
                     dma_volume_df.set_index('DMA', inplace=True)        
                     dma_volume_df = dma_volume_df.transpose()
-                    st.markdown("### DMA Billed Data Summed by Volume")
-                    st.dataframe(dma_volume_df)
+                    # st.markdown("### DMA Billed Data Summed by Volume")
+                    # st.dataframe(dma_volume_df)
                 
                 # Group by Zone for Value
                 if 'Zone' in merged_df.columns:
