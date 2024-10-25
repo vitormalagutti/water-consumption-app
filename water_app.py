@@ -860,8 +860,8 @@ with tab1:
                                 "config": {
                                     "dataId": "Water Consumption Data",
                                     "label": "Building Locations",
-                                    "colorField": {"name": visualization_type, "type": "string"}, 
-                                    "color": [150, 200, 255],  # Color of points
+                                    "colorScale": "quantile",  # Adjust color scale as desired
+                                    "color": [150, 200, 255],  # Default color of points
                                     "columns": {
                                         "lat": "Y",
                                         "lng": "X"
@@ -871,6 +871,12 @@ with tab1:
                                         "opacity": 1,
                                     },
                                     "isVisible": True
+                                },
+                                "visualChannels": {
+                                    "colorField": {
+                                        "name": visualization_type,
+                                        "type": "float"  # Adjust type as needed
+                                    }
                                 }
                             }
                         ]
