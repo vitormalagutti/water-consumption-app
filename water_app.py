@@ -567,6 +567,8 @@ with tab1:
                         consumption_m3 = population_dma[dma] * (1 - non_users_dma[dma]) * monthly_consumption[i] * days_in_month[i] / 1000
                         dma_consumption.append(round(consumption_m3, -2))  # Round to the nearest 100
 
+                        dma_consumption
+
                     # Add the DMA and its monthly consumption to the DataFrame
                     water_demand_dma.loc[len(water_demand_dma)] = [dma] + dma_consumption  # Fixing float DMA to integer
 
@@ -574,7 +576,7 @@ with tab1:
                 water_demand_dma.set_index('DMA', inplace=True)        
                 water_demand_dma = water_demand_dma.transpose()
                 population_dma
-                
+
                 st.write(f"DMA index types: {water_demand_dma.index.map(type)}")
             
             if 'Zone' in filtered_df.columns:
