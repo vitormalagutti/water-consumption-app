@@ -632,8 +632,6 @@ with tab1:
                     st.pyplot(fig)
 
         with tab5:
-           
-            # Check if all files are present before proceeding
             if volume_file and value_file and correlation_file and buildings_file:
 
                 # Process each file
@@ -641,14 +639,10 @@ with tab1:
                 value_df = process_volume_or_value_file(value_file)
                 correlation_df = process_block_subscription_file(correlation_file)
 
-                value_df
                 # Step 2: Join the correlation file with the original buildings file on 'Block Number'
-                # Assuming 'Block Number' is the column in both buildings_df and correlation_df
                 merged_df = pd.merge(buildings_df, correlation_df, on='Block Number', how='left')
 
-                st.markdown("Working until here")
                 # Step 3: Merge volume_df and value_df on 'Subscription Number'
-                # Ensure that 'Subscription Number' is present in both files
                 volume_df = pd.merge(correlation_df, volume_df, on='Subscription Number', how='left')
                 value_df = pd.merge(correlation_df, value_df, on='Subscription Number', how='left')
 
@@ -660,9 +654,9 @@ with tab1:
                 billed_df = pd.merge(merged_df, volume_summed, on='Block Number', how='left')
                 billed_df = pd.merge(billed_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value'))
 
-                # Drop unnecessary columns from final_df
+                # Drop unnecessary columns
                 columns_to_drop = ['Population', 'Status', 'Subscription Number_x', 'Subscription Number_y', "Subscription Number"]
-                billed_df = billed_df.drop(columns=columns_to_drop, errors='ignore')  # 'errors=ignore' avoids issues if a column is missing
+                billed_df = billed_df.drop(columns=columns_to_drop, errors='ignore')
 
                 # Display the final merged dataframe
                 st.markdown("### Final Merged DataFrame")
@@ -678,16 +672,6 @@ with tab1:
                     st.markdown("### Zone Billed Data Summed by Volume")
                     st.dataframe(zone_volume_df)
 
-                # Group by Zone for Value
-                if 'Zone' in merged_df.columns:
-                    zone_value_df = pd.merge(merged_df[['Block Number', 'Zone']], value_summed, on='Block Number', how='left')
-                    zone_value_df = zone_value_df.groupby('Zone').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
-                    zone_value_df = zone_value_df.round(0).astype(int) 
-                    zone_value_df.set_index('Zone', inplace=True)        
-                    zone_value_df = zone_value_df.transpose()
-                    st.markdown("### Zone Billed Data Summed by Value")
-                    st.dataframe(zone_value_df)
-
                 # Group by DMA for Volume
                 if 'DMA' in merged_df.columns:
                     dma_volume_df = pd.merge(merged_df[['Block Number', 'DMA']], volume_summed, on='Block Number', how='left')
@@ -697,16 +681,6 @@ with tab1:
                     dma_volume_df = dma_volume_df.transpose()
                     st.markdown("### DMA Billed Data Summed by Volume")
                     st.dataframe(dma_volume_df)
-
-                # Group by DMA for Value
-                if 'DMA' in merged_df.columns:
-                    dma_value_df = pd.merge(merged_df[['Block Number', 'DMA']], value_summed, on='Block Number', how='left')
-                    dma_value_df = dma_value_df.groupby('DMA').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
-                    dma_value_df = dma_value_df.round(0).astype(int)
-                    dma_value_df.set_index('DMA', inplace=True)        
-                    dma_value_df = dma_value_df.transpose()
-                    st.markdown("### DMA Billed Data Summed by Value")
-                    st.dataframe(dma_value_df)
 
 
 
