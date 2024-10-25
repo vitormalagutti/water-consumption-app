@@ -776,11 +776,10 @@ with tab1:
                 dma_merged_df = dma_merged_df.drop(columns="Month")
 
 
-                percent_columns = [col for col in df.columns if col.endswith('% Billed')]
 
                 # Display the merged dataframes with calculated percentages
                 st.markdown("### Merged DataFrame for Zone with Percentage Billed")
-                st.dataframe(zone_merged_df[percent_columns])
+                st.dataframe(zone_merged_df[:-range(len(unique_zones))])
 
                 st.markdown("### Merged DataFrame for DMA with Percentage Billed")
                 st.dataframe(dma_merged_df)
