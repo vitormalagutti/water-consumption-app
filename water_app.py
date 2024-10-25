@@ -683,8 +683,8 @@ with tab1:
                 water_demand_zone_t = water_demand_zone.T
 
                 # Ensure that billed volume data is in a standard format
-                zone_volume = convert_billed_dates_to_standard(zone_volume.T)
-                dma_volume = convert_billed_dates_to_standard(dma_volume.T)
+                zone_volume = convert_billed_dates_to_standard(zone_volume_df.T)
+                dma_volume = convert_billed_dates_to_standard(dma_volume_df.T)
 
                 # Transpose the water demand data (if needed)
                 dma_volume = dma_volume.T
