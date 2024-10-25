@@ -783,16 +783,19 @@ with tab1:
                 st.dataframe(dma_merged_df)
 
 
-                def plot_multiple_demand_billed(df, unique_labels, title="Water Demand vs Billed Volumes"):
+                def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
                     # Identify demand and billed columns
                     demand_columns = [col for col in df.columns if col.endswith('_demand')]
                     billed_columns = [col for col in df.columns if col.endswith('% Billed')]
-                    
+
+                    # Use the DataFrame index as the x-axis labels (assuming it's the dates)
+                    x_labels = df.index
+                    positions = np.arange(len(x_labels))  # Positions should match the number of index entries (rows)
+
                     fig, ax = plt.subplots(figsize=(12, 6))
-                    
-                    # Set bar width and positions
+
+                    # Set bar width
                     bar_width = 0.2
-                    positions = np.arange(len(unique_labels))
                     
                     # Plot Demand Bars for each demand column
                     for i, demand_column in enumerate(demand_columns):
@@ -803,14 +806,14 @@ with tab1:
                         ax.plot(positions, df[billed_column], marker='o', label=f"Billed {i+1}", linestyle='--')
 
                     # Set labels and title
-                    ax.set_xlabel("Zone/DMA")
+                    ax.set_xlabel("Date")
                     ax.set_ylabel("Volume and Percentage")
                     ax.set_title(title)
                     
                     # Set x-ticks and labels
                     ax.set_xticks(positions)
-                    ax.set_xticklabels(unique_labels, rotation=45)
-                    
+                    ax.set_xticklabels(x_labels, rotation=45)
+
                     # Add legend
                     ax.legend(loc='upper left')
                     
