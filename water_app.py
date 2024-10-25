@@ -299,6 +299,10 @@ with tab1:
         avg_floors = st.sidebar.number_input("Average Floors per Building", min_value=0.0, step=0.1, value=1.63)
         avg_people_per_family = st.sidebar.number_input("Average People per Family", min_value=1.0, step=1.0, value=5.65)
         avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=300, step=5, value=150)
+        # Sidebar menu for choosing DMA or Zone
+        st.sidebar.header("Data Visualization Options")
+        visualization_type = st.sidebar.selectbox("Choose visualization type:", ["DMA", "Zone"])
+        # Sidebar menu for HeatMap Options
         st.sidebar.header("🔍 Heatmap Options")
         heatmap_type = st.sidebar.selectbox(
             "Choose a heatmap to display:",
