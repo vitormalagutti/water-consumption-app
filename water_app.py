@@ -554,24 +554,22 @@ with tab1:
                 st.markdown("### Water Demand per DMA")
                 st.dataframe(water_demand_dma)
             
+           # Process for Zone
             if 'Zone' in filtered_df.columns:
                 # Prepare population and non-user percentages for Zones
                 population_zone = user_summary_zone['Total Population']
                 non_users_zone = user_summary_zone['Non-user %'] / 100  
-                
-                # Create an empty DataFrame to store the results
-                water_demand_zone = pd.DataFrame(columns=['Zone'] + df_factors['Month'].tolist())
 
-                # Calculate the water consumption for each DMA and month
+                # Create an empty DataFrame to store the results with Zone as index and Months as columns
+                water_demand_zone = pd.DataFrame(index=df_factors['Month'].tolist(), columns=population_zone.index)
+
+                # Calculate the water consumption for each Zone and month
                 for zone in population_zone.index:
                     # For each Zone, calculate monthly consumption
-                    zone_consumption = []
                     for i, month in enumerate(df_factors['Month']):
                         consumption_m3 = population_zone[zone] * (1 - non_users_zone[zone]) * monthly_consumption[i] * days_in_month[i] / 1000
-                        zone_consumption.append(round(consumption_m3, -2))  # Round to the nearest 100
+                        water_demand_zone.at[month, zone] = round(consumption_m3, -2)  # Round to the nearest 100
 
-                    # Add the zone and its monthly consumption to the DataFrame
-                    water_demand_zone.loc[len(water_demand_zone)] = [zone] + zone_consumption
                     
                 water_demand_zone.set_index('Zone', inplace=True)        
                 water_demand_zone = water_demand_zone.transpose()
