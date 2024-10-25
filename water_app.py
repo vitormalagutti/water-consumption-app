@@ -705,6 +705,14 @@ with tab1:
 
 
 
+                # Ensure zone_volume_df and dma_volume_df indices are integers, not floats
+                zone_volume_df.index = zone_volume_df.index.astype(int, errors='ignore')
+                dma_volume_df.index = dma_volume_df.index.astype(int, errors='ignore')
+
+                # Similarly, ensure that water_demand_zone and water_demand_dma indices are also integers
+                water_demand_zone.index = water_demand_zone.index.astype(int, errors='ignore')
+                water_demand_dma.index = water_demand_dma.index.astype(int, errors='ignore')
+
 
                 # Step 1: Create a month column from the index in the billed tables (zone_volume_df and dma_volume_df)
 
