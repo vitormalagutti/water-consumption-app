@@ -449,7 +449,7 @@ with tab1:
             # Place the two tables in the side-by-side layout
             
             if 'visualization_type' in locals():
-                if visualization_type == "DMA" and "DMA" in available_options:
+                if visualization_type == "Zone" and "Zone" in available_options:
                     # Calculate the number of people for each user type by multiplying Total Population with percentages
                     user_summary_zone['Legal'] = (user_summary_zone['Total Population'] * user_summary_zone['Legal %'] / 100).astype(int)
                     user_summary_zone['Illegal'] = (user_summary_zone['Total Population'] * user_summary_zone['Illegal %'] / 100).astype(int)
@@ -497,7 +497,7 @@ with tab1:
 
 
 
-                elif visualization_type == "Zone" and "Zone" in available_options:
+                elif visualization_type == "DMA" and "DMA" in available_options:
                     # Calculate the number of people for each user type by multiplying Total Population with percentages
                     user_summary_dma['Legal'] = (user_summary_dma['Total Population'] * user_summary_dma['Legal %'] / 100).astype(int)
                     user_summary_dma['Illegal'] = (user_summary_dma['Total Population'] * user_summary_dma['Illegal %'] / 100).astype(int)
