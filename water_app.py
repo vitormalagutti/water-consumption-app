@@ -593,7 +593,7 @@ with tab1:
             
             if 'visualization_type' in locals():
                 if visualization_type == "DMA" and "DMA" in available_options:
-                    col1, col2 = st.columns(2)
+                    col1, col2 = st.columns([1;2])
                     with col1:
                         # Prepare population and non-user percentages for DMAs
                         population_dma = user_summary_dma['Total Population']
@@ -645,7 +645,7 @@ with tab1:
                         st.pyplot(fig)
 
                 elif visualization_type == "Zone" and "Zone" in available_options:
-                    col1, col2 = st.columns(2)
+                    col1, col2 = st.columns([1;2])
                     with col1:
                         # Prepare population and non-user percentages for Zones
                         population_zone = user_summary_zone['Total Population']
