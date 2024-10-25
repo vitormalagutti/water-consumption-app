@@ -312,7 +312,8 @@ with tab1:
 
         # Calculate total population and percentages per Zone (if 'Zone' column exists)
         if 'Zone' in filtered_df.columns:
-            
+            # Extract unique DMA and Zone values
+            unique_zones = filtered_df['Zone'].unique().tolist()
             # Calculate total population for each zone, including all inputs (with or without User Type)
             zone_counts = df.groupby('Zone').size()  # Count the number of inputs per Zone
             total_population_by_zone = zone_counts * avg_floors * avg_people_per_family  # Calculate total population
@@ -356,7 +357,8 @@ with tab1:
 
     # Calculate total population and percentages per DMA (if 'DMA' column exists)
         if 'DMA' in filtered_df.columns:
-            
+            # Extract unique DMA and Zone values
+            unique_dmas = filtered_df['DMA'].unique().tolist()
             # Calculate total population for each DMA, including all inputs (with or without User Type)
             dma_counts = df.groupby('DMA').size()  # Count the number of inputs per DMA
             total_population_by_dma = dma_counts * avg_floors * avg_people_per_family  # Calculate total population
@@ -786,35 +788,38 @@ with tab1:
 
 
 
-                def plot_combined_demand_billed(df, title="Water Demand vs Billed Volumes with % Billed"):
+                def plot_combined_demand_billed(df, unique_labels, title="Water Demand vs Billed Volumes with % Billed"):
+                    # Filter and sort the dataframe by unique_labels
+                    df_filtered = df[df.index.isin(unique_labels)].sort_index()
+
                     # Separate columns into demand, billed, and percentage columns
                     demand_columns = [col for col in df.columns if col.endswith('_demand')]
-                    billed_columns = [col for col in df.columns if col in demand_columns]
+                    billed_columns = [col for col in df.columns if col not in demand_columns and not col.endswith('% Billed')]
                     percent_columns = [col for col in df.columns if col.endswith('% Billed')]
                     
-                    fig, ax1 = plt.subplots(figsize=(10, 6))
+                    fig, ax1 = plt.subplots(figsize=(12, 6))
                     
                     # Plot demand columns as bars
                     demand_bar_width = 0.3
-                    demand_positions = range(len(demand_columns))
+                    demand_positions = range(len(unique_labels))
                     for i, column in enumerate(demand_columns):
-                        ax1.bar([p + i * demand_bar_width for p in demand_positions], df[column], width=demand_bar_width, label=f"{column}", alpha=0.7)
+                        ax1.bar([p + i * demand_bar_width for p in demand_positions], df_filtered[column], width=demand_bar_width, label=f"{column}", alpha=0.7)
                     
                     # Overlay DMA/Zone columns as bars with a different color
                     for i, column in enumerate(billed_columns):
-                        ax1.bar([p + (i + len(demand_columns)) * demand_bar_width for p in demand_positions], df[column], width=demand_bar_width, label=f"{column}", alpha=0.5)
+                        ax1.bar([p + (i + len(demand_columns)) * demand_bar_width for p in demand_positions], df_filtered[column], width=demand_bar_width, label=f"{column}", alpha=0.5)
                     
                     # Plot the % Billed columns as lines on the secondary y-axis
                     ax2 = ax1.twinx()
                     for column in percent_columns:
-                        ax2.plot(demand_positions, df[column], marker='o', label=f"{column} % Billed", linestyle='-', linewidth=2)
+                        ax2.plot(demand_positions, df_filtered[column], marker='o', label=f"{column} % Billed", linestyle='-', linewidth=2)
                     
                     # Labels and legend
                     ax1.set_xlabel('DMA/Zone')
                     ax1.set_ylabel('Volume (m3)')
                     ax2.set_ylabel('% Billed')
                     ax1.set_xticks(demand_positions)
-                    ax1.set_xticklabels(df.index)  # Set x-axis labels as DMA/Zones
+                    ax1.set_xticklabels(unique_labels)  # Set x-axis labels as DMA/Zones
                     
                     # Add legends for both axes
                     ax1.legend(loc='upper left')
