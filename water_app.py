@@ -423,25 +423,6 @@ with tab1:
 
             # Title for Summary of the Network Users
             st.markdown("## Summary of the Network Users")
-            if 'Zone' in filtered_df.columns and 'user_summary_zone' in locals():
-                # Round the population and percentages for user_summary_zone
-                user_summary_zone['Total Population'] = user_summary_zone['Total Population'].round(-2)  # Round population to nearest hundreds
-                user_summary_zone['Legal %'] = user_summary_zone['Legal %'].round(1)  # Round percentages to 1 decimal place
-                user_summary_zone['Illegal %'] = user_summary_zone['Illegal %'].round(1)
-                user_summary_zone['Non-user %'] = user_summary_zone['Non-user %'].round(1)
-
-            else:
-                st.markdown("Your file does not have 'Zone' column")
-
-            if 'DMA' in filtered_df.columns and 'user_summary_dma' in locals():
-                # Round the population and percentages for user_summary_dma
-                user_summary_dma['Total Population'] = user_summary_dma['Total Population'].round(-2)  # Round population to nearest hundreds
-                user_summary_dma['Legal %'] = user_summary_dma['Legal %'].round(1)  # Round percentages to 1 decimal place
-                user_summary_dma['Illegal %'] = user_summary_dma['Illegal %'].round(1)
-                user_summary_dma['Non-user %'] = user_summary_dma['Non-user %'].round(1)
-                
-            else:
-                st.markdown("Your file does not have 'DMA' column")
 
             # Create columns for side-by-side layout for the tables
             col1, col2, col3 = st.columns([4,1, 1])
@@ -450,13 +431,19 @@ with tab1:
             
             if 'visualization_type' in locals():
                 if visualization_type == "Zone" and "Zone" in available_options:
+                    # Round the population and percentages for user_summary_zone
+                    user_summary_zone['Total Population'] = user_summary_zone['Total Population'].round(-2)  # Round population to nearest hundreds
+                    user_summary_zone['Legal %'] = user_summary_zone['Legal %'].round(1)  # Round percentages to 1 decimal place
+                    user_summary_zone['Illegal %'] = user_summary_zone['Illegal %'].round(1)
+                    user_summary_zone['Non-user %'] = user_summary_zone['Non-user %'].round(1)
+                    
+                    
+                    
                     # Calculate the number of people for each user type by multiplying Total Population with percentages
                     user_summary_zone['Legal'] = (user_summary_zone['Total Population'] * user_summary_zone['Legal %'] / 100).astype(int)
                     user_summary_zone['Illegal'] = (user_summary_zone['Total Population'] * user_summary_zone['Illegal %'] / 100).astype(int)
                     user_summary_zone['Non-user'] = (user_summary_zone['Total Population'] * user_summary_zone['Non-user %'] / 100).astype(int)
                     user_summary_zone_plot = user_summary_zone[user_summary_zone.index != 'Total']
-
-
 
                     with col1:
                         st.markdown("#### 📊 Water Network Summary - Zone")
@@ -482,32 +469,24 @@ with tab1:
                         st.pyplot(fig)
 
                     with col2:
-
-
                         # Display the calculated total values
                         st.write(f"Total Population: {round(total_population_all_dmas,-2)}")
                         st.write(f"Legal %: {legal_sum_dma:.1f}%")
                         st.write(f"Illegal %: {illegal_sum_dma:.1f}%")
                         st.write(f"Non-user %: {non_user_sum_dma:.1f}%")
                         
-
-
-
-
-
-
-
                 elif visualization_type == "DMA" and "DMA" in available_options:
+                    # Round the population and percentages for user_summary_dma
+                    user_summary_dma['Total Population'] = user_summary_dma['Total Population'].round(-2)  # Round population to nearest hundreds
+                    user_summary_dma['Legal %'] = user_summary_dma['Legal %'].round(1)  # Round percentages to 1 decimal place
+                    user_summary_dma['Illegal %'] = user_summary_dma['Illegal %'].round(1)
+                    user_summary_dma['Non-user %'] = user_summary_dma['Non-user %'].round(1)
+                    
                     # Calculate the number of people for each user type by multiplying Total Population with percentages
                     user_summary_dma['Legal'] = (user_summary_dma['Total Population'] * user_summary_dma['Legal %'] / 100).astype(int)
                     user_summary_dma['Illegal'] = (user_summary_dma['Total Population'] * user_summary_dma['Illegal %'] / 100).astype(int)
                     user_summary_dma['Non-user'] = (user_summary_dma['Total Population'] * user_summary_dma['Non-user %'] / 100).astype(int)
                     user_summary_dma_plot = user_summary_dma[user_summary_dma.index != 'Total']
-
-
-
-
-
 
                     with col1:
                         st.markdown("#### 📊 Water Network Summary - DMA")
@@ -539,11 +518,6 @@ with tab1:
                         st.write(f"Legal %: {legal_sum_dma:.1f}%")
                         st.write(f"Illegal %: {illegal_sum_dma:.1f}%")
                         st.write(f"Non-user %: {non_user_sum_dma:.1f}%")
-
-
-
-
-
 
 
         with tab3:
