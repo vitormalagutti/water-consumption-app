@@ -320,8 +320,6 @@ with tab1:
             dma_counts = df.groupby('DMA').size()  # Count the number of inputs per DMA
             total_population_by_dma = dma_counts * avg_floors * avg_people_per_family  # Calculate total population
 
-            dma_counts
-
             # Count the number of Legal, Illegal, and Non-user inputs per DMA
             legal_count_dma = filtered_df[filtered_df['User Type'] == 'Legal'].groupby('DMA').size()
             illegal_count_dma = filtered_df[filtered_df['User Type'] == 'Illegal'].groupby('DMA').size()
@@ -345,6 +343,8 @@ with tab1:
                 'Illegal %': illegal_percentage_dma,
                 'Non-user %': non_user_percentage_dma
             })
+
+            user_summary_dma
 
             # Handle cases where no known users exist to avoid division by zero
             user_summary_dma[['Legal %', 'Illegal %', 'Non-user %']] = user_summary_dma[['Legal %', 'Illegal %', 'Non-user %']].fillna(0)
