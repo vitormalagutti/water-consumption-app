@@ -821,8 +821,8 @@ with tab1:
 
 
                 # Call the function for both zone and DMA merged dataframes
-                plot_multiple_demand_billed(zone_merged_df,unique_zones, title="Zone Demand vs Billed Volumes with % Billed")
-                plot_multiple_demand_billed(dma_merged_df,unique_dmas, title="DMA Demand vs Billed Volumes with % Billed")
+                plot_multiple_demand_billed(zone_merged_df, title="Zone Demand vs Billed Volumes with % Billed")
+                plot_multiple_demand_billed(dma_merged_df, title="DMA Demand vs Billed Volumes with % Billed")
 
 
 
