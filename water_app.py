@@ -689,8 +689,8 @@ with tab1:
                     zone_value_df = zone_value_df.round(0).astype(int)
                     zone_value_df.set_index('Zone', inplace=True)        
                     zone_value_df = zone_value_df.transpose()
-                    st.markdown("### Zone Billed Data Summed by Value")
-                    st.dataframe(zone_value_df)
+                    # st.markdown("### Zone Billed Data Summed by Value")
+                    # st.dataframe(zone_value_df)
 
                 # Group by DMA for Value
                 if 'DMA' in merged_df.columns:
@@ -699,8 +699,8 @@ with tab1:
                     dma_value_df = dma_value_df.round(0).astype(int)
                     dma_value_df.set_index('DMA', inplace=True)        
                     dma_value_df = dma_value_df.transpose()
-                    st.markdown("### DMA Billed Data Summed by Value")
-                    st.dataframe(dma_value_df)
+                    # st.markdown("### DMA Billed Data Summed by Value")
+                    # st.dataframe(dma_value_df)
 
 
 
