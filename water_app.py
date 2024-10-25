@@ -787,6 +787,8 @@ with tab1:
                     # Filter and sort the dataframe by unique_labels
                     df_filtered = df[df.index.isin(unique_labels)].sort_index()
 
+                    df_filtered
+
                     # Separate columns into demand, billed, and percentage columns
                     demand_columns = [col for col in df.columns if col.endswith('_demand')]
                     billed_columns = [col for col in df.columns if col not in demand_columns and not col.endswith('% Billed')]
