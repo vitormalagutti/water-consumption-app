@@ -874,10 +874,8 @@ with tab1:
                                 "visualChannels": {
                                     "colorField": {
                                         "name": visualization_type,
-                                        "type": "integer"  # Change to 'string' for categorical coloring
-                                    }
-
-                                    }
+                                        "type": "string"  # Change to 'string' for categorical coloring
+                                    },
                                 }
                             }
                         ]
