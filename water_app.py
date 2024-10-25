@@ -945,7 +945,7 @@ with tab1:
                 
                 # Create heatmaps based on selection
                 if heatmap_type == "All Buildings":
-                    st.markdown("#### 🔥 Heatmap of All Building Locations")
+                    st.markdown("#### 🔥 Heatmap of All Building")
                     heat_data = [[row['Y'], row['X']] for idx, row in gdf.iterrows()]
                     HeatMap(heat_data, radius=15).add_to(m)
 
