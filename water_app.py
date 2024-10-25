@@ -352,7 +352,7 @@ with tab1:
             user_summary_dma
             
             # # Add a final row with the sum of all DMAs (weighted average for percentages)
-            # total_population_all_dmas = total_population_by_dma.sum()
+            total_population_all_dmas = total_population_by_dma.sum()
 
             # legal_sum_dma = (legal_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
             # illegal_sum_dma = (illegal_percentage_dma * total_population_by_dma).sum() / total_population_all_dmas
