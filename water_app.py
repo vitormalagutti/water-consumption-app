@@ -731,11 +731,19 @@ with tab1:
 
                 # Function to add month column based on the index
                 def add_month_column_from_index(billed_df):
-                    # Assuming the index is in mm/yy format
-                    billed_df = billed_df.reset_index()  # Move the index to a column
-                    billed_df['Month'] = pd.to_datetime(billed_df['index'], format='%m/%y', errors='coerce').dt.strftime('%b')  # Convert to 'mmm' format
-                    billed_df = billed_df.drop(columns=['index'])  # Drop the original index
-                    return billed_df
+                    # Temporarily reset index
+                    billed_df_temp = billed_df.reset_index()
+
+                    # Add a Month column based on the current index, without permanently changing the index
+                    billed_df_temp['Month'] = pd.to_datetime(billed_df_temp['index'], format='%m/%y', errors='coerce').dt.strftime('%b')
+
+                    # Set the index back to its original column, if desired
+                    billed_df_temp.set_index('index', inplace=True)
+
+                    # Rename the index to the original name if needed
+                    billed_df_temp.index.name = billed_df.index.name
+
+                    return billed_df_temp
 
                 # Apply this function to zone and DMA volume DataFrames
                 zone_volume_df = add_month_column_from_index(zone_volume_df)
