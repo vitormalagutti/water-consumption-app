@@ -794,39 +794,28 @@ with tab1:
                     percent_columns = [col for col in df.columns if col.endswith('% Billed')]
                     
                     fig, ax1 = plt.subplots(figsize=(12, 6))
-                    
-                    demand_columns
-                    billed_columns
-                    percent_columns
 
+                    # Widths and positions for the bars
+                    demand_bar_width = 0.4
+                    billed_bar_width = 0.4
+                    demand_positions = np.arange(len(unique_labels))
 
-                    # Plot demand columns as bars
-                    demand_bar_width = 0.3
-                    demand_positions = range(len(unique_labels))
-                    for i, column in enumerate(demand_columns):
-                        ax1.bar([p + i * demand_bar_width for p in demand_positions], df_filtered[column], width=demand_bar_width, label=f"{column}", alpha=0.7)
-                    
-                    # Overlay DMA/Zone columns as bars with a different color
-                    for i, column in enumerate(billed_columns):
-                        ax1.bar([p + (i + len(demand_columns)) * demand_bar_width for p in demand_positions], df_filtered[column], width=demand_bar_width, label=f"{column}", alpha=0.5)
-                    
-                    # Plot the % Billed columns as lines on the secondary y-axis
-                    ax2 = ax1.twinx()
-                    for column in percent_columns:
-                        ax2.plot(demand_positions, df_filtered[column], marker='o', label=f"{column} % Billed", linestyle='-', linewidth=2)
-                    
-                    # Labels and legend
-                    ax1.set_xlabel('DMA/Zone')
-                    ax1.set_ylabel('Volume (m3)')
-                    ax2.set_ylabel('% Billed')
-                    ax1.set_xticks(demand_positions)
-                    ax1.set_xticklabels(unique_labels)  # Set x-axis labels as DMA/Zones
-                    
-                    # Add legends for both axes
-                    ax1.legend(loc='upper left')
-                    ax2.legend(loc='upper right')
-                    
-                    plt.title(title)
+                    # Debugging: Check lengths
+                    print("Length of demand_positions:", len(demand_positions))
+                    print("Length of df_filtered for each column (should match):")
+                    for column in df_filtered.columns:
+                        print(f"Column {column}: {len(df_filtered[column])}")
+
+                    for i, column in enumerate(df_filtered.columns):
+                        ax1.bar(
+                            [p + i * demand_bar_width for p in demand_positions],
+                            df_filtered[column],
+                            width=demand_bar_width,
+                            label=f"{column}",
+                            alpha=0.7
+                        )
+
+                    ax1.set_title(title)
                     plt.show()
 
                 # Call the function for both zone and DMA merged dataframes
