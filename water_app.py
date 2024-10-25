@@ -743,7 +743,6 @@ with tab1:
 
                 # Apply this function to zone and DMA volume DataFrames
                 zone_volume_df = add_month_column_from_index(zone_volume_df)
-                zone_volume_df
                 dma_volume_df = add_month_column_from_index(dma_volume_df)
 
                 # Step 2: Join the tables by the month column and add suffix
