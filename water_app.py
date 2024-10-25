@@ -46,60 +46,53 @@ def convert_to_csv(uploaded_file):
 
 def process_volume_or_value_file(uploaded_file):
     """
-    This function processes the volume or value files, ensuring that the expected 'Subscriber Number' column
-    and columns in either 'mm/yy' or 'mmm.yy' format are kept, and values are numeric. Non-numeric values will trigger a warning.
+    This function processes volume or value files by ensuring that a 'Subscriber Number' column
+    is present, identifying date columns automatically, and converting them into a standard format.
     """
     if uploaded_file is not None:
         df = convert_to_csv(uploaded_file)
-        df
-        # Ensure that we have a 'Subscription Number' column
-        if 'Subscription Number' not in df.columns:
-            st.error("The file does not contain a 'Subscription Number' column.")
+
+        # Ensure that we have a 'Subscriber Number' column
+        if 'Subscriber Number' not in df.columns:
+            st.error("The file does not contain a 'Subscriber Number' column.")
             return None
 
-        # Function to detect and clean various date columns
-        def extract_date_from_column(col):
-            col_str = str(col)  # Ensure the column is a string
-            # Recognize 'mm/yy', 'mmm.yy', 'mm/yyyy', 'YYYY-MM-DD' patterns
-            match = re.match(r'^\d{2}/\d{2}$|^\d{2}/\d{4}$|^[A-Za-z]{3}\.\d{2}$|^\d{4}-\d{2}-\d{2}$', col_str)
-            if match:
-                try:
-                    # Convert to 'mm/yy' format for consistency
-                    cleaned_date = pd.to_datetime(col_str, errors='coerce').strftime('%m/%y')
-                    return cleaned_date
-                except ValueError:
-                    return None
-            return None
+        # Function to identify and standardize date columns
+        def standardize_date(col):
+            try:
+                parsed_date = parser.parse(col, fuzzy=True)  # 'fuzzy' handles minor variations in formatting
+                return parsed_date.strftime('%m/%y')  # Standardize to 'mm/yy' format
+            except (ValueError, TypeError):
+                return None
 
-        # Initialize lists for columns
-        cleaned_date_columns = []
-        remaining_columns = []
+        # Find and standardize date columns
+        standardized_date_columns = []
+        non_date_columns = []
 
-        # Check and clean date columns
         for col in df.columns:
-            cleaned_col = extract_date_from_column(col)
-            if cleaned_col:
-                cleaned_date_columns.append(cleaned_col)
-            elif col == 'Subscription Number':
-                remaining_columns.append(col)
+            standardized_date = standardize_date(col)
+            if standardized_date:
+                standardized_date_columns.append(standardized_date)
+            elif col == 'Subscriber Number':
+                non_date_columns.append(col)
 
-        # Only keep 'Subscriber Number' and valid date columns
-        df = df[remaining_columns + [col for col in df.columns if extract_date_from_column(col)]]
+        # Keep only 'Subscriber Number' and standardized date columns
+        df = df[non_date_columns + [col for col in df.columns if standardize_date(col)]]
 
-        # Rename the date columns in the DataFrame
-        if len(cleaned_date_columns) == len(df.columns) - 1:  # Expecting the rest to be date columns
-            df.columns = ['Subscription Number'] + cleaned_date_columns
+        # Rename columns with standardized date formats
+        if len(standardized_date_columns) == len(df.columns) - 1:
+            df.columns = ['Subscriber Number'] + standardized_date_columns
         else:
             st.warning("Some columns were not recognized as dates. Extra columns have been removed.")
 
-        # Check for non-numeric values in the date columns
-        for col in cleaned_date_columns:
+        # Check for non-numeric values in date columns
+        for col in standardized_date_columns:
             non_numeric = df[pd.to_numeric(df[col], errors='coerce').isna() & df[col].notna()]
             if not non_numeric.empty:
                 st.warning(f"Non-numeric values found in column '{col}' at rows: {non_numeric.index.tolist()}")
 
         # Replace blanks (NaN) with 0
-        df[cleaned_date_columns] = df[cleaned_date_columns].fillna(0)
+        df[standardized_date_columns] = df[standardized_date_columns].fillna(0)
 
         return df
     else:
