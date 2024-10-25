@@ -378,7 +378,7 @@ with tab1:
                 user_summary_dma['Legal %'] = user_summary_dma['Legal %'].round(1)  # Round percentages to 1 decimal place
                 user_summary_dma['Illegal %'] = user_summary_dma['Illegal %'].round(1)
                 user_summary_dma['Non-user %'] = user_summary_dma['Non-user %'].round(1)
-                st.write(f"Data type of DMA after processing: {user_summary_dma['DMA'].dtype}")
+                
             else:
                 st.markdown("Your file does not have 'DMA' column")
 
@@ -540,7 +540,7 @@ with tab1:
                 # Prepare population and non-user percentages for DMAs
                 population_dma = user_summary_dma['Total Population']
                 non_users_dma = user_summary_dma['Non-user %'] / 100  
-
+                st.write(f"Data type of DMA after processing: {filtered_df['DMA'].dtype}")
                 # Create an empty DataFrame to store the results
                 water_demand_dma = pd.DataFrame(columns=['DMA'] + df_factors['Month'].tolist())
 
