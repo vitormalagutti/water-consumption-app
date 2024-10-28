@@ -801,7 +801,7 @@ with tab1:
 
 
                         st.markdown("### DMA Water Demand, Total Cost, and Billed Cost")
-                        st.dataframe(dma_value_merged_df)
+                        st.dataframe(dma_merged_df)
 
                         with col1:
                             st.markdown("### Percentage of Billed Volume per DMA")
