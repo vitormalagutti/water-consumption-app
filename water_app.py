@@ -918,7 +918,7 @@ with tab1:
                         st.markdown("### Billing Analysis by EGP£ per DMA")
                         result_df = calculate_expected_egp_and_percentage(dma_value_merged_df, avg_price_per_m3, n)
                         st.dataframe(result_df)
-                        plot_billed_vs_expected(result_df, n, title="Total Billed vs Expected EGP Values")
+                        plot_billed_vs_expected(result_df, n, title="Total Billed vs Expected EGP £")
 
 
 
@@ -953,7 +953,7 @@ with tab1:
                         st.markdown("### Billing Analysis by EGP£ per Zone")
                         result_df = calculate_expected_egp_and_percentage(zone_value_merged_df, avg_price_per_m3, n)
                         st.dataframe(result_df)
-                        plot_billed_vs_expected(result_df, n, title="Total Billed vs Expected EGP Values")
+                        plot_billed_vs_expected(result_df, n, title="Total Billed vs Expected EGP £")
                 
             else:
                 st.markdown("Input the (1) Billed Volumes, (2) Billed Values, and the (3) Building Blocks / Subscription Number key data to proceed with Billing Analysis")
