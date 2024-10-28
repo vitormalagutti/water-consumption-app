@@ -848,7 +848,9 @@ with tab1:
         with tab5:
 
             if volume_file and value_file and correlation_file and buildings_file:
-              
+                # Sidebar input to select analysis type
+                analysis_type = st.sidebar.selectbox("Choose Billing Analysis Type", ["Volume (m3) Analysis", "Value (EGP £) Analysis"])
+
                 # Process each file
                 volume_df = process_volume_or_value_file(volume_file)
                 value_df = process_volume_or_value_file(value_file)
@@ -872,12 +874,6 @@ with tab1:
                 # Drop unnecessary columns
                 columns_to_drop = ['Population', 'Status', 'Subscription Number_x', 'Subscription Number_y', "Subscription Number"]
                 billed_df = billed_df.drop(columns=columns_to_drop, errors='ignore')
-
-                # Create columns for side-by-side layout
-                col1, col2 = st.columns(2)
-                # Display the final merged dataframe
-                # st.markdown("### Final Merged DataFrame")
-                # st.dataframe(billed_df)
 
                 if 'visualization_type' in locals():
                     
