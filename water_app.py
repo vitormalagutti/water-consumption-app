@@ -333,7 +333,7 @@ def plot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
             positions - bar_width + i * bar_width, 
             df[expected_column], 
             width=bar_width, 
-            label=f"Expected {expected_column.split(' ')[-1]}", 
+            label=f"Expected - {expected_column.split(' ')[-1]}", 
             color=colors[i], 
             alpha=0.7
         )
@@ -345,7 +345,7 @@ def plot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
             df[billed_column], 
             marker='o', 
             linestyle='--', 
-            label=f"Total Billed {billed_column.split(' ')[-1]}", 
+            label=f"Total Billed - {billed_column.split(' ')[-1]}", 
             color=colors[i]
         )
 
