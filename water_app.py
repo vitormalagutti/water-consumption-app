@@ -231,11 +231,10 @@ def calculate_percentage_billed(merged_df, n):
 
     return merged_df
 
-
 def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
     # Identify demand and billed columns
-    demand_columns = [col for col in df.columns if col.endswith('_demand')]
-    billed_columns = [col for col in df.columns if col not in demand_columns and '% Billed' not in col]
+    demand_columns = [col for col in df.columns if "Water Demand" in col]
+    billed_columns = [col for col in df.columns if "Volume Billed" in col]
     percent_columns = [col for col in df.columns if '% Billed' in col]
 
     # Use the DataFrame index as the x-axis labels (assuming it's the dates)
@@ -302,7 +301,6 @@ def calculate_expected_egp_and_percentage(merged_df, avg_price, n):
     merged_df.drop(columns=demand_columns, inplace=True)
 
     return merged_df
-
 
 def plot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
     # Define the columns for Total Billed and Expected based on the structure of the DataFrame
