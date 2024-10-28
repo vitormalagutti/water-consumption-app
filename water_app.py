@@ -1000,6 +1000,7 @@ with tab1:
                             zone_merged_df = calculate_percentage_billed(zone_merged_df,n)
 
                             st.markdown("### Percentage of Billed Volume per Zone")
+                            st.dataframe(zone_merged_df)
                             st.dataframe(zone_merged_df.iloc[:,-n:])
 
                             zone_merged_df.index = pd.to_datetime(zone_merged_df.index, format='%m/%y')
