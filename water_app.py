@@ -950,7 +950,7 @@ with tab1:
 
                         st.markdown("### Percentage of Billed Volume per Zone")
                         st.dataframe(zone_merged_df.iloc[:,-n:])
-
+                        st.dataframe(zone_merged_df)
                         plot_multiple_demand_billed(zone_merged_df, title="Water Demand vs Billed Volumes per Zone")
 
                         avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=2.0)  # Default value is 5 EGP£ for example
