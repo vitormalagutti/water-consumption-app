@@ -904,10 +904,7 @@ with tab1:
                 volume_summed = volume_df.groupby('Block Number').sum(numeric_only=True).reset_index()
                 value_summed = value_df.groupby('Block Number').sum(numeric_only=True).reset_index()
                 duplicates = correlation_df[correlation_df.duplicated(subset='Subscription Number', keep=False)]
-                st.write("Duplicates in correlation_df:", duplicates)
-                st.markdown("after groupping")
-                volume_df
-                volume_summed
+
                 # Step 5: Merge the summed volumes and values back to the original df
                 billed_df = pd.merge(merged_df, volume_summed, on='Block Number', how='left')
                 billed_df = pd.merge(billed_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value'))
