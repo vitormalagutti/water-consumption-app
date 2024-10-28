@@ -259,7 +259,7 @@ def plot_multiple_demand_billed(df, n, selected_dmas_zones, title="Water Demand 
                 x=x_labels,
                 y=df[demand_column],
                 name=f"Demand - {dma_zone_number}",
-                opacity=0.7,
+                opacity=0.6,
                 marker_color=colors[i % len(colors)],
                 )
         )
@@ -357,7 +357,7 @@ def plot_billed_vs_expected(df, n, selected_dmas_zones, title="Total Billed vs E
                 y=df[expected_column], 
                 name=f"Expected Billing - {dma_zone}", 
                 marker_color=colors[i % len(colors)],
-                opacity=0.7
+                opacity=0.6
             )
         )
 
