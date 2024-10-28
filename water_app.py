@@ -772,9 +772,9 @@ with tab1:
                 if 'visualization_type' in locals():
                     
                     if visualization_type == "DMA" and "DMA" in available_options:
-
+                        n = len(unique_dmas)
+                        
                         # Group by DMA for Volume
-
                         dma_volume_df = pd.merge(merged_df[['Block Number', 'DMA']], volume_summed, on='Block Number', how='left')
                         dma_volume_df = dma_volume_df.groupby('DMA').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
                         dma_volume_df = dma_volume_df.round(0).astype(int)
@@ -793,12 +793,15 @@ with tab1:
                         dma_merged_df = calculate_percentage_billed(dma_merged_df)
                         dma_merged_df = dma_merged_df.drop(columns="Month")
 
-                        #n = len(unique_dmas)
-
+                        
+                        dma_value_df = add_month_column_from_index(dma_value_df)
+                        dma_value_merged_df = join_billed_with_demand(dma_value_df, water_demand_dma)
+                        dma_value_merged_df = calculate_percentage_billed(dma_value_merged_df)
+                        dma_value_merged_df = dma_value_merged_df.drop(columns="Month")
 
 
                         st.markdown("### DMA Water Demand, Total Cost, and Billed Cost")
-                        st.dataframe(dma_merged_df)
+                        st.dataframe(dma_value_merged_df)
 
                         with col1:
                             st.markdown("### Percentage of Billed Volume per DMA")
@@ -814,15 +817,13 @@ with tab1:
                         plot_multiple_demand_billed(dma_merged_df, title="DMA Demand vs Billed Volumes with % Billed")
 
                     elif visualization_type == "Zone" and "Zone" in available_options:
-
+                        n = len(unique_zones)
                         # Group by Zone for Volume
                         zone_volume_df = pd.merge(merged_df[['Block Number', 'Zone']], volume_summed, on='Block Number', how='left')
                         zone_volume_df = zone_volume_df.groupby('Zone').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
                         zone_volume_df = zone_volume_df.round(0).astype(int)
                         zone_volume_df.set_index('Zone', inplace=True)        
                         zone_volume_df = zone_volume_df.transpose()
-                        # st.markdown("### Zone Billed Data Summed by Volume")
-                        # st.dataframe(zone_volume_df)
 
                         # Group by Zone for Value
                         zone_value_df = pd.merge(merged_df[['Block Number', 'Zone']], value_summed, on='Block Number', how='left')
@@ -830,13 +831,9 @@ with tab1:
                         zone_value_df = zone_value_df.round(0).astype(int)
                         zone_value_df.set_index('Zone', inplace=True)        
                         zone_value_df = zone_value_df.transpose()
-                        # st.markdown("### Zone Billed Data Summed by Value")
-                        # st.dataframe(zone_value_df)
+
                         zone_volume_df = add_month_column_from_index(zone_volume_df)
                         zone_merged_df = join_billed_with_demand(zone_volume_df, water_demand_zone)
-                        n = len(unique_zones)
-
-                        # Calculate the percentage for the already-merged zone and DMA dataframes
                         zone_merged_df = calculate_percentage_billed(zone_merged_df)
                         zone_merged_df = zone_merged_df.drop(columns="Month")
 
