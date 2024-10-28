@@ -925,10 +925,10 @@ with tab1:
                             dma_merged_df = join_billed_with_demand(dma_volume_df, water_demand_dma)
                             dma_merged_df = calculate_percentage_billed(dma_merged_df,n)
 
-
                             st.markdown("### Percentage of Billed Volume per DMA")
                             st.dataframe(dma_merged_df.iloc[:,-n:])
-                            
+
+
                             dma_merged_df.index = pd.to_datetime(dma_merged_df.index, format='%m/%y')
                             unique_dates = dma_merged_df.index.sort_values().strftime('%m/%y').tolist()  # Get unique sorted dates as month-year strings
 
@@ -962,6 +962,20 @@ with tab1:
 
                             st.markdown("### Billing Analysis by EGP£ per DMA")
                             st.dataframe(result_df)
+                            
+                            dma_value_df.index = pd.to_datetime( dma_value_df.index, format='%m/%y')
+                            unique_dates =  dma_value_df.index.sort_values().strftime('%m/%y').tolist()  # Get unique sorted dates as month-year strings
+
+                            # Date range selection
+                            start_date, end_date = st.select_slider(
+                                "Select Date Range",
+                                options=unique_dates,
+                                value=(unique_dates[0], unique_dates[-1])  # Default to full range
+                            )
+
+                            # Convert selected dates back to datetime format to filter
+                            start_date_dt = pd.to_datetime(start_date, format='%m/%y')
+                            end_date_dt = pd.to_datetime(end_date, format='%m/%y')
 
                             plot_billed_vs_expected(result_df, n, selected_dmas_zones, title="Total Billed vs Expected EGP £")
 
