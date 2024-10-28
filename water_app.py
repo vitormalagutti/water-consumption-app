@@ -369,7 +369,7 @@ def aplot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values")
 
 
 def plot_billed_vs_expected(df, n, selected_dmas_zones, title="Total Billed vs Expected EGP Values"):
-
+    selected_dmas_zones
     # Filter columns based on selected DMAs/Zones
     billed_columns = [col for col in df.columns[:n] if col.split(' ')[-1] in selected_dmas_zones]
     expected_columns = [col for col in df.columns[n:2*n] if col.split(' ')[-1] in selected_dmas_zones]
@@ -525,7 +525,6 @@ with tab1:
         # Sidebar multiselect for filtering DMAs/Zones
         # Extract unique DMA values from the filtered DataFrame and convert to integers
         available_dmas_zones = [int(value) for value in filtered_df[visualization_type].unique() if not pd.isna(value)]
-
         selected_dmas_zones = st.sidebar.multiselect("Select DMAs/Zones to Display", available_dmas_zones, default=available_dmas_zones)
 
 
