@@ -336,13 +336,13 @@ def plot_billed_vs_expected(df, n, selected_dmas_zones, start_date_dt, end_date_
     billed_columns = [col for col in df.columns[:n] if col.split(' ')[-1] in selected_dmas_zones]
     expected_columns = [col for col in df.columns[n:2*n] if col.split(' ')[-1] in selected_dmas_zones]
 
-    start_date_dt
-    df.index
     # Filter DataFrame to only include selected columns
     filtered_df = df[billed_columns + expected_columns]
     filtered_df.index = pd.to_datetime(filtered_df.index, format='%m/%y')
     filtered_df = filtered_df[(filtered_df.index >= start_date_dt) & (filtered_df.index <= end_date_dt)]
 
+    start_date_dt
+    df.index
     # Use the DataFrame index as the x-axis labels (assuming it's the dates)
     x_labels = df.index
 
