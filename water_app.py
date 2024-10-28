@@ -232,7 +232,7 @@ def calculate_percentage_billed(merged_df, n):
 
     return merged_df
 
-def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
+def aplot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
     # Identify demand and billed columns
     demand_columns = [col for col in df.columns if "Water Demand" in col]
     billed_columns = [col for col in df.columns if "Volume Billed" in col]
@@ -278,6 +278,71 @@ def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
     plt.tight_layout()
     st.pyplot(fig)
 
+def plot_multiple_demand_billed(df, n, selected_dmas_zones, title="Water Demand vs Billed Volumes"):
+    # Ensure `selected_dmas_zones` is a list of strings to match column suffixes
+    selected_dmas_zones = [str(zone) for zone in selected_dmas_zones]
+    
+    # Identify demand and billed columns, filtering based on selected DMAs/Zones
+    demand_columns = [col for col in df.columns if "Water Demand" in col and col.split(" - ")[-1] in selected_dmas_zones]
+    billed_columns = [col for col in df.columns if "Volume Billed" in col and col.split(" - ")[-1] in selected_dmas_zones]
+
+    # Use the DataFrame index as the x-axis labels (assuming it's the dates)
+    x_labels = df.index.astype(str)  # Convert index to strings for Plotly compatibility
+    positions = np.arange(len(x_labels))  # Positions should match the number of index entries (rows)
+
+    # Create a plotly figure
+    fig = go.Figure()
+
+    # Set bar width
+    bar_width = 0.1
+
+    # Plot Demand Bars for each demand column
+    for i, demand_column in enumerate(demand_columns):
+        # Extract the DMA/Zone number from the column name
+        dma_zone_number = demand_column.split(" - ")[-1]
+        fig.add_trace(
+            go.Bar(
+                x=x_labels,
+                y=df[demand_column],
+                name=f"Demand - {dma_zone_number}",
+                offsetgroup=i,
+                marker_color=f"rgba(0, {100 + 15 * i}, {255 - 20 * i}, 0.6)",  # Dynamic color shades of blue
+                width=bar_width,
+            )
+        )
+
+    # Plot Billed Percentages as lines
+    for i, billed_column in enumerate(billed_columns):
+        # Extract the DMA/Zone number from the column name
+        dma_zone_number = billed_column.split(" - ")[-1]
+        fig.add_trace(
+            go.Scatter(
+                x=x_labels,
+                y=df[billed_column],
+                mode='lines+markers',
+                name=f"Billed - {dma_zone_number}",
+                marker=dict(color=f"rgba(255, {100 + 15 * i}, {150 - 10 * i}, 0.8)"),  # Dynamic color shades
+                line=dict(dash='dash'),
+            )
+        )
+
+    # Set labels and title
+    fig.update_layout(
+        title=title,
+        xaxis_title="Date",
+        yaxis_title="Volume - m3",
+        barmode='overlay',  # Bars are overlayed on top of each other, similar to side-by-side
+        legend=dict(title="Legend", orientation="v"),
+    )
+
+    # Add formatting to y-axis
+    fig.update_yaxes(tickformat=",.0f")
+
+    # Show the plot in Streamlit
+    st.plotly_chart(fig)
+
+
+
 def calculate_expected_egp_and_percentage(merged_df, avg_price, n):
     # Rename the first n columns to "Total Billed EGP - (DMA number)"
     for i in range(n):
@@ -309,63 +374,6 @@ def calculate_expected_egp_and_percentage(merged_df, avg_price, n):
     merged_df.drop(columns=demand_columns, inplace=True)
 
     return merged_df
-
-def aplot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
-    # Define the columns for Total Billed and Expected based on the structure of the DataFrame
-    billed_columns = df.columns[:n]
-    expected_columns = df.columns[n:2*n]
-
-    # Use the DataFrame index as the x-axis labels (assuming it's the dates)
-    x_labels = df.index
-    positions = np.arange(len(x_labels))  # Positions should match the number of index entries (rows)
-
-    fig, ax1 = plt.subplots(figsize=(12, 6))
-
-    # Set bar width for Expected columns and adjust total width for centering
-    bar_width = 0.15
-    total_bar_width = bar_width * n  # Total width of all Expected bars for one group
-    
-    # Define a color palette for bars and lines
-    colors = plt.get_cmap("tab10").colors  # Use the "tab10" color map with 10 unique colors
-
-    # Plot Expected as bars, centered around each date
-    for i, expected_column in enumerate(expected_columns):
-        ax1.bar(
-            positions - (total_bar_width / 2) + i * bar_width,  # Centering adjustment
-            df[expected_column],
-            width=bar_width,
-            label=f"Expected - {expected_column.split(' ')[-1]}",
-            color=colors[i % len(colors)],  # Cycle through colors for consistency
-            alpha=0.7
-        )
-
-    # Plot Total Billed as lines, using the same colors from bars for matching
-    for i, billed_column in enumerate(billed_columns):
-        ax1.plot(
-            positions,
-            df[billed_column],
-            marker='o',
-            linestyle='--',
-            label=f"Total Billed - {billed_column.split(' ')[-1]}",
-            color=colors[i % len(colors)]  # Matching color with Expected bars
-        )
-
-    # Set labels and title
-    ax1.set_xlabel("Date")
-    ax1.set_ylabel("EGP £")
-    ax1.set_title(title)
-    
-    # Set x-ticks and labels
-    ax1.set_xticks(positions)
-    ax1.set_xticklabels(x_labels, rotation=45)
-    ax1.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))  # Format the y-axis labels with a thousand separator
-    ax1.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
-    
-    # Add legend
-    ax1.legend(loc='best')
-    
-    plt.tight_layout()
-    st.pyplot(fig)
 
 
 def plot_billed_vs_expected(df, n, selected_dmas_zones, title="Total Billed vs Expected EGP Values"):
@@ -969,7 +977,7 @@ with tab1:
                             st.markdown("### Percentage of Billed Volume per DMA")
                             st.dataframe(dma_merged_df.iloc[:,-n:])
                             
-                            plot_multiple_demand_billed(dma_merged_df, title="Water Demand vs Billed Volumes per DMA")
+                            plot_multiple_demand_billed(dma_merged_df, n, selected_dmas_zones, title="Water Demand vs Billed Volumes per DMA")
 
                         elif billing_type == "Value (EGP £) Analysis" :
 
@@ -1009,7 +1017,7 @@ with tab1:
                             st.markdown("### Percentage of Billed Volume per Zone")
                             st.dataframe(zone_merged_df.iloc[:,-n:])
 
-                            plot_multiple_demand_billed(zone_merged_df, title="Water Demand vs Billed Volumes per Zone")
+                            plot_multiple_demand_billed(zone_merged_df, n, selected_dmas_zones, title="Water Demand vs Billed Volumes per Zone")
 
                         elif billing_type == "Value (EGP £) Analysis" :
 
