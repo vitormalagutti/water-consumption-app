@@ -884,6 +884,7 @@ with tab1:
 
                         dma_volume_df = add_month_column_from_index(dma_volume_df)
                         dma_merged_df = join_billed_with_demand(dma_volume_df, water_demand_dma)
+                        dma_merged_df
                         dma_merged_df = calculate_percentage_billed(dma_merged_df,n)
                         dma_merged_df = dma_merged_df.drop(columns="Month")
 
