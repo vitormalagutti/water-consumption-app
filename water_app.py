@@ -460,6 +460,11 @@ with tab1:
         else:
             st.sidebar.write("No data available for Zone or DMA visualization.")
 
+
+        # Sidebar input to select analysis type
+        st.sidebar.header("💰 Billing Analysis")
+        billing_type = st.sidebar.selectbox("Choose Billing Analysis Type", ["Volume (m3) Analysis", "Value (EGP £) Analysis"])
+
         # Sidebar menu for HeatMap Options
         st.sidebar.header("🔍 Heatmap Options")
         heatmap_type = st.sidebar.selectbox(
@@ -848,8 +853,7 @@ with tab1:
         with tab5:
 
             if volume_file and value_file and correlation_file and buildings_file:
-                # Sidebar input to select analysis type
-                analysis_type = st.sidebar.selectbox("💰 Choose Billing Analysis Type", ["Volume (m3) Analysis", "Value (EGP £) Analysis"])
+
 
                 # Process each file
                 volume_df = process_volume_or_value_file(volume_file)
