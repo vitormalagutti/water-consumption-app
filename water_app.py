@@ -221,6 +221,67 @@ def calculate_percentage_billed(merged_df):
     return merged_df
 
 
+def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
+    # Identify demand and billed columns
+    demand_columns = [col for col in df.columns if col.endswith('_demand')]
+    billed_columns = [col for col in df.columns if col not in demand_columns and not col.endswith('% Billed')]
+    percent_columns = [col for col in df.columns if col.endswith('% Billed')]
+
+    # Use the DataFrame index as the x-axis labels (assuming it's the dates)
+    x_labels = df.index
+    positions = np.arange(len(x_labels))  # Positions should match the number of index entries (rows)
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+
+    # Set bar width
+    bar_width = 0.2
+    
+    # Plot Demand Bars for each demand column
+    for i, demand_column in enumerate(demand_columns):
+        ax.bar(positions - bar_width + i * bar_width, df[demand_column], width=bar_width, label=f"Demand {i+1}", alpha=0.6)
+    
+    # Plot Billed Percentages as lines on the same plot
+    for i, billed_column in enumerate(billed_columns):
+        ax.plot(positions, df[billed_column], marker='o', label=f"Billed {i+1}", linestyle='--')
+
+    # Set labels and title
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Volume and Percentage")
+    ax.set_title(title)
+    
+    # Set x-ticks and labels
+    ax.set_xticks(positions)
+    ax.set_xticklabels(x_labels, rotation=45)
+
+    # Add legend
+    ax.legend(loc='upper left')
+    
+    plt.tight_layout()
+    st.pyplot(fig)
+
+def calculate_expected_egp_and_percentage(merged_df, avg_price, n):
+    # Step 1: Calculate Expected EGP Value for each demand column
+    for column in merged_df.columns:
+        if column.endswith('_demand'):  # Ensure we are working with demand columns
+            base_column = column.replace('_demand', '')  # Get the original column name
+            dma_number = base_column  # Assuming the DMA identifier is the same as the column name
+            # Calculate expected EGP value
+            merged_df[f'Expected EGP Value - {dma_number}'] = merged_df[column] * avg_price
+
+    # Step 2: Calculate the percentage billed in EGP for each DMA
+    for i in range(n):
+        billed_column = merged_df.columns[i]  # First n columns are the billed values
+        dma_number = billed_column  # Assuming the DMA identifier is the same as the column name
+        expected_column = f'Expected EGP Value - {dma_number}'
+
+        if expected_column in merged_df.columns:
+            merged_df[f'{dma_number} % Billed in EGP'] = round((merged_df[billed_column] / merged_df[expected_column]) * 100, 1)
+
+    # Replace NaN or infinite values with zeroes
+    merged_df = merged_df.replace([float('inf'), -float('inf')], 0).fillna(0)
+
+    return merged_df
+
 with tab1:
 
     # File upload section with icon
@@ -700,45 +761,7 @@ with tab1:
         with tab5:
 
             if volume_file and value_file and correlation_file and buildings_file:
-
-                def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
-                    # Identify demand and billed columns
-                    demand_columns = [col for col in df.columns if col.endswith('_demand')]
-                    billed_columns = [col for col in df.columns if col not in demand_columns and not col.endswith('% Billed')]
-                    percent_columns = [col for col in df.columns if col.endswith('% Billed')]
-
-                    # Use the DataFrame index as the x-axis labels (assuming it's the dates)
-                    x_labels = df.index
-                    positions = np.arange(len(x_labels))  # Positions should match the number of index entries (rows)
-
-                    fig, ax = plt.subplots(figsize=(12, 6))
-
-                    # Set bar width
-                    bar_width = 0.2
-                    
-                    # Plot Demand Bars for each demand column
-                    for i, demand_column in enumerate(demand_columns):
-                        ax.bar(positions - bar_width + i * bar_width, df[demand_column], width=bar_width, label=f"Demand {i+1}", alpha=0.6)
-                    
-                    # Plot Billed Percentages as lines on the same plot
-                    for i, billed_column in enumerate(billed_columns):
-                        ax.plot(positions, df[billed_column], marker='o', label=f"Billed {i+1}", linestyle='--')
-
-                    # Set labels and title
-                    ax.set_xlabel("Date")
-                    ax.set_ylabel("Volume and Percentage")
-                    ax.set_title(title)
-                    
-                    # Set x-ticks and labels
-                    ax.set_xticks(positions)
-                    ax.set_xticklabels(x_labels, rotation=45)
-
-                    # Add legend
-                    ax.legend(loc='upper left')
-                    
-                    plt.tight_layout()
-                    st.pyplot(fig)
-                
+              
                 # Process each file
                 volume_df = process_volume_or_value_file(volume_file)
                 value_df = process_volume_or_value_file(value_file)
@@ -800,6 +823,8 @@ with tab1:
                         st.markdown("### DMA Billed Value, Total Demand, and thats all")
                         st.dataframe(dma_value_merged_df)
 
+
+
                         # st.markdown("### DMA Water Demand, Total Cost, and Billed Cost")
                         # st.dataframe(dma_merged_df)
 
@@ -810,7 +835,9 @@ with tab1:
                         with col2:
                             # User input for the average price per m³
                             avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=2.0)  # Default value is 5 EGP£ for example
-
+                            st.markdown("### test")
+                            result_df = calculate_expected_egp_and_percentage(merged_df, avg_price_per_m3, n)
+                            st.dataframe(result_df)
 
 
                         # Function for the plot
