@@ -836,7 +836,7 @@ with tab1:
                             # User input for the average price per m³
                             avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=2.0)  # Default value is 5 EGP£ for example
                             st.markdown("### test")
-                            result_df = calculate_expected_egp_and_percentage(merged_df, avg_price_per_m3, n)
+                            result_df = calculate_expected_egp_and_percentage(dma_value_merged_df, avg_price_per_m3, n)
                             st.dataframe(result_df)
 
 
