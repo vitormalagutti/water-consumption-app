@@ -351,7 +351,7 @@ def plot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
 
     # Set labels and title
     ax1.set_xlabel("Date")
-    ax1.set_ylabel("EGP Value")
+    ax1.set_ylabel("EGP £")
     ax1.set_title(title)
     
     # Set x-ticks and labels
