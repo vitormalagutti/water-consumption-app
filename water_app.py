@@ -292,6 +292,44 @@ def calculate_expected_egp_and_percentage(merged_df, avg_price, n):
 
     return merged_df
 
+
+def plot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
+    # Define the columns for Total Billed and Expected based on the structure of the DataFrame
+    billed_columns = df.columns[:n]
+    expected_columns = df.columns[n:2*n]
+
+    # Use the DataFrame index as the x-axis labels (assuming it's the dates)
+    x_labels = df.index
+    positions = np.arange(len(x_labels))  # Positions should match the number of index entries (rows)
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+
+    # Plot Total Billed as lines
+    for i, billed_column in enumerate(billed_columns):
+        ax.plot(positions, df[billed_column], marker='o', linestyle='-', label=f"Total Billed {i+1}", color=f'C{i}')
+
+    # Plot Expected as lines with a different color set
+    for i, expected_column in enumerate(expected_columns):
+        ax.plot(positions, df[expected_column], marker='x', linestyle='--', label=f"Expected EGP Value {i+1}", color=f'C{i+n}')
+
+    # Set labels and title
+    ax.set_xlabel("Date")
+    ax.set_ylabel("EGP Value")
+    ax.set_title(title)
+    
+    # Set x-ticks and labels
+    ax.set_xticks(positions)
+    ax.set_xticklabels(x_labels, rotation=45)
+    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))  # Format the y-axis labels with a thousand separator
+    ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
+    
+    # Add legend
+    ax.legend(loc='best')
+    
+    plt.tight_layout()
+    st.pyplot(fig)
+
+
 with tab1:
 
     # File upload section with icon
@@ -890,7 +928,7 @@ with tab1:
                         st.markdown("### Billing Analysis by EGP£ per Zone")
                         result_df = calculate_expected_egp_and_percentage(zone_value_merged_df, avg_price_per_m3, n)
                         st.dataframe(result_df)
-                        plot_multiple_demand_billed(zone_value_merged_df, title="Demand vs Billed EGP per Zone")
+                        plot_billed_vs_expected(result_df, n, title="Total Billed vs Expected EGP Values")
                 
             else:
                 st.markdown("Input the (1) Billed Volumes, (2) Billed Values, and the (3) Building Blocks / Subscription Number key data to proceed with Billing Analysis")
