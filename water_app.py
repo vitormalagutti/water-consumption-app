@@ -483,9 +483,9 @@ with tab1:
             visualization_type = st.sidebar.selectbox("Choose visualization type:", available_options)
         else:
             st.sidebar.write("No data available for Zone or DMA visualization.")
-
+        
+        # Sidebar multiselect for filtering DMAs/Zones
         if volume_file and value_file and correlation_file and buildings_file:
-            # Sidebar multiselect for filtering DMAs/Zones
             # Extract unique DMA values from the filtered DataFrame and convert to integers
             available_dmas_zones = [int(value) for value in filtered_df[visualization_type].unique() if not pd.isna(value)]
             selected_dmas_zones = st.sidebar.multiselect("Select DMAs/Zones to Display", available_dmas_zones, default=available_dmas_zones)
@@ -514,13 +514,25 @@ with tab1:
             columns_to_drop = ['Population', 'Status', 'Subscription Number_x', 'Subscription Number_y', "Subscription Number"]
             billed_df = billed_df.drop(columns=columns_to_drop, errors='ignore')
 
-        
+            df.index = pd.to_datetime(df.index, format='%m/%y')
+            unique_dates = df.index.sort_values().strftime('%m/%y').tolist()  # Get unique sorted dates as month-year strings
+
+            # Date range selection
+            start_date, end_date = st.select_slider(
+                "Select Date Range",
+                options=unique_dates,
+                value=(unique_dates[0], unique_dates[-1])  # Default to full range
+            )
+
+            # Convert selected dates back to datetime format to filter
+            start_date_dt = pd.to_datetime(start_date, format='%m/%y')
+            end_date_dt = pd.to_datetime(end_date, format='%m/%y')       
 
 
 
-        # Sidebar input to select analysis type
-        st.sidebar.header("💰 Billing Analysis")
-        billing_type = st.sidebar.selectbox("Choose Billing Analysis Type", ["Volume (m3) Analysis", "Value (EGP £) Analysis"])
+            # Sidebar input to select analysis type
+            st.sidebar.header("💰 Billing Analysis")
+            billing_type = st.sidebar.selectbox("Choose Billing Analysis Type", ["Volume (m3) Analysis", "Value (EGP £) Analysis"])
 
         # Sidebar menu for HeatMap Options
         st.sidebar.header("🔍 Heatmap Options")
