@@ -331,7 +331,7 @@ def plot_multiple_demand_billed(df, n, selected_dmas_zones, title="Water Demand 
         title=title,
         xaxis_title="Date",
         yaxis_title="Volume - m3",
-        barmode='overlay',  # Bars are overlayed on top of each other, similar to side-by-side
+        barmode='group',  # Bars are overlayed on top of each other, similar to side-by-side
         legend=dict(title="Legend", orientation="v"),
     )
 
