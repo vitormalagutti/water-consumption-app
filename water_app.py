@@ -293,6 +293,9 @@ def plot_multiple_demand_billed(df, n, selected_dmas_zones, title="Water Demand 
     # Create a plotly figure
     fig = go.Figure()
 
+    # Define a color palette for consistency between bars and lines
+    colors = px.colors.qualitative.Set1  # A good default color palette with distinct colors
+
     # Set bar width
     bar_width = 0.1
 
@@ -306,7 +309,7 @@ def plot_multiple_demand_billed(df, n, selected_dmas_zones, title="Water Demand 
                 y=df[demand_column],
                 name=f"Demand - {dma_zone_number}",
                 offsetgroup=i,
-                marker_color=f"rgba(0, {100 + 15 * i}, {255 - 20 * i}, 0.6)",  # Dynamic color shades of blue
+                marker_color=colors[i % len(colors)],
                 width=bar_width,
             )
         )
@@ -321,8 +324,8 @@ def plot_multiple_demand_billed(df, n, selected_dmas_zones, title="Water Demand 
                 y=df[billed_column],
                 mode='lines+markers',
                 name=f"Billed - {dma_zone_number}",
-                marker=dict(color=f"rgba(255, {100 + 15 * i}, {150 - 10 * i}, 0.8)"),  # Dynamic color shades
-                line=dict(dash='dash'),
+                line=dict(color=colors[i % len(colors)], dash='dash'),
+                marker=dict(size=8)
             )
         )
 
