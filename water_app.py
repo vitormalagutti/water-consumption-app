@@ -252,7 +252,7 @@ def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
     # Set x-ticks and labels
     ax.set_xticks(positions)
     ax.set_xticklabels(x_labels, rotation=45)
-
+    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ','))) # Format the y-axis labels with a thousand separator
     # Add legend
     ax.legend(loc='upper left')
     
