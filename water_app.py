@@ -849,7 +849,7 @@ with tab1:
 
             if volume_file and value_file and correlation_file and buildings_file:
                 # Sidebar input to select analysis type
-                analysis_type = st.sidebar.selectbox("Choose Billing Analysis Type", ["Volume (m3) Analysis", "Value (EGP £) Analysis"])
+                analysis_type = st.sidebar.selectbox("💰 Choose Billing Analysis Type", ["Volume (m3) Analysis", "Value (EGP £) Analysis"])
 
                 # Process each file
                 volume_df = process_volume_or_value_file(volume_file)
