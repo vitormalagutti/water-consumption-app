@@ -369,9 +369,16 @@ def aplot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values")
 
 
 def plot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
-    # Define the columns for Total Billed and Expected based on the structure of the DataFrame
-    billed_columns = df.columns[:n]
-    expected_columns = df.columns[n:2*n]
+    # Sidebar multiselect for filtering DMAs/Zones
+    available_dmas_zones = [col.split(' ')[-1] for col in df.columns[:n]]  # Extract DMA/Zone numbers from column names
+    selected_dmas_zones = st.sidebar.multiselect("Select DMAs/Zones to Display", available_dmas_zones, default=available_dmas_zones)
+
+    # Filter columns based on selected DMAs/Zones
+    billed_columns = [col for col in df.columns[:n] if col.split(' ')[-1] in selected_dmas_zones]
+    expected_columns = [col for col in df.columns[n:2*n] if col.split(' ')[-1] in selected_dmas_zones]
+
+    # Filter DataFrame to only include selected columns
+    filtered_df = df[billed_columns + expected_columns]
     
     # Use the DataFrame index as the x-axis labels (assuming it's the dates)
     x_labels = df.index
@@ -384,11 +391,12 @@ def plot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
 
     # Plot Expected as bars
     for i, expected_column in enumerate(expected_columns):
+        dma_zone = expected_column.split(' ')[-1]  # Extract DMA/Zone number for label
         fig.add_trace(
             go.Bar(
                 x=x_labels, 
                 y=df[expected_column], 
-                name=f"Expected - {expected_column.split(' ')[-1]}", 
+                name=f"Expected - {dma_zone}", 
                 marker_color=colors[i % len(colors)],
                 opacity=0.7
             )
@@ -396,12 +404,13 @@ def plot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
 
     # Plot Total Billed as lines, reusing the colors from bars for consistency
     for i, billed_column in enumerate(billed_columns):
+        dma_zone = billed_column.split(' ')[-1]  # Extract DMA/Zone number for label
         fig.add_trace(
             go.Scatter(
                 x=x_labels, 
                 y=df[billed_column], 
                 mode='lines+markers',
-                name=f"Total Billed - {billed_column.split(' ')[-1]}", 
+                name=f"Total Billed - {dma_zone}", 
                 line=dict(color=colors[i % len(colors)], dash='dash'),
                 marker=dict(size=8)
             )
