@@ -699,7 +699,7 @@ with tab1:
 
         with tab5:
 
-             if volume_file and value_file and correlation_file and buildings_file:
+            if volume_file and value_file and correlation_file and buildings_file:
 
                 def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
                     # Identify demand and billed columns
@@ -837,7 +837,11 @@ with tab1:
                         st.dataframe(zone_merged_df.iloc[:,-n:])
 
                         plot_multiple_demand_billed(zone_merged_df, title="Zone Demand vs Billed Volumes with % Billed")
-             
+                
+            else:
+                st.markdown("Input the Billed Volumes and Billed Values, and the Building Blocks / Subscription Number key data to proceed with Billing Analysis")
+
+
         with tab6:  
             
             # Create a GeoDataFrame for processing
