@@ -763,7 +763,8 @@ with tab1:
                 columns_to_drop = ['Population', 'Status', 'Subscription Number_x', 'Subscription Number_y', "Subscription Number"]
                 billed_df = billed_df.drop(columns=columns_to_drop, errors='ignore')
 
-                
+                # Create columns for side-by-side layout
+                col1, col2 = st.columns(2)
                 # Display the final merged dataframe
                 # st.markdown("### Final Merged DataFrame")
                 # st.dataframe(billed_df)
@@ -799,11 +800,17 @@ with tab1:
                         dma_merged_df = dma_merged_df.drop(columns="Month")
 
                         n = len(unique_dmas)
-                        st.markdown("### Percentage of Billed Volume per DMA")
-                        st.dataframe(dma_merged_df.iloc[:,-n:])
+                        with col1:
+                            st.markdown("### Percentage of Billed Volume per DMA")
+                            st.dataframe(dma_merged_df.iloc[:,-n:])
 
-                        # Call the function for both zone and DMA merged dataframes
-
+                        with col2:
+                            # User input for the average price per m³
+                            avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=5.0)  # Default value is 5 EGP£ for example
+                        
+                        
+                        
+                        # Function for the plot
                         plot_multiple_demand_billed(dma_merged_df, title="DMA Demand vs Billed Volumes with % Billed")
 
                     elif visualization_type == "Zone" and "Zone" in available_options:
