@@ -368,7 +368,7 @@ def aplot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values")
     st.pyplot(fig)
 
 
-def plot_billed_vs_expected_plotly(df, n, title="Total Billed vs Expected EGP Values"):
+def plot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
     # Define the columns for Total Billed and Expected based on the structure of the DataFrame
     billed_columns = df.columns[:n]
     expected_columns = df.columns[n:2*n]
