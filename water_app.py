@@ -213,7 +213,7 @@ def calculate_percentage_billed(merged_df):
         if column.endswith('_demand'):  # Ensure we are working with demand columns
             base_column = column.replace('_demand', '')  # Get the original column name
             if base_column in merged_df.columns:
-                merged_df[f'{base_column} % Billed'] = round((merged_df[base_column] / merged_df[column]) * 100, 1)
+                merged_df[f'% Billed - {base_column}'] = round((merged_df[base_column] / merged_df[column]) * 100, 1)
 
     # Replace NaN or infinite values with zeroes
     merged_df = merged_df.replace([float('inf'), -float('inf')], 0).fillna(0)
@@ -225,7 +225,7 @@ def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
     # Identify demand and billed columns
     demand_columns = [col for col in df.columns if col.endswith('_demand')]
     billed_columns = [col for col in df.columns if col not in demand_columns and not col.endswith('% Billed')]
-    percent_columns = [col for col in df.columns if col.endswith('% Billed')]
+    percent_columns = [col for col in df.columns if col.beginswith('% Billed')]
 
     # Use the DataFrame index as the x-axis labels (assuming it's the dates)
     x_labels = df.index
