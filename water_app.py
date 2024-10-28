@@ -221,52 +221,41 @@ def calculate_percentage_billed(merged_df):
     return merged_df
 
 
-def plot_multiple_demand_billed(df, n, title="Water Demand vs Billed Volumes"):
-    # Define the billed, demand, and percent columns based on the structure of the DataFrame
-    billed_columns = df.columns[:n]
-    demand_columns = df.columns[n:2*n]
-    percent_columns = df.columns[2*n:]
+def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
+    # Identify demand and billed columns
+    demand_columns = [col for col in df.columns if col.endswith('_demand')]
+    billed_columns = [col for col in df.columns if col not in demand_columns and not col.endswith('% Billed')]
+    percent_columns = [col for col in df.columns if col.endswith('% Billed')]
 
     # Use the DataFrame index as the x-axis labels (assuming it's the dates)
     x_labels = df.index
     positions = np.arange(len(x_labels))  # Positions should match the number of index entries (rows)
 
-    fig, ax1 = plt.subplots(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(12, 6))
 
-    # Set bar width for demand and billed bars
+    # Set bar width
     bar_width = 0.2
     
     # Plot Demand Bars for each demand column
     for i, demand_column in enumerate(demand_columns):
-        ax1.bar(positions - bar_width + i * bar_width, df[demand_column], width=bar_width, label=f"Demand {i+1}", alpha=0.6)
+        ax.bar(positions - bar_width + i * bar_width, df[demand_column], width=bar_width, label=f"Demand {i+1}", alpha=0.6)
     
-    # Plot Billed Bars for each billed column
+    # Plot Billed Percentages as lines on the same plot
     for i, billed_column in enumerate(billed_columns):
-        ax1.bar(positions + i * bar_width, df[billed_column], width=bar_width, label=f"Billed {i+1}", alpha=0.4)
-    
-    # Set labels and title for the left y-axis
-    ax1.set_xlabel("Date")
-    ax1.set_ylabel("Volume - m3")
-    ax1.set_title(title)
+        ax.plot(positions, df[billed_column], marker='o', label=f"Billed {i+1}", linestyle='--')
+
+    # Set labels and title
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Volume - m3")
+    ax.set_title(title)
     
     # Set x-ticks and labels
-    ax1.set_xticks(positions)
-    ax1.set_xticklabels(x_labels, rotation=45)
-    ax1.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))  # Format the y-axis labels with a thousand separator
-    ax1.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
-    
-    # Set up a second y-axis for the percentage lines
-    ax2 = ax1.twinx()
-    for i, percent_column in enumerate(percent_columns):
-        ax2.plot(positions, df[percent_column], marker='o', linestyle='--', label=f"% Billed {i+1}", color=f'C{i+3}')
-
-    ax2.set_ylabel("Percentage Billed (%)")
-    ax2.set_ylim(0, 100)  # Set percentage limits to 0-100
-    
-    # Combine legends from both y-axes
-    lines, labels = ax1.get_legend_handles_labels()
-    lines2, labels2 = ax2.get_legend_handles_labels()
-    ax1.legend(lines + lines2, labels + labels2, loc='best')
+    ax.set_xticks(positions)
+    ax.set_xticklabels(x_labels, rotation=45)
+    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ','))) # Format the y-axis labels with a thousand separator
+    ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
+    # Add legend
+    ax.legend(loc='best')
     
     plt.tight_layout()
     st.pyplot(fig)
