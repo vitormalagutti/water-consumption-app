@@ -245,15 +245,20 @@ def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
 
     # Set bar width
     bar_width = 0.2
-    total_bar_width = bar_width * n  # Total width of all Expected bars for one group
+    total_bar_width = bar_width * len(demand_columns)  # Total width of all Expected bars for one group
 
     # Plot Demand Bars for each demand column
     for i, demand_column in enumerate(demand_columns):
-        ax.bar(positions - bar_width + i * bar_width, df[demand_column], width=bar_width, label=f"Demand {i+1}", alpha=0.6)
+        # Extract the DMA/Zone number from the column name
+        dma_zone_number = demand_column.split(" - ")[-1]
+        ax.bar(positions - total_bar_width / 2 + i * bar_width, df[demand_column], width=bar_width, 
+               label=f"Demand - {dma_zone_number}", alpha=0.6)
     
     # Plot Billed Percentages as lines on the same plot
     for i, billed_column in enumerate(billed_columns):
-        ax.plot(positions, df[billed_column], marker='o', label=f"Billed {i+1}", linestyle='--')
+        # Extract the DMA/Zone number from the column name
+        dma_zone_number = billed_column.split(" - ")[-1]
+        ax.plot(positions, df[billed_column], marker='o', label=f"Billed - {dma_zone_number}", linestyle='--')
 
     # Set labels and title
     ax.set_xlabel("Date")
