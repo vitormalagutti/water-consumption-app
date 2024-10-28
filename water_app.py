@@ -310,7 +310,7 @@ def calculate_expected_egp_and_percentage(merged_df, avg_price, n):
 
     return merged_df
 
-def plot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
+def aplot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
     # Define the columns for Total Billed and Expected based on the structure of the DataFrame
     billed_columns = df.columns[:n]
     expected_columns = df.columns[n:2*n]
@@ -366,6 +366,61 @@ def plot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
     
     plt.tight_layout()
     st.pyplot(fig)
+
+
+def plot_billed_vs_expected_plotly(df, n, title="Total Billed vs Expected EGP Values"):
+    # Define the columns for Total Billed and Expected based on the structure of the DataFrame
+    billed_columns = df.columns[:n]
+    expected_columns = df.columns[n:2*n]
+    
+    # Use the DataFrame index as the x-axis labels (assuming it's the dates)
+    x_labels = df.index
+
+    # Create a Plotly figure
+    fig = go.Figure()
+
+    # Define a color palette for consistency between bars and lines
+    colors = px.colors.qualitative.Set1  # A good default color palette with distinct colors
+
+    # Plot Expected as bars
+    for i, expected_column in enumerate(expected_columns):
+        fig.add_trace(
+            go.Bar(
+                x=x_labels, 
+                y=df[expected_column], 
+                name=f"Expected - {expected_column.split(' ')[-1]}", 
+                marker_color=colors[i % len(colors)],
+                opacity=0.7
+            )
+        )
+
+    # Plot Total Billed as lines, reusing the colors from bars for consistency
+    for i, billed_column in enumerate(billed_columns):
+        fig.add_trace(
+            go.Scatter(
+                x=x_labels, 
+                y=df[billed_column], 
+                mode='lines+markers',
+                name=f"Total Billed - {billed_column.split(' ')[-1]}", 
+                line=dict(color=colors[i % len(colors)], dash='dash'),
+                marker=dict(size=8)
+            )
+        )
+
+    # Update layout for readability and interactivity
+    fig.update_layout(
+        title=title,
+        xaxis=dict(title="Date", tickmode='array', tickvals=x_labels),
+        yaxis=dict(title="EGP £", tickformat=","),
+        barmode='group',  # Adjust for side-by-side bars
+        template="plotly_white",  # Use a clean white theme
+        legend=dict(title="Series", x=1.05, y=1),  # Place legend outside the plot
+        margin=dict(l=50, r=50, t=50, b=50)  # Adjust margins for better layout
+    )
+    
+    # Render the plot using Plotly in Streamlit
+    st.plotly_chart(fig)
+
 
 
 with tab1:
