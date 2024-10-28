@@ -899,6 +899,7 @@ with tab1:
                 volume_df = pd.merge(correlation_df, volume_df, on='Subscription Number', how='left')
                 value_df = pd.merge(correlation_df, value_df, on='Subscription Number', how='left')
 
+                value_df
                 # Step 4: Group by 'Block Number' and sum Volume and Value
                 volume_summed = volume_df.groupby('Block Number').sum(numeric_only=True).reset_index()
                 value_summed = value_df.groupby('Block Number').sum(numeric_only=True).reset_index()
