@@ -213,7 +213,7 @@ def calculate_percentage_billed(merged_df):
         if column.endswith('_demand'):  # Ensure we are working with demand columns
             base_column = column.replace('_demand', '')  # Get the original column name
             if base_column in merged_df.columns:
-                merged_df[f'% Billed - {base_column}'] = round((merged_df[base_column] / merged_df[column]) * 100, 1)
+                merged_df[f'{base_column} % Billed'] = round((merged_df[base_column] / merged_df[column]) * 100, 1)
 
     # Replace NaN or infinite values with zeroes
     merged_df = merged_df.replace([float('inf'), -float('inf')], 0).fillna(0)
