@@ -872,34 +872,35 @@ with tab1:
                         # st.markdown("### DMA Water Demand, Total Cost, and Billed Cost")
                         # st.dataframe(dma_merged_df)
 
-                        with col1:
-                            st.markdown("### Percentage of Billed Volume per DMA")
-                            st.dataframe(dma_merged_df.iloc[:,-n:])
 
-                        with col2:
-                            # Group by DMA for Value
-                            dma_value_df = pd.merge(merged_df[['Block Number', 'DMA']], value_summed, on='Block Number', how='left')
-                            dma_value_df = dma_value_df.groupby('DMA').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
-                            dma_value_df = dma_value_df.round(0).astype(int)
-                            dma_value_df.set_index('DMA', inplace=True)        
-                            dma_value_df = dma_value_df.transpose()
-
-                            dma_value_df = add_month_column_from_index(dma_value_df)
-                            dma_value_merged_df = join_billed_with_demand(dma_value_df, water_demand_dma)
-                            dma_value_merged_df = dma_value_merged_df.drop(columns="Month")
-                            # st.markdown("### DMA Billed Value, Total Demand, and thats all")
-                            # st.dataframe(dma_value_merged_df)
+                        st.markdown("### Percentage of Billed Volume per DMA")
+                        st.dataframe(dma_merged_df.iloc[:,-n:])
 
 
-                            # User input for the average price per m³
-                            avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=2.0)  # Default value is 5 EGP£ for example
-                            st.markdown("### Billing Analysis by EGP£ per DMA")
-                            result_df = calculate_expected_egp_and_percentage(dma_value_merged_df, avg_price_per_m3, n)
-                            st.dataframe(result_df)
+                        # Group by DMA for Value
+                        dma_value_df = pd.merge(merged_df[['Block Number', 'DMA']], value_summed, on='Block Number', how='left')
+                        dma_value_df = dma_value_df.groupby('DMA').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
+                        dma_value_df = dma_value_df.round(0).astype(int)
+                        dma_value_df.set_index('DMA', inplace=True)        
+                        dma_value_df = dma_value_df.transpose()
 
-
+                        dma_value_df = add_month_column_from_index(dma_value_df)
+                        dma_value_merged_df = join_billed_with_demand(dma_value_df, water_demand_dma)
+                        dma_value_merged_df = dma_value_merged_df.drop(columns="Month")
+                        # st.markdown("### DMA Billed Value, Total Demand, and thats all")
+                        # st.dataframe(dma_value_merged_df)
+                        
                         # Function for the plot
                         plot_multiple_demand_billed(dma_merged_df, title="Water Demand vs Billed Volumes per DMA")
+
+                        # User input for the average price per m³
+                        avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=2.0)  # Default value is 5 EGP£ for example
+                        st.markdown("### Billing Analysis by EGP£ per DMA")
+                        result_df = calculate_expected_egp_and_percentage(dma_value_merged_df, avg_price_per_m3, n)
+                        st.dataframe(result_df)
+                        plot_billed_vs_expected(result_df, n, title="Total Billed vs Expected EGP Values")
+
+
 
                     elif visualization_type == "Zone" and "Zone" in available_options:
                         n = len(unique_zones)
