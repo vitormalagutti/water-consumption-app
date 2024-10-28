@@ -897,7 +897,8 @@ with tab1:
 
                 # Step 2: Join the correlation file with the original buildings file on 'Block Number'
                 merged_df = pd.merge(buildings_df, correlation_df, on='Block Number', how='left')
-                volume_df
+                total_volume = volume_df['04/23'].sum()
+                print("Total Volume1:", total_volume)
                 # Step 3: Merge volume_df and value_df on 'Subscription Number'
                 volume_df = pd.merge(correlation_df, volume_df, on='Subscription Number', how='left')
                 value_df = pd.merge(correlation_df, value_df, on='Subscription Number', how='left')
@@ -906,8 +907,10 @@ with tab1:
                 volume_summed = volume_df.groupby('Block Number').sum(numeric_only=True).reset_index()
                 value_summed = value_df.groupby('Block Number').sum(numeric_only=True).reset_index()
                 
-                volume_df
-                volume_summed
+                total_volume = volume_df['04/23'].sum()
+                print("Total Volume2:", total_volume)
+                total_volume = volume_summed['04/23'].sum()
+                print("Total Volume3:", total_volume)
                 # Step 5: Merge the summed volumes and values back to the original df
                 billed_df = pd.merge(merged_df, volume_summed, on='Block Number', how='left')
                 billed_df = pd.merge(billed_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value'))
