@@ -224,8 +224,8 @@ def calculate_percentage_billed(merged_df):
 def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
     # Identify demand and billed columns
     demand_columns = [col for col in df.columns if col.endswith('_demand')]
-    billed_columns = [col for col in df.columns if col not in demand_columns and not col.contains('% Billed')]
-    percent_columns = [col for col in df.columns if col.contains('% Billed')]
+    billed_columns = [col for col in df.columns if col not in demand_columns and '% Billed' not in col]
+    percent_columns = [col for col in df.columns if '% Billed' in col]
 
     # Use the DataFrame index as the x-axis labels (assuming it's the dates)
     x_labels = df.index
