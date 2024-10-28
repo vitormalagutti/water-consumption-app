@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.io as pio
+import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import geopandas as gpd
 import folium
@@ -320,33 +321,33 @@ def plot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
 
     fig, ax1 = plt.subplots(figsize=(12, 6))
 
-    # Set smaller bar width for Expected columns
-    bar_width = 0.2
+    # Set bar width for Expected columns and adjust total width for centering
+    bar_width = 0.15
     total_bar_width = bar_width * n  # Total width of all Expected bars for one group
     
     # Define a color palette for bars and lines
     colors = plt.get_cmap("tab10").colors  # Use the "tab10" color map with 10 unique colors
 
-    # Plot Expected as bars, centered by adjusting positions
+    # Plot Expected as bars, centered around each date
     for i, expected_column in enumerate(expected_columns):
         ax1.bar(
-            positions - bar_width + i * bar_width, 
-            df[expected_column], 
-            width=bar_width, 
-            label=f"Expected - {expected_column.split(' ')[-1]}", 
-            color=colors[i], 
+            positions - (total_bar_width / 2) + i * bar_width,  # Centering adjustment
+            df[expected_column],
+            width=bar_width,
+            label=f"Expected - {expected_column.split(' ')[-1]}",
+            color=colors[i % len(colors)],  # Cycle through colors for consistency
             alpha=0.7
         )
 
-    # Plot Total Billed as lines, reusing the colors from bars for consistency
+    # Plot Total Billed as lines, using the same colors from bars for matching
     for i, billed_column in enumerate(billed_columns):
         ax1.plot(
-            positions, 
-            df[billed_column], 
-            marker='o', 
-            linestyle='--', 
-            label=f"Total Billed - {billed_column.split(' ')[-1]}", 
-            color=colors[i]
+            positions,
+            df[billed_column],
+            marker='o',
+            linestyle='--',
+            label=f"Total Billed - {billed_column.split(' ')[-1]}",
+            color=colors[i % len(colors)]  # Matching color with Expected bars
         )
 
     # Set labels and title
