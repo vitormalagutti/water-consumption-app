@@ -981,7 +981,7 @@ with tab1:
 
                             dma_value_df = add_month_column_from_index(dma_value_df)
                             dma_value_merged_df = join_billed_with_demand(dma_value_df, water_demand_dma)
-                            result_df = calculate_expected_egp_and_percentage(dma_value_merged_df, avg_price_per_m3, n)
+                            result_df = calculate_expected_egp_and_percentage(dma_value_merged_df, avg_price_per_m3,selected_dmas_zones, n)
 
                             st.markdown("### Billing Analysis by EGP£ per DMA")
                             st.dataframe(result_df)
@@ -1021,7 +1021,7 @@ with tab1:
                             
                             zone_value_df = add_month_column_from_index(zone_value_df)
                             zone_value_merged_df = join_billed_with_demand(zone_value_df, water_demand_zone)
-                            result_df = calculate_expected_egp_and_percentage(zone_value_merged_df, avg_price_per_m3, n)                            
+                            result_df = calculate_expected_egp_and_percentage(zone_value_merged_df, avg_price_per_m3,selected_dmas_zones, n)                            
 
                             st.markdown("### Billing Analysis by EGP£ per Zone")
                             st.dataframe(result_df)
