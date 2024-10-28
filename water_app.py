@@ -839,7 +839,7 @@ with tab1:
                         plot_multiple_demand_billed(zone_merged_df, title="Zone Demand vs Billed Volumes with % Billed")
                 
             else:
-                st.markdown("Input the (1) Billed Volumes and (2) Billed Values, and the (3) Building Blocks / Subscription Number key data to proceed with Billing Analysis")
+                st.markdown("Input the (1) Billed Volumes, (2) Billed Values, and the (3) Building Blocks / Subscription Number key data to proceed with Billing Analysis")
 
 
         with tab6:  
