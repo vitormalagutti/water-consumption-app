@@ -514,8 +514,9 @@ with tab1:
             columns_to_drop = ['Population', 'Status', 'Subscription Number_x', 'Subscription Number_y', "Subscription Number"]
             billed_df = billed_df.drop(columns=columns_to_drop, errors='ignore')
 
-            df.index = pd.to_datetime(df.index, format='%m/%y')
-            unique_dates = df.index.sort_values().strftime('%m/%y').tolist()  # Get unique sorted dates as month-year strings
+
+            billed_df.index = pd.to_datetime(billed_df.index, format='%mm/%yy')
+            unique_dates = billed_df.index.sort_values().strftime('%mm/%yy').tolist()  # Get unique sorted dates as month-year strings
 
             # Date range selection
             start_date, end_date = st.select_slider(
@@ -525,8 +526,8 @@ with tab1:
             )
 
             # Convert selected dates back to datetime format to filter
-            start_date_dt = pd.to_datetime(start_date, format='%m/%y')
-            end_date_dt = pd.to_datetime(end_date, format='%m/%y')       
+            start_date_dt = pd.to_datetime(start_date, format='%mm/%yy')
+            end_date_dt = pd.to_datetime(end_date, format='%mm/%yy')       
 
 
 
