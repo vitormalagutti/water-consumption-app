@@ -246,7 +246,7 @@ def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
 
     # Set labels and title
     ax.set_xlabel("Date")
-    ax.set_ylabel("Volume and Percentage")
+    ax.set_ylabel("Volume - m3")
     ax.set_title(title)
     
     # Set x-ticks and labels
@@ -255,7 +255,7 @@ def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ','))) # Format the y-axis labels with a thousand separator
     ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
     # Add legend
-    ax.legend(loc='upper left')
+    ax.legend(loc='best')
     
     plt.tight_layout()
     st.pyplot(fig)
@@ -844,7 +844,7 @@ with tab1:
 
 
                         # Function for the plot
-                        plot_multiple_demand_billed(dma_merged_df, title="DMA Demand vs Billed Volumes with % Billed")
+                        plot_multiple_demand_billed(dma_merged_df, title="Water Demand vs Billed Volumes per DMA")
 
                     elif visualization_type == "Zone" and "Zone" in available_options:
                         n = len(unique_zones)
@@ -870,11 +870,10 @@ with tab1:
                         st.markdown("### Percentage of Billed Volume per Zone")
                         st.dataframe(zone_merged_df.iloc[:,-n:])
 
-                        plot_multiple_demand_billed(zone_merged_df, title="Zone Demand vs Billed Volumes with % Billed")
+                        plot_multiple_demand_billed(zone_merged_df, title="Water Demand vs Billed Volumes per Zone")
                 
             else:
                 st.markdown("Input the (1) Billed Volumes, (2) Billed Values, and the (3) Building Blocks / Subscription Number key data to proceed with Billing Analysis")
-
 
         with tab6:  
             
