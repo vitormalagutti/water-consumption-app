@@ -780,26 +780,30 @@ with tab1:
                         dma_volume_df = dma_volume_df.round(0).astype(int)
                         dma_volume_df.set_index('DMA', inplace=True)        
                         dma_volume_df = dma_volume_df.transpose()
-                        # st.markdown("### DMA Billed Data Summed by Volume")
-                        # st.dataframe(dma_volume_df)
-                        
-                        # Group by DMA for Value
 
+                        # Group by DMA for Value
                         dma_value_df = pd.merge(merged_df[['Block Number', 'DMA']], value_summed, on='Block Number', how='left')
                         dma_value_df = dma_value_df.groupby('DMA').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
                         dma_value_df = dma_value_df.round(0).astype(int)
                         dma_value_df.set_index('DMA', inplace=True)        
                         dma_value_df = dma_value_df.transpose()
-                        # st.markdown("### DMA Billed Data Summed by Value")
-                        # st.dataframe(dma_value_df)
+
                         dma_volume_df = add_month_column_from_index(dma_volume_df)
                         dma_merged_df = join_billed_with_demand(dma_volume_df, water_demand_dma)
-                    
-
                         dma_merged_df = calculate_percentage_billed(dma_merged_df)
                         dma_merged_df = dma_merged_df.drop(columns="Month")
 
                         n = len(unique_dmas)
+
+                        for column in dma_volume_df.columns:
+                            total_demand_cost = dma_merged_df[column] * avg_price_per_m3
+                            total_billed_cost = dma_merged_df[f"{column} % Billed"] * avg_price_per_m3 / 100
+                            dma_merged_df[f"{column} Total Cost"] = total_demand_cost
+                            dma_merged_df[f"{column} Billed Cost"] = total_billed_cost
+
+                        st.markdown("### DMA Water Demand, Total Cost, and Billed Cost")
+                        st.dataframe(dma_merged_df)
+
                         with col1:
                             st.markdown("### Percentage of Billed Volume per DMA")
                             st.dataframe(dma_merged_df.iloc[:,-n:])
@@ -809,7 +813,7 @@ with tab1:
                             avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=5.0)  # Default value is 5 EGP£ for example
                         
                         
-                        
+
                         # Function for the plot
                         plot_multiple_demand_billed(dma_merged_df, title="DMA Demand vs Billed Volumes with % Billed")
 
