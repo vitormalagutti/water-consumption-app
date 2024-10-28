@@ -513,7 +513,7 @@ with tab1:
             # Drop unnecessary columns
             columns_to_drop = ['Population', 'Status', 'Subscription Number_x', 'Subscription Number_y', "Subscription Number"]
             billed_df = billed_df.drop(columns=columns_to_drop, errors='ignore')
-
+            billed_df
 
             billed_df.index = pd.to_datetime(billed_df.index, format='%mm/%yy')
             unique_dates = billed_df.index.sort_values().strftime('%mm/%yy').tolist()  # Get unique sorted dates as month-year strings
