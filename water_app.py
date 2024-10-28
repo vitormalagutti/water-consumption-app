@@ -932,7 +932,7 @@ with tab1:
                             dma_merged_df = join_billed_with_demand(dma_volume_df, water_demand_dma)
                             dma_merged_df = calculate_percentage_billed(dma_merged_df,n)
 
-                            st.markdown("### Percentage of Billed Volume per DMA")
+                            st.markdown("### Percentage of Billed Volume per DMA (m3)")
                             st.dataframe(dma_merged_df.iloc[:,-n:])
 
 
@@ -1002,7 +1002,7 @@ with tab1:
                             zone_merged_df = join_billed_with_demand(zone_volume_df, water_demand_zone)
                             zone_merged_df = calculate_percentage_billed(zone_merged_df,n)
 
-                            st.markdown("### Percentage of Billed Volume per Zone")
+                            st.markdown("### Percentage of Billed Volume per Zone (m3)")
                             st.dataframe(zone_merged_df)
                             st.dataframe(zone_merged_df.iloc[:,-n:])
 
