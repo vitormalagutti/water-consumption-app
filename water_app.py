@@ -337,15 +337,14 @@ def plot_billed_vs_expected(df, n, selected_dmas_zones, start_date_dt, end_date_
     expected_columns = [col for col in df.columns[n:2*n] if col.split(' ')[-1] in selected_dmas_zones]
 
     # Filter DataFrame to only include selected columns
-    filtered_df = df[billed_columns + expected_columns]
+    filtered_df = df[billed_columns + expected_columns].copy()
     filtered_df.index = pd.to_datetime(filtered_df.index, format='%m/%y')
+    
     # Filter based on the selected date range
     filtered_df = filtered_df[(filtered_df.index >= start_date_dt) & (filtered_df.index <= end_date_dt)]
 
-    start_date_dt
-    df.index
-    # Use the DataFrame index as the x-axis labels (assuming it's the dates)
-    x_labels = df.index
+    # Use the filtered DataFrame index as the x-axis labels
+    x_labels = filtered_df.index
 
     # Create a Plotly figure
     fig = go.Figure()
@@ -359,7 +358,7 @@ def plot_billed_vs_expected(df, n, selected_dmas_zones, start_date_dt, end_date_
         fig.add_trace(
             go.Bar(
                 x=x_labels, 
-                y=df[expected_column], 
+                y=filtered_df[expected_column],  # Use filtered data here
                 name=f"Expected Billing - {dma_zone}", 
                 marker_color=colors[i % len(colors)],
                 opacity=0.6
@@ -372,7 +371,7 @@ def plot_billed_vs_expected(df, n, selected_dmas_zones, start_date_dt, end_date_
         fig.add_trace(
             go.Scatter(
                 x=x_labels, 
-                y=df[billed_column], 
+                y=filtered_df[billed_column],  # Use filtered data here
                 mode='lines+markers',
                 name=f"Total Billed - {dma_zone}", 
                 line=dict(color=colors[i % len(colors)], dash='dash'),
@@ -384,7 +383,7 @@ def plot_billed_vs_expected(df, n, selected_dmas_zones, start_date_dt, end_date_
     fig.update_layout(
         title=title,
         xaxis=dict(title="Date", tickmode='array', tickvals=x_labels),
-        yaxis=dict(title="EGP £", tickformat=","),
+        yaxis=dict(title="EGP £", tickformat=","),  # Format as currency
         barmode='group',  # Adjust for side-by-side bars
         template="plotly_white",  # Use a clean white theme
         legend=dict(title="Series", x=1.05, y=1),  # Place legend outside the plot
@@ -393,7 +392,6 @@ def plot_billed_vs_expected(df, n, selected_dmas_zones, start_date_dt, end_date_
     
     # Render the plot using Plotly in Streamlit
     st.plotly_chart(fig)
-
 
 
 with tab1:
