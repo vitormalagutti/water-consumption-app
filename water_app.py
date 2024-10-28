@@ -368,10 +368,7 @@ def aplot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values")
     st.pyplot(fig)
 
 
-def plot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
-    # Sidebar multiselect for filtering DMAs/Zones
-    available_dmas_zones = [col.split(' ')[-1] for col in df.columns[:n]]  # Extract DMA/Zone numbers from column names
-    selected_dmas_zones = st.sidebar.multiselect("Select DMAs/Zones to Display", available_dmas_zones, default=available_dmas_zones)
+def plot_billed_vs_expected(df, n, selected_dmas_zones, title="Total Billed vs Expected EGP Values"):
 
     # Filter columns based on selected DMAs/Zones
     billed_columns = [col for col in df.columns[:n] if col.split(' ')[-1] in selected_dmas_zones]
@@ -524,6 +521,10 @@ with tab1:
             visualization_type = st.sidebar.selectbox("Choose visualization type:", available_options)
         else:
             st.sidebar.write("No data available for Zone or DMA visualization.")
+
+        # Sidebar multiselect for filtering DMAs/Zones
+        available_dmas_zones = filtered_df[visualization_type].unique().tolist()  # Extract DMA/Zone numbers from column names
+        selected_dmas_zones = st.sidebar.multiselect("Select DMAs/Zones to Display", available_dmas_zones, default=available_dmas_zones)
 
 
         # Sidebar input to select analysis type
