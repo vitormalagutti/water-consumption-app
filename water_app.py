@@ -616,7 +616,7 @@ with tab1:
                         # Transpose the DataFrame
                         water_demand_dma = water_demand_dma.transpose()
                         water_demand_dma.columns = pd.to_numeric(water_demand_dma.columns, errors='coerce').astype('Int64')
-                        st.markdown("### 💧 Monthly Water Demand per DMA")
+                        st.markdown("### 💧 Monthly Water Demand per DMA - m3")
                         st.dataframe(water_demand_dma, height=500)
 
                     with col2:
@@ -629,7 +629,7 @@ with tab1:
                         pastel_colors = sns.color_palette("pastel", len(columns_to_plot))
             
                         water_demand_dma[columns_to_plot].plot(kind='bar', stacked=True, color=pastel_colors, ax=ax)
-                        ax.set_title('Monthly Water Demand by DMA', fontsize=15)
+                        ax.set_title('Monthly Water Demand by DMA - m3', fontsize=15)
                         ax.set_xlabel('Month', fontsize=12)
                         ax.set_ylabel('Water Demand (m3)', fontsize=13)
                         ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
