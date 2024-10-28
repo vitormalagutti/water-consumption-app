@@ -329,7 +329,7 @@ def calculate_expected_egp_and_percentage(merged_df, avg_price, n):
     return merged_df
 
 
-def plot_billed_vs_expected(df, n, selected_dmas_zones, title="Total Billed vs Expected EGP Values"):
+def plot_billed_vs_expected(df, n, selected_dmas_zones, start_date, end_date, title="Total Billed vs Expected EGP Values"):
 
     selected_dmas_zones = [str(zone) for zone in selected_dmas_zones]
     # Filter columns based on selected DMAs/Zones
@@ -338,7 +338,8 @@ def plot_billed_vs_expected(df, n, selected_dmas_zones, title="Total Billed vs E
 
     # Filter DataFrame to only include selected columns
     filtered_df = df[billed_columns + expected_columns]
-    
+    filtered_df = filtered_df[(filtered_df.index >= start_date) & (filtered_df.index <= end_date)]
+
     # Use the DataFrame index as the x-axis labels (assuming it's the dates)
     x_labels = df.index
 
@@ -1045,7 +1046,8 @@ with tab1:
                             start_date_dt = pd.to_datetime(start_date, format='%m/%y')
                             end_date_dt = pd.to_datetime(end_date, format='%m/%y')
 
-                            plot_billed_vs_expected(result_df, n, selected_dmas_zones, title="Total Billed vs Expected EGP £")
+                            result_df
+                            plot_billed_vs_expected(result_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Total Billed vs Expected EGP £")
                 
             else:
                 st.markdown("Input the (1) Billed Volumes, (2) Billed Values, and the (3) Building Blocks / Subscription Number key data to proceed with Billing Analysis")
