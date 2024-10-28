@@ -523,7 +523,9 @@ with tab1:
             st.sidebar.write("No data available for Zone or DMA visualization.")
 
         # Sidebar multiselect for filtering DMAs/Zones
-        available_dmas_zones = filtered_df[visualization_type].unique().tolist()  # Extract DMA/Zone numbers from column names
+        # Extract unique DMA values from the filtered DataFrame and convert to integers
+        available_dmas_zones = [int(value) for value in filtered_df['DMA'].unique() if not pd.isna(value)]
+
         selected_dmas_zones = st.sidebar.multiselect("Select DMAs/Zones to Display", available_dmas_zones, default=available_dmas_zones)
 
 
