@@ -246,7 +246,7 @@ def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
     # Set bar width
     bar_width = 0.2
     total_bar_width = bar_width * n  # Total width of all Expected bars for one group
-    
+
     # Plot Demand Bars for each demand column
     for i, demand_column in enumerate(demand_columns):
         ax.bar(positions - bar_width + i * bar_width, df[demand_column], width=bar_width, label=f"Demand {i+1}", alpha=0.6)
@@ -265,6 +265,7 @@ def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
     ax.set_xticklabels(x_labels, rotation=45)
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ','))) # Format the y-axis labels with a thousand separator
     ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
+    
     # Add legend
     ax.legend(loc='best')
     
@@ -324,7 +325,7 @@ def plot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
     # Plot Expected as bars, centered by adjusting positions
     for i, expected_column in enumerate(expected_columns):
         ax1.bar(
-            positions - total_bar_width / 2 + i * bar_width, 
+            positions - bar_width + i * bar_width, 
             df[expected_column], 
             width=bar_width, 
             label=f"Expected {expected_column.split(' ')[-1]}", 
@@ -338,7 +339,7 @@ def plot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
             positions, 
             df[billed_column], 
             marker='o', 
-            linestyle='-', 
+            linestyle='--', 
             label=f"Total Billed {billed_column.split(' ')[-1]}", 
             color=colors[i]
         )
