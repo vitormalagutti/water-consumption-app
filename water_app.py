@@ -250,9 +250,6 @@ def plot_multiple_demand_billed(df, n, selected_dmas_zones, title="Water Demand 
     # Define a color palette for consistency between bars and lines
     colors = px.colors.qualitative.Set1  # A good default color palette with distinct colors
 
-    # Set bar width
-    bar_width = 0.1
-
     # Plot Demand Bars for each demand column
     for i, demand_column in enumerate(demand_columns):
         # Extract the DMA/Zone number from the column name
@@ -264,8 +261,7 @@ def plot_multiple_demand_billed(df, n, selected_dmas_zones, title="Water Demand 
                 name=f"Demand - {dma_zone_number}",
                 #offsetgroup=i,
                 marker_color=colors[i % len(colors)],
-                width=bar_width,
-            )
+                )
         )
 
     # Plot Billed Percentages as lines
