@@ -960,6 +960,7 @@ with tab1:
                             avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=2.0)  # Default value is 5 EGP£ for example
                             
                             dma_value_df = pd.merge(merged_df[['Block Number', 'DMA']], value_summed, on='Block Number', how='left')
+                            dma_value_df = dma_value_df.drop_duplicates(subset='Block Number')
                             dma_value_df = dma_value_df.groupby('DMA').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
                             dma_value_df = dma_value_df.round(0).astype(int)
                             dma_value_df.set_index('DMA', inplace=True)        
@@ -1030,6 +1031,7 @@ with tab1:
                             avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=2.0)  # Default value is 5 EGP£ for example
                             
                             zone_value_df = pd.merge(merged_df[['Block Number', 'Zone']], value_summed, on='Block Number', how='left')
+                            zone_value_df = zone_value_df.drop_duplicates(subset='Block Number')
                             zone_value_df = zone_value_df.groupby('Zone').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
                             zone_value_df = zone_value_df.round(0).astype(int)
                             zone_value_df.set_index('Zone', inplace=True)        
