@@ -907,7 +907,7 @@ with tab1:
 
                         dma_value_df = add_month_column_from_index(dma_value_df)
                         dma_value_merged_df = join_billed_with_demand(dma_value_df, water_demand_dma)
-                        dma_value_merged_df = dma_value_merged_df.drop(columns="Month")
+                        # dma_value_merged_df = dma_value_merged_df.drop(columns="Month")
                         # st.markdown("### DMA Billed Value, Total Demand, and thats all")
                         # st.dataframe(dma_merged_df)
 
@@ -942,11 +942,11 @@ with tab1:
                         zone_volume_df = add_month_column_from_index(zone_volume_df)
                         zone_merged_df = join_billed_with_demand(zone_volume_df, water_demand_zone)
                         zone_merged_df = calculate_percentage_billed(zone_merged_df,n)
-                        zone_merged_df = zone_merged_df.drop(columns="Month")
+                        # zone_merged_df = zone_merged_df.drop(columns="Month")
 
                         zone_value_df = add_month_column_from_index(zone_value_df)
                         zone_value_merged_df = join_billed_with_demand(zone_volume_df, water_demand_zone)
-                        zone_value_merged_df = zone_value_merged_df.drop(columns="Month")
+                        # zone_value_merged_df = zone_value_merged_df.drop(columns="Month")
 
                         st.markdown("### Percentage of Billed Volume per Zone")
                         st.dataframe(zone_merged_df.iloc[:,-n:])
