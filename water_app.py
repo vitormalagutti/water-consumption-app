@@ -119,7 +119,7 @@ def process_block_subscription_file(uploaded_file):
         df = convert_to_csv(uploaded_file)
 
         # Ensure that we have the required columns
-        required_columns = ['Block Number', 'Subscription Number']
+        required_columns = [ 'Subscription Number', 'Block Number']
         if not all(col in df.columns for col in required_columns):
             st.error(f"The file must contain the columns: {required_columns}.")
             return None
