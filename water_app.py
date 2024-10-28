@@ -454,7 +454,7 @@ with tab1:
         avg_litres_per_person = st.sidebar.slider("Average Litres per Person per Day", min_value=50, max_value=300, step=5, value=150)
         
         # Sidebar menu for choosing DMA or Zone
-        st.sidebar.header("Data Visualization Options")
+        st.sidebar.header("📊 Data Visualization Options")
         if available_options:
             visualization_type = st.sidebar.selectbox("Choose visualization type:", available_options)
         else:
