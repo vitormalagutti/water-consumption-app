@@ -917,7 +917,9 @@ with tab1:
                 # Step 5: Merge the summed volumes and values back to the original df
                 billed_df = pd.merge(merged_df, volume_summed, on='Block Number', how='left')
                 billed_df = pd.merge(billed_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value'))
-                billed_df
+                
+                total_volume = billed_df['04/23_volume'].sum()
+                st.write("Total Volume4:", total_volume)
                 # Drop unnecessary columns
                 columns_to_drop = ['Population', 'Status', 'Subscription Number_x', 'Subscription Number_y', "Subscription Number"]
                 billed_df = billed_df.drop(columns=columns_to_drop, errors='ignore')
