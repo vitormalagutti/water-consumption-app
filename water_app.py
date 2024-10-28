@@ -339,6 +339,7 @@ def plot_billed_vs_expected(df, n, selected_dmas_zones, start_date_dt, end_date_
     # Filter DataFrame to only include selected columns
     filtered_df = df[billed_columns + expected_columns]
     filtered_df.index = pd.to_datetime(filtered_df.index, format='%m/%y')
+    # Filter based on the selected date range
     filtered_df = filtered_df[(filtered_df.index >= start_date_dt) & (filtered_df.index <= end_date_dt)]
 
     start_date_dt
