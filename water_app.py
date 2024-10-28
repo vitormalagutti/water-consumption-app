@@ -281,7 +281,7 @@ def calculate_expected_egp_and_percentage(merged_df, avg_price, n):
         expected_column = f'Expected EGP Value - {dma_number}'
 
         if expected_column in merged_df.columns:
-            merged_df[f'{dma_number} % Billed in EGP'] = round((merged_df[billed_column] / merged_df[expected_column]) * 100, 1)
+            merged_df[f'% Billed in EGP - {dma_number}'] = round((merged_df[billed_column] / merged_df[expected_column]) * 100, 1)
 
     # Replace NaN or infinite values with zeroes
     merged_df = merged_df.replace([float('inf'), -float('inf')], 0).fillna(0)
