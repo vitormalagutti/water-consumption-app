@@ -304,16 +304,19 @@ def plot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
 
     fig, ax1 = plt.subplots(figsize=(12, 6))
 
-    # Set bar width for Expected columns
-    bar_width = 0.3
+    # Set smaller bar width for Expected columns
+    bar_width = 0.2
     
+    # Define a color palette for bars and lines
+    colors = plt.get_cmap("tab10").colors  # Use the "tab10" color map with 10 unique colors
+
     # Plot Expected as bars
     for i, expected_column in enumerate(expected_columns):
-        ax1.bar(positions + i * bar_width, df[expected_column], width=bar_width, label=f"Expected {expected_column.split(' ')[-1]}", alpha=0.7)
+        ax1.bar(positions + i * bar_width, df[expected_column], width=bar_width, label=f"Expected {expected_column.split(' ')[-1]}", color=colors[i], alpha=0.7)
 
-    # Plot Total Billed as lines on the same plot
+    # Plot Total Billed as lines, reusing the colors from bars for consistency
     for i, billed_column in enumerate(billed_columns):
-        ax1.plot(positions, df[billed_column], marker='o', linestyle='-', label=f"Total Billed {billed_column.split(' ')[-1]}", color=f'C{i+n}')
+        ax1.plot(positions, df[billed_column], marker='o', linestyle='-', label=f"Total Billed {billed_column.split(' ')[-1]}", color=colors[i])
 
     # Set labels and title
     ax1.set_xlabel("Date")
