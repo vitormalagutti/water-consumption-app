@@ -980,7 +980,7 @@ with tab1:
                             start_date_dt = pd.to_datetime(start_date, format='%m/%y')
                             end_date_dt = pd.to_datetime(end_date, format='%m/%y')
 
-                            plot_billed_vs_expected(result_df, n, selected_dmas_zones, title="Total Billed vs Expected EGP £")
+                            plot_billed_vs_expected(result_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Total Billed vs Expected EGP £")
 
 
 
@@ -1048,7 +1048,7 @@ with tab1:
                             start_date_dt = pd.to_datetime(start_date, format='%m/%y')
                             end_date_dt = pd.to_datetime(end_date, format='%m/%y')
 
-                            result_df
+                            
                             plot_billed_vs_expected(result_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Total Billed vs Expected EGP £")
                 
             else:
