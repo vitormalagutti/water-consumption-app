@@ -924,6 +924,7 @@ with tab1:
                         
                             # Group by DMA for Volume
                             dma_volume_df = pd.merge(merged_df[['Block Number', 'DMA']], volume_summed, on='Block Number', how='left')
+                            dma_volume_df = dma_volume_df.drop_duplicates(subset='Block Number')
                             dma_volume_df = dma_volume_df.groupby('DMA').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
                             dma_volume_df = dma_volume_df.round(0).astype(int)
                             dma_volume_df.set_index('DMA', inplace=True)        
@@ -994,6 +995,7 @@ with tab1:
                         if billing_type == "Volume (m3) Analysis":
                             # Group by Zone for Volume
                             zone_volume_df = pd.merge(merged_df[['Block Number', 'Zone']], volume_summed, on='Block Number', how='left')
+                            zone_volume_df = zone_volume_df.drop_duplicates(subset='Block Number')
                             zone_volume_df = zone_volume_df.groupby('Zone').sum(numeric_only=True).reset_index().drop(columns=["Block Number", "Subscription Number"])
                             zone_volume_df = zone_volume_df.round(0).astype(int)
                             zone_volume_df.set_index('Zone', inplace=True)        
