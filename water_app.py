@@ -302,32 +302,36 @@ def plot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values"):
     x_labels = df.index
     positions = np.arange(len(x_labels))  # Positions should match the number of index entries (rows)
 
-    fig, ax = plt.subplots(figsize=(12, 6))
+    fig, ax1 = plt.subplots(figsize=(12, 6))
 
-    # Plot Total Billed as lines
-    for i, billed_column in enumerate(billed_columns):
-        ax.plot(positions, df[billed_column], marker='o', linestyle='-', label=f"Total Billed {i+1}", color=f'C{i}')
-
-    # Plot Expected as lines with a different color set
+    # Set bar width for Expected columns
+    bar_width = 0.3
+    
+    # Plot Expected as bars
     for i, expected_column in enumerate(expected_columns):
-        ax.plot(positions, df[expected_column], marker='x', linestyle='--', label=f"Expected EGP Value {i+1}", color=f'C{i+n}')
+        ax1.bar(positions + i * bar_width, df[expected_column], width=bar_width, label=f"Expected {expected_column.split(' ')[-1]}", alpha=0.7)
+
+    # Plot Total Billed as lines on the same plot
+    for i, billed_column in enumerate(billed_columns):
+        ax1.plot(positions, df[billed_column], marker='o', linestyle='-', label=f"Total Billed {billed_column.split(' ')[-1]}", color=f'C{i+n}')
 
     # Set labels and title
-    ax.set_xlabel("Date")
-    ax.set_ylabel("EGP Value")
-    ax.set_title(title)
+    ax1.set_xlabel("Date")
+    ax1.set_ylabel("EGP Value")
+    ax1.set_title(title)
     
     # Set x-ticks and labels
-    ax.set_xticks(positions)
-    ax.set_xticklabels(x_labels, rotation=45)
-    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))  # Format the y-axis labels with a thousand separator
-    ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
+    ax1.set_xticks(positions)
+    ax1.set_xticklabels(x_labels, rotation=45)
+    ax1.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))  # Format the y-axis labels with a thousand separator
+    ax1.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
     
     # Add legend
-    ax.legend(loc='best')
+    ax1.legend(loc='best')
     
     plt.tight_layout()
     st.pyplot(fig)
+
 
 
 with tab1:
