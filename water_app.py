@@ -245,6 +245,7 @@ def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
 
     # Set bar width
     bar_width = 0.2
+    total_bar_width = bar_width * n  # Total width of all Expected bars for one group
     
     # Plot Demand Bars for each demand column
     for i, demand_column in enumerate(demand_columns):
