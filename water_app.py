@@ -371,7 +371,7 @@ def aplot_billed_vs_expected(df, n, title="Total Billed vs Expected EGP Values")
 def plot_billed_vs_expected(df, n, selected_dmas_zones, title="Total Billed vs Expected EGP Values"):
 
     # Filter columns based on selected DMAs/Zones
-    billed_columns = [col for col in df.columns[:n] if col.split(' ')[-1] in selected_dmas_zones]
+    billed_columns = [col for col in df.columns[:n] if col.split('-')[-1] in selected_dmas_zones]
     expected_columns = [col for col in df.columns[n:2*n] if col.split(' ')[-1] in selected_dmas_zones]
 
     billed_columns
