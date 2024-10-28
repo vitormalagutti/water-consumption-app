@@ -935,8 +935,8 @@ with tab1:
                             dma_merged_df = calculate_percentage_billed(dma_merged_df,n)
 
                             st.markdown("### Percentage of Billed Volume per DMA (m3)")
-                            st.dataframe(dma_merged_df.iloc[:,-n:])
-
+                            # st.dataframe(dma_merged_df.iloc[:,-n:])
+                            st.dataframe(dma_merged_df)
 
                             dma_merged_df.index = pd.to_datetime(dma_merged_df.index, format='%m/%y')
                             unique_dates = dma_merged_df.index.sort_values().strftime('%m/%y').tolist()  # Get unique sorted dates as month-year strings
@@ -1008,7 +1008,7 @@ with tab1:
 
                             st.markdown("### Percentage of Billed Volume per Zone (m3)")
                             st.dataframe(zone_merged_df)
-                            st.dataframe(zone_merged_df.iloc[:,-n:])
+                            # st.dataframe(zone_merged_df.iloc[:,-n:])
 
                             zone_merged_df.index = pd.to_datetime(zone_merged_df.index, format='%m/%y')
                             unique_dates = zone_merged_df.index.sort_values().strftime('%m/%y').tolist()  # Get unique sorted dates as month-year strings
