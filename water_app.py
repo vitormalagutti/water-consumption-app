@@ -877,14 +877,18 @@ with tab1:
                         zone_merged_df = calculate_percentage_billed(zone_merged_df)
                         zone_merged_df = zone_merged_df.drop(columns="Month")
 
+                        zone_value_df = add_month_column_from_index(zone_value_df)
+                        zone_value_merged_df = join_billed_with_demand(zone_volume_df, water_demand_zone)
+                        zone_value_merged_df = zone_value_merged_df.drop(columns="Month")
+
                         st.markdown("### Percentage of Billed Volume per Zone")
                         st.dataframe(zone_merged_df.iloc[:,-n:])
 
                         plot_multiple_demand_billed(zone_merged_df, title="Water Demand vs Billed Volumes per Zone")
 
                         avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=2.0)  # Default value is 5 EGP£ for example
-                        st.markdown("### Billing Analysis by EGP£ per DMA")
-                        result_df = calculate_expected_egp_and_percentage(dma_value_merged_df, avg_price_per_m3, n)
+                        st.markdown("### Billing Analysis by EGP£ per Zone")
+                        result_df = calculate_expected_egp_and_percentage(zone_value_merged_df, avg_price_per_m3, n)
                         st.dataframe(result_df)
                 
             else:
