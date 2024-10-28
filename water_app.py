@@ -890,6 +890,7 @@ with tab1:
                         st.markdown("### Billing Analysis by EGP£ per Zone")
                         result_df = calculate_expected_egp_and_percentage(zone_value_merged_df, avg_price_per_m3, n)
                         st.dataframe(result_df)
+                        plot_multiple_demand_billed(zone_value_merged_df, title="Demand vs Billed EGP per Zone")
                 
             else:
                 st.markdown("Input the (1) Billed Volumes, (2) Billed Values, and the (3) Building Blocks / Subscription Number key data to proceed with Billing Analysis")
