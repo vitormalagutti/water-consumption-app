@@ -207,19 +207,29 @@ def join_billed_with_demand(billed_df, demand_df):
 
     return merged_df
 
-def calculate_percentage_billed(merged_df):
-    # Calculate the percentage of billed volumes compared to demand directly on the existing merged DataFrame
-    for column in merged_df.columns:
-        if column.endswith('_demand'):  # Ensure we are working with demand columns
-            base_column = column.replace('_demand', '')  # Get the original column name
-            if base_column in merged_df.columns:
-                merged_df[f'% Billed - {base_column}'] = round((merged_df[base_column] / merged_df[column]) * 100, 1)
+def calculate_percentage_billed(merged_df, n):
+    # Rename the first n columns to "Volume Billed - DMA/Zone number"
+    for i in range(n):
+        merged_df.rename(columns={merged_df.columns[i]: f"Volume Billed - {merged_df.columns[i]}"}, inplace=True)
+
+    # Rename the next n columns to "Water Demand - DMA/Zone number"
+    for i in range(n, 2 * n):
+        merged_df.rename(columns={merged_df.columns[i]: f"Water Demand - {merged_df.columns[i-n]}"}, inplace=True)
+
+    # Calculate the percentage of billed volumes compared to demand
+    for i in range(2 * n, 3 * n):
+        column = merged_df.columns[i]
+        base_column = column.replace('_demand', '')  # Remove '_demand' suffix to get the base column name
+        merged_df[f'% Billed - {base_column}'] = round((merged_df[base_column] / merged_df[column]) * 100, 1)
+
+    # Drop the demand columns after calculation
+    merged_df.drop(columns=[col for col in merged_df.columns if col.endswith('_demand')], inplace=True)
 
     # Replace NaN or infinite values with zeroes
-    merged_df = merged_df.replace([float('inf'), -float('inf')], 0).fillna(0)
-    
-    return merged_df
+    merged_df.replace([float('inf'), -float('inf')], 0, inplace=True)
+    merged_df.fillna(0, inplace=True)
 
+    return merged_df
 
 def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
     # Identify demand and billed columns
@@ -877,14 +887,8 @@ with tab1:
 
                         dma_volume_df = add_month_column_from_index(dma_volume_df)
                         dma_merged_df = join_billed_with_demand(dma_volume_df, water_demand_dma)
-                        dma_merged_df = calculate_percentage_billed(dma_merged_df)
+                        dma_merged_df = calculate_percentage_billed(dma_merged_df,n)
                         dma_merged_df = dma_merged_df.drop(columns="Month")
-
-                        
-                        
-
-                        # st.markdown("### DMA Water Demand, Total Cost, and Billed Cost")
-                        # st.dataframe(dma_merged_df)
 
 
                         st.markdown("### Percentage of Billed Volume per DMA")
@@ -902,7 +906,7 @@ with tab1:
                         dma_value_merged_df = join_billed_with_demand(dma_value_df, water_demand_dma)
                         dma_value_merged_df = dma_value_merged_df.drop(columns="Month")
                         # st.markdown("### DMA Billed Value, Total Demand, and thats all")
-                        st.dataframe(dma_merged_df)
+                        # st.dataframe(dma_merged_df)
 
                         # Function for the plot
                         plot_multiple_demand_billed(dma_merged_df, title="Water Demand vs Billed Volumes per DMA")
@@ -934,7 +938,7 @@ with tab1:
 
                         zone_volume_df = add_month_column_from_index(zone_volume_df)
                         zone_merged_df = join_billed_with_demand(zone_volume_df, water_demand_zone)
-                        zone_merged_df = calculate_percentage_billed(zone_merged_df)
+                        zone_merged_df = calculate_percentage_billed(zone_merged_df,n)
                         zone_merged_df = zone_merged_df.drop(columns="Month")
 
                         zone_value_df = add_month_column_from_index(zone_value_df)
