@@ -394,7 +394,7 @@ def plot_billed_vs_expected(df, n, selected_dmas_zones, title="Total Billed vs E
             go.Bar(
                 x=x_labels, 
                 y=df[expected_column], 
-                name=f"Expected - {dma_zone}", 
+                name=f"Expected Billing - {dma_zone}", 
                 marker_color=colors[i % len(colors)],
                 opacity=0.7
             )
