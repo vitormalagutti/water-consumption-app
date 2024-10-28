@@ -998,6 +998,20 @@ with tab1:
                             st.markdown("### Percentage of Billed Volume per Zone")
                             st.dataframe(zone_merged_df.iloc[:,-n:])
 
+                            zone_merged_df.index = pd.to_datetime(zone_merged_df.index, format='%m/%y')
+                            unique_dates = zone_merged_df.index.sort_values().strftime('%m/%y').tolist()  # Get unique sorted dates as month-year strings
+
+                            # Date range selection
+                            start_date, end_date = st.select_slider(
+                                "Select Date Range",
+                                options=unique_dates,
+                                value=(unique_dates[0], unique_dates[-1])  # Default to full range
+                            )
+
+                            # Convert selected dates back to datetime format to filter
+                            start_date_dt = pd.to_datetime(start_date, format='%m/%y')
+                            end_date_dt = pd.to_datetime(end_date, format='%m/%y')
+
                             plot_multiple_demand_billed(zone_merged_df, n, selected_dmas_zones, title="Water Demand vs Billed Volumes per Zone")
 
                         elif billing_type == "Value (EGP £) Analysis" :
@@ -1016,6 +1030,20 @@ with tab1:
 
                             st.markdown("### Billing Analysis by EGP£ per Zone")
                             st.dataframe(result_df)
+
+                            zone_value_df.index = pd.to_datetime(zone_value_df.index, format='%m/%y')
+                            unique_dates =  zone_value_df.index.sort_values().strftime('%m/%y').tolist()  # Get unique sorted dates as month-year strings
+
+                            # Date range selection
+                            start_date, end_date = st.select_slider(
+                                "Select Date Range",
+                                options=unique_dates,
+                                value=(unique_dates[0], unique_dates[-1])  # Default to full range
+                            )
+
+                            # Convert selected dates back to datetime format to filter
+                            start_date_dt = pd.to_datetime(start_date, format='%m/%y')
+                            end_date_dt = pd.to_datetime(end_date, format='%m/%y')
 
                             plot_billed_vs_expected(result_df, n, selected_dmas_zones, title="Total Billed vs Expected EGP £")
                 
