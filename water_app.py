@@ -929,8 +929,8 @@ with tab1:
                             st.markdown("### Percentage of Billed Volume per DMA")
                             st.dataframe(dma_merged_df.iloc[:,-n:])
                             
-                            dma_merged_df.index = pd.to_datetime(dma_merged_df.index, format='%mm/%yy')
-                            unique_dates = dma_merged_df.index.sort_values().strftime('%mm/%yy').tolist()  # Get unique sorted dates as month-year strings
+                            dma_merged_df.index = pd.to_datetime(dma_merged_df.index, format='%m/%y')
+                            unique_dates = dma_merged_df.index.sort_values().strftime('%m/%y').tolist()  # Get unique sorted dates as month-year strings
 
                             # Date range selection
                             start_date, end_date = st.select_slider(
@@ -940,8 +940,8 @@ with tab1:
                             )
 
                             # Convert selected dates back to datetime format to filter
-                            start_date_dt = pd.to_datetime(start_date, format='%mm/%yy')
-                            end_date_dt = pd.to_datetime(end_date, format='%mm/%yy')       
+                            start_date_dt = pd.to_datetime(start_date, format='%m/%y')
+                            end_date_dt = pd.to_datetime(end_date, format='%m/%y')       
 
                             
                             plot_multiple_demand_billed(dma_merged_df, n, selected_dmas_zones, title="Water Demand vs Billed Volumes per DMA")
