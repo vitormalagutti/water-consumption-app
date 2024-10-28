@@ -259,7 +259,7 @@ def plot_multiple_demand_billed(df, n, selected_dmas_zones, title="Water Demand 
                 x=x_labels,
                 y=df[demand_column],
                 name=f"Demand - {dma_zone_number}",
-                #offsetgroup=i,
+                opacity=0.7,
                 marker_color=colors[i % len(colors)],
                 )
         )
