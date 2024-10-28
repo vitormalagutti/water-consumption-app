@@ -216,14 +216,11 @@ def calculate_percentage_billed(merged_df, n):
     for i in range(n, 2 * n):
         merged_df.rename(columns={merged_df.columns[i]: f"Water Demand - {merged_df.columns[i-n]}"}, inplace=True)
 
-    # Calculate the percentage of billed volumes compared to demand
+    # Calculate the percentage of billed volumes compared to demand using renamed columns
     for i in range(2 * n, 3 * n):
-        column = merged_df.columns[i]
-        base_column = column.replace('_demand', '')  # Remove '_demand' suffix to get the base column name
-        merged_df[f'% Billed - {base_column}'] = round((merged_df[base_column] / merged_df[column]) * 100, 1)
-
-    # Drop the demand columns after calculation
-    merged_df.drop(columns=[col for col in merged_df.columns if col.endswith('_demand')], inplace=True)
+        billed_column = merged_df.columns[i - 2 * n]  # Get corresponding "Volume Billed" column
+        demand_column = merged_df.columns[i - n]      # Get corresponding "Water Demand" column
+        merged_df[f'% Billed - {billed_column}'] = round((merged_df[billed_column] / merged_df[demand_column]) * 100, 1)
 
     # Replace NaN or infinite values with zeroes
     merged_df.replace([float('inf'), -float('inf')], 0, inplace=True)
