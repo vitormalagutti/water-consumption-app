@@ -902,7 +902,7 @@ with tab1:
                         dma_value_merged_df = join_billed_with_demand(dma_value_df, water_demand_dma)
                         dma_value_merged_df = dma_value_merged_df.drop(columns="Month")
                         # st.markdown("### DMA Billed Value, Total Demand, and thats all")
-                        # st.dataframe(dma_value_merged_df)
+                        st.dataframe(dma_merged_df)
 
                         # Function for the plot
                         plot_multiple_demand_billed(dma_merged_df, title="Water Demand vs Billed Volumes per DMA")
