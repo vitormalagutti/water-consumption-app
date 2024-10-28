@@ -793,7 +793,7 @@ with tab1:
                         dma_merged_df = calculate_percentage_billed(dma_merged_df)
                         dma_merged_df = dma_merged_df.drop(columns="Month")
 
-                        n = len(unique_dmas)
+                        #n = len(unique_dmas)
 
 
 
