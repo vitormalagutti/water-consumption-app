@@ -796,12 +796,12 @@ with tab1:
                         
                         dma_value_df = add_month_column_from_index(dma_value_df)
                         dma_value_merged_df = join_billed_with_demand(dma_value_df, water_demand_dma)
-                        dma_value_merged_df = calculate_percentage_billed(dma_value_merged_df)
                         dma_value_merged_df = dma_value_merged_df.drop(columns="Month")
+                        st.markdown("### DMA Billed Value, Total Demand, and thats all")
+                        st.dataframe(dma_value_merged_df)
 
-
-                        st.markdown("### DMA Water Demand, Total Cost, and Billed Cost")
-                        st.dataframe(dma_merged_df)
+                        # st.markdown("### DMA Water Demand, Total Cost, and Billed Cost")
+                        # st.dataframe(dma_merged_df)
 
                         with col1:
                             st.markdown("### Percentage of Billed Volume per DMA")
@@ -809,7 +809,7 @@ with tab1:
 
                         with col2:
                             # User input for the average price per m³
-                            avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=5.0)  # Default value is 5 EGP£ for example
+                            avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=2.0)  # Default value is 5 EGP£ for example
 
 
 
