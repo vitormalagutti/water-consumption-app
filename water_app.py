@@ -232,52 +232,6 @@ def calculate_percentage_billed(merged_df, n):
 
     return merged_df
 
-def aplot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
-    # Identify demand and billed columns
-    demand_columns = [col for col in df.columns if "Water Demand" in col]
-    billed_columns = [col for col in df.columns if "Volume Billed" in col]
-    percent_columns = [col for col in df.columns if '% Billed' in col]
-
-    # Use the DataFrame index as the x-axis labels (assuming it's the dates)
-    x_labels = df.index
-    positions = np.arange(len(x_labels))  # Positions should match the number of index entries (rows)
-
-    fig, ax = plt.subplots(figsize=(12, 6))
-
-    # Set bar width
-    bar_width = 0.1
-    total_bar_width = bar_width * len(demand_columns)  # Total width of all Expected bars for one group
-
-    # Plot Demand Bars for each demand column
-    for i, demand_column in enumerate(demand_columns):
-        # Extract the DMA/Zone number from the column name
-        dma_zone_number = demand_column.split(" - ")[-1]
-        ax.bar(positions - total_bar_width / 2 + i * bar_width, df[demand_column], width=bar_width, 
-               label=f"Demand - {dma_zone_number}", alpha=0.6)
-    
-    # Plot Billed Percentages as lines on the same plot
-    for i, billed_column in enumerate(billed_columns):
-        # Extract the DMA/Zone number from the column name
-        dma_zone_number = billed_column.split(" - ")[-1]
-        ax.plot(positions, df[billed_column], marker='o', label=f"Billed - {dma_zone_number}", linestyle='--')
-
-    # Set labels and title
-    ax.set_xlabel("Date")
-    ax.set_ylabel("Volume - m3")
-    ax.set_title(title)
-    
-    # Set x-ticks and labels
-    ax.set_xticks(positions)
-    ax.set_xticklabels(x_labels, rotation=45)
-    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ','))) # Format the y-axis labels with a thousand separator
-    ax.grid(True, which='both', axis='y', linestyle='--', linewidth=0.7)
-    
-    # Add legend
-    ax.legend(loc='best')
-    
-    plt.tight_layout()
-    st.pyplot(fig)
-
 def plot_multiple_demand_billed(df, n, selected_dmas_zones, title="Water Demand vs Billed Volumes"):
     # Ensure `selected_dmas_zones` is a list of strings to match column suffixes
     selected_dmas_zones = [str(zone) for zone in selected_dmas_zones]
@@ -308,7 +262,7 @@ def plot_multiple_demand_billed(df, n, selected_dmas_zones, title="Water Demand 
                 x=x_labels,
                 y=df[demand_column],
                 name=f"Demand - {dma_zone_number}",
-                offsetgroup=i,
+                #offsetgroup=i,
                 marker_color=colors[i % len(colors)],
                 width=bar_width,
             )
