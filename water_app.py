@@ -286,6 +286,10 @@ def calculate_expected_egp_and_percentage(merged_df, avg_price, n):
     # Replace NaN or infinite values with zeroes
     merged_df = merged_df.replace([float('inf'), -float('inf')], 0).fillna(0)
 
+    # Step 3: Drop the '_demand' columns
+    demand_columns = [col for col in merged_df.columns if col.endswith('_demand')]
+    merged_df.drop(columns=demand_columns, inplace=True)
+
     return merged_df
 
 with tab1:
