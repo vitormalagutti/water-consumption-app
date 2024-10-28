@@ -524,6 +524,7 @@ with tab1:
                         ax.set_xticklabels(user_summary_zone_plot.index, rotation=0)
                         y_max = user_summary_zone_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
                         ax.set_yticks(range(0, int(y_max) + 5000, 5000))
+                        ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ','))) # Format the y-axis labels with a thousand separator
                         st.pyplot(fig)
 
                     with col2:
@@ -567,6 +568,7 @@ with tab1:
                         y_max = user_summary_dma_plot[['Non-user', 'Illegal', 'Legal', 'Total Population']].values.max()
                         ax.set_yticks(range(0, int(y_max) + 5000, 5000))
                         ax.set_xticklabels(user_summary_dma_plot.index, rotation=0)
+                        ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ','))) # Format the y-axis labels with a thousand separator
                         st.pyplot(fig)
 
                     with col2:
