@@ -242,7 +242,7 @@ def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
     
     # Plot Billed Percentages as lines on the same plot
     for i, billed_column in enumerate(billed_columns):
-        ax.plot(positions, df[billed_column], marker='o', label=f"Billed {i+1}", linestyle='--')
+        ax.plot(positions, df[billed_column], marker='o', label=f"Billed {billed_columns.split(' ')[-1]}", linestyle='--')
 
     # Set labels and title
     ax.set_xlabel("Date")
