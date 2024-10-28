@@ -894,7 +894,7 @@ with tab1:
                 volume_df = volume_df.drop_duplicates(subset='Subscription Number')
                 value_df = value_df.drop_duplicates(subset='Subscription Number')
                 correlation_df = correlation_df.drop_duplicates(subset='Subscription Number')
-                
+
                 # Step 2: Join the correlation file with the original buildings file on 'Block Number'
                 merged_df = pd.merge(buildings_df, correlation_df, on='Block Number', how='left')
 
@@ -902,13 +902,10 @@ with tab1:
                 volume_df = pd.merge(correlation_df, volume_df, on='Subscription Number', how='left')
                 value_df = pd.merge(correlation_df, value_df, on='Subscription Number', how='left')
 
-
                 # Step 4: Group by 'Block Number' and sum Volume and Value
                 volume_summed = volume_df.groupby('Block Number').sum(numeric_only=True).reset_index()
                 value_summed = value_df.groupby('Block Number').sum(numeric_only=True).reset_index()
-                volume_summed
-                duplicates = volume_summed[volume_summed.duplicated(subset='Subscription Number', keep=False)]
-                st.write("Duplicates in correlation_df:", duplicates)
+                
                 # Step 5: Merge the summed volumes and values back to the original df
                 billed_df = pd.merge(merged_df, volume_summed, on='Block Number', how='left')
                 billed_df = pd.merge(billed_df, value_summed, on='Block Number', how='left', suffixes=('_volume', '_value'))
