@@ -807,12 +807,7 @@ with tab1:
                         with col2:
                             # User input for the average price per m³
                             avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=5.0)  # Default value is 5 EGP£ for example
-                        
-                        for column in dma_volume_df.columns:
-                            total_demand_cost = dma_merged_df[column] * avg_price_per_m3
-                            total_billed_cost = dma_merged_df[f"{column} % Billed"] * avg_price_per_m3 / 100
-                            dma_merged_df[f"{column} Total Cost"] = total_demand_cost
-                            dma_merged_df[f"{column} Billed Cost"] = total_billed_cost
+
 
 
                         # Function for the plot
