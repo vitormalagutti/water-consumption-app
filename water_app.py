@@ -669,7 +669,7 @@ with tab1:
                         water_demand_zone.set_index('Zone', inplace=True)        
                         water_demand_zone = water_demand_zone.transpose()
                         water_demand_zone.columns = pd.to_numeric(water_demand_zone.columns, errors='coerce').astype('Int64')                    
-                        st.markdown("### 💧 Monthly Water Demand per Zone")
+                        st.markdown("### 💧 Monthly Water Demand per Zone - m3")
                         st.dataframe(water_demand_zone, height=500)
 
                     with col2:
@@ -681,7 +681,7 @@ with tab1:
                         pastel_colors = sns.color_palette("pastel", len(columns_to_plot))
 
                         water_demand_zone[columns_to_plot].plot(kind='bar', stacked=True, color=pastel_colors, ax=ax)
-                        ax.set_title('Monthly Water Demand by Zone', fontsize=15)
+                        ax.set_title('Monthly Water Demand by Zone - m3', fontsize=15)
                         ax.set_xlabel('Month', fontsize=12)
                         ax.set_ylabel('Water Demand (m3)', fontsize=13)
                         ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
