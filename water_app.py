@@ -848,7 +848,7 @@ with tab1:
 
                             # User input for the average price per m³
                             avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=2.0)  # Default value is 5 EGP£ for example
-                            st.markdown("### test")
+                            st.markdown("### Billing Analysis by EGP£ per DMA")
                             result_df = calculate_expected_egp_and_percentage(dma_value_merged_df, avg_price_per_m3, n)
                             st.dataframe(result_df)
 
@@ -881,6 +881,11 @@ with tab1:
                         st.dataframe(zone_merged_df.iloc[:,-n:])
 
                         plot_multiple_demand_billed(zone_merged_df, title="Water Demand vs Billed Volumes per Zone")
+
+                        avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=2.0)  # Default value is 5 EGP£ for example
+                        st.markdown("### Billing Analysis by EGP£ per DMA")
+                        result_df = calculate_expected_egp_and_percentage(dma_value_merged_df, avg_price_per_m3, n)
+                        st.dataframe(result_df)
                 
             else:
                 st.markdown("Input the (1) Billed Volumes, (2) Billed Values, and the (3) Building Blocks / Subscription Number key data to proceed with Billing Analysis")
