@@ -261,6 +261,11 @@ def plot_multiple_demand_billed(df, title="Water Demand vs Billed Volumes"):
     st.pyplot(fig)
 
 def calculate_expected_egp_and_percentage(merged_df, avg_price, n):
+    # Rename the first n columns to "Total Billed EGP - (DMA number)"
+    for i in range(n):
+        dma_number = merged_df.columns[i]  # Use current column name as DMA number
+        merged_df.rename(columns={dma_number: f'Total Billed EGP - {dma_number}'}, inplace=True)
+
     # Step 1: Calculate Expected EGP Value for each demand column
     for column in merged_df.columns:
         if column.endswith('_demand'):  # Ensure we are working with demand columns
@@ -271,8 +276,8 @@ def calculate_expected_egp_and_percentage(merged_df, avg_price, n):
 
     # Step 2: Calculate the percentage billed in EGP for each DMA
     for i in range(n):
-        billed_column = merged_df.columns[i]  # First n columns are the billed values
-        dma_number = billed_column  # Assuming the DMA identifier is the same as the column name
+        billed_column = merged_df.columns[i]  # Get the renamed billed column
+        dma_number = billed_column.replace('Total Billed EGP - ', '')  # Extract DMA number
         expected_column = f'Expected EGP Value - {dma_number}'
 
         if expected_column in merged_df.columns:
