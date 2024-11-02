@@ -1047,7 +1047,6 @@ with tab1:
                             dma_value_df = dma_value_df.round(0).astype(int)
                             dma_value_df.set_index('DMA', inplace=True)        
                             dma_value_df = dma_value_df.transpose()
-
                             dma_value_df = add_month_column_from_index(dma_value_df)
                             
                             dma_value_df.index = pd.to_datetime( dma_value_df.index, format='%m/%y')
@@ -1123,7 +1122,8 @@ with tab1:
                             plot_multiple_demand_billed(zone_merged_df, n, selected_dmas_zones, title="Water Demand vs Billed Volumes per Zone")
 
                         elif billing_type == "Value (EGP £) Analysis" :
-
+                            st.markdown("## Commercial Losses Analysis (EGP£)")
+                            
                             avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=2.0)  # Default value is 5 EGP£ for example
                             
                             zone_value_df = pd.merge(merged_df[['Block Number', 'Zone']], value_summed, on='Block Number', how='left')
@@ -1132,18 +1132,8 @@ with tab1:
                             zone_value_df = zone_value_df.round(0).astype(int)
                             zone_value_df.set_index('Zone', inplace=True)        
                             zone_value_df = zone_value_df.transpose()
-                            
                             zone_value_df = add_month_column_from_index(zone_value_df)
-                            zone_value_merged_df = join_billed_with_demand(zone_value_df, water_demand_zone)
-                            result_df = calculate_expected_egp_and_percentage(zone_value_merged_df, avg_price_per_m3, n)                            
-
-                            st.markdown("### Billing Analysis by EGP£ per Zone")
-                            st.dataframe(result_df)
                             
-                            
-                            
-                            
-
                             zone_value_df.index = pd.to_datetime(zone_value_df.index, format='%m/%y')
                             unique_dates =  zone_value_df.index.sort_values().strftime('%m/%y').tolist()  # Get unique sorted dates as month-year strings
 
@@ -1158,6 +1148,28 @@ with tab1:
                             start_date_dt = pd.to_datetime(start_date, format='%m/%y')
                             end_date_dt = pd.to_datetime(end_date, format='%m/%y')
 
+                            zone_value_merged_df = join_billed_with_demand(zone_value_df, water_demand_zone)
+                            result_df = calculate_expected_egp_and_percentage(zone_value_merged_df, avg_price_per_m3, n)                            
+
+                            revenue_difference_df = calculate_revenue_difference(result_df, n, start_date_dt, end_date_dt)
+
+                            col1, col2 = st.columns([5,2])
+                            with col1:
+                                st.write("Commercial Losses by DMA and Total Area:", revenue_difference_df)
+                            with col2:
+                                st.markdown("#### Average Commercial Losses in the selected period:")
+                                for i in range(n+1):
+                                    column_name = revenue_difference_df.columns[i]  # Get the column name
+                                    average_loss = round(np.mean(revenue_difference_df[column_name]), -3)  # Calculate and round the mean
+                                    st.write(f"##### **{column_name}:** {average_loss:,} EGP£")
+                                
+                            plot_commercial_loss(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Loss (EGP£) DMA")
+                            plot_billed_vs_expected(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date)
+                            
+                            
+                            
+                            st.markdown("### Billing Analysis by EGP£ per Zone")
+                            st.dataframe(result_df)
                             
                             plot_billed_vs_expected(result_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Total Billed vs Expected EGP £")
                 
