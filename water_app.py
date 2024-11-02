@@ -687,7 +687,7 @@ with tab1:
             st.markdown("## Summary of the Network Users")
 
             # Create columns for side-by-side layout for the tables
-            col1, col2, col3 = st.columns([4,1, 1])
+            col1, col2, col3 = st.columns([4, 1, 2])
 
             # Place the two tables in the side-by-side layout
             
@@ -733,10 +733,10 @@ with tab1:
 
                     with col2:
                         # Display the calculated total values
-                        st.write(f"Total Population: {round(total_population_all_zone,-2)}")
-                        st.write(f"Legal %: {legal_sum_zone:.1f}%")
-                        st.write(f"Illegal %: {illegal_sum_zone:.1f}%")
-                        st.write(f"Non-user %: {non_user_sum_zone:.1f}%")
+                        st.write(f"## Total Population: {round(total_population_all_zone,-2)}")
+                        st.write(f"## Legal %: {legal_sum_zone:.1f}%")
+                        st.write(f"## Illegal %: {illegal_sum_zone:.1f}%")
+                        st.write(f"## Non-user %: {non_user_sum_zone:.1f}%")
                         
                 elif visualization_type == "DMA" and "DMA" in available_options:
                     # Round the population and percentages for user_summary_dma
