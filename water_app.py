@@ -1077,8 +1077,8 @@ with tab1:
                                     average_loss = round(np.mean(revenue_difference_df[column_name]), -3)  # Calculate and round the mean
                                     st.write(f"##### **{column_name}:** {average_loss:,} EGP£")
                                 
-                            plot_commercial_loss(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Loss (EGP£) DMA")
-                            plot_billed_vs_expected(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Losses in EGP£")
+                            plot_commercial_loss(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Losses (EGP£)")
+                            plot_billed_vs_expected(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Losses per DMA (EGP£)")
 
                             st.markdown("### Billing Analysis by EGP£ per DMA")
                             st.dataframe(result_df)
@@ -1163,8 +1163,8 @@ with tab1:
                                     average_loss = round(np.mean(revenue_difference_df[column_name]), -3)  # Calculate and round the mean
                                     st.write(f"##### **{column_name}:** {average_loss:,} EGP£")
                                 
-                            plot_commercial_loss(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Loss (EGP£) DMA")
-                            plot_billed_vs_expected(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Losses in EGP£")
+                            plot_commercial_loss(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Losses (EGP£)")
+                            plot_billed_vs_expected(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Losses per Zone (EGP£)")
                             
                             
                             
