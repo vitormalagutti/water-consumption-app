@@ -329,11 +329,11 @@ def calculate_expected_egp_and_percentage(merged_df, avg_price, n):
 
 def plot_billed_vs_expected(df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Total Billed vs Expected EGP Values"):
     selected_dmas_zones = [str(zone) for zone in selected_dmas_zones]
-    selected_dmas_zones
+    
     # Filter columns based on selected DMAs/Zones
     billed_columns = [col for col in df.columns[:n] if col.split(' ')[-1] in selected_dmas_zones]
     expected_columns = [col for col in df.columns[n:2*n] if col.split(' ')[-1] in selected_dmas_zones]
-
+    billed_column
     # Filter DataFrame to only include selected columns
     filtered_df = df[billed_columns + expected_columns].copy()
     filtered_df.index = pd.to_datetime(filtered_df.index, format='%m/%y')
