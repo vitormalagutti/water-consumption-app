@@ -1000,9 +1000,9 @@ with tab1:
                             end_date_dt = pd.to_datetime(end_date, format='%m/%y')
 
                             # Display the result
-                            st.write("Revenue Difference by Zone/DMA and Total:", revenue_difference_df)
+                            st.write("Commercial Losses by DMA and Total Area:", revenue_difference_df)
 
-                            plot_billed_vs_expected(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Total Billed vs Expected EGP £")
+                            plot_billed_vs_expected(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Losses in EGP £")
 
                             st.markdown("### Billing Analysis by EGP£ per DMA")
                             st.dataframe(result_df)
