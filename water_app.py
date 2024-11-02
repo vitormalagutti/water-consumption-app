@@ -352,12 +352,11 @@ def plot_billed_vs_expected(df, n, selected_dmas_zones, start_date_dt, end_date_
 
     # Plot Expected as bars
     for i, expected_column in enumerate(expected_columns):
-        dma_zone = expected_column.split(' ')[-1]  # Extract DMA/Zone number for label
         fig.add_trace(
             go.Bar(
                 x=x_labels, 
                 y=filtered_df[expected_column],  # Use filtered data here
-                name=f"Expected Billing - {dma_zone}", 
+                name=expected_column,  # Directly use column name as label
                 marker_color=colors[i % len(colors)],
                 opacity=0.6
             )
@@ -365,13 +364,12 @@ def plot_billed_vs_expected(df, n, selected_dmas_zones, start_date_dt, end_date_
 
     # Plot Total Billed as lines, reusing the colors from bars for consistency
     for i, billed_column in enumerate(billed_columns):
-        dma_zone = billed_column.split(' ')[-1]  # Extract DMA/Zone number for label
         fig.add_trace(
             go.Scatter(
                 x=x_labels, 
                 y=filtered_df[billed_column],  # Use filtered data here
                 mode='lines+markers',
-                name=f"Total Billed - {dma_zone}", 
+                name=billed_column,  # Directly use column name as label
                 line=dict(color=colors[i % len(colors)], dash='dash'),
                 marker=dict(size=8)
             )
@@ -390,7 +388,6 @@ def plot_billed_vs_expected(df, n, selected_dmas_zones, start_date_dt, end_date_
     
     # Render the plot using Plotly in Streamlit
     st.plotly_chart(fig)
-
 
 def calculate_revenue_difference(results_df, n, start_date_dt, end_date_dt):
     # Filter the DataFrame based on the date range
