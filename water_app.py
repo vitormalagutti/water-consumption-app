@@ -434,7 +434,7 @@ def plot_commercial_loss(revenue_diff_df, n, selected_dmas_zones, start_date_dt,
     fig = go.Figure()
 
     # Define a color palette for stacked bars
-    colors = px.colors.qualitative.Set3  # A distinct color palette for the zones/DMAs
+    colors = px.colors.qualitative.Set1  # A distinct color palette for the zones/DMAs
 
     # Plot each revenue difference as stacked bars
     for i, revenue_column in enumerate(revenue_columns):
