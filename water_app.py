@@ -1074,8 +1074,8 @@ with tab1:
                                 st.write("Commercial Losses by DMA and Total Area:", revenue_difference_df)
                             with col2:
                                 st.markdown("#### Average Commercial Losses in the selected period (EGP£):")
-                                st.write("#### Total Area", f"{round(np.mean(revenue_difference_df["Total Commercial Losses"]), -3)} EGP£")
-                                for i in range(n):
+                                #st.write(f"#### Total Area", {round(np.mean(revenue_difference_df["Total Commercial Losses"]), -3):,} EGP£)
+                                for i in range(n+1):
                                     column_name = revenue_difference_df.columns[i]  # Get the column name
                                     average_loss = round(np.mean(revenue_difference_df[column_name]), -3)  # Calculate and round the mean
                                     st.write(f"##### **{column_name}:** {average_loss:,} EGP£")
