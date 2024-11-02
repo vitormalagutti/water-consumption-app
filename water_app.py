@@ -1037,7 +1037,8 @@ with tab1:
                             plot_multiple_demand_billed(dma_merged_df, n, selected_dmas_zones, title="Water Demand vs Billed Volumes per DMA")
 
                         elif billing_type == "Value (EGP £) Analysis" :
-
+                            st.markdown("## Commercial Losses Analysis (EGP£)")
+                            
                             avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=2.0)  # Default value is 5 EGP£ for example
                             
                             dma_value_df = pd.merge(merged_df[['Block Number', 'DMA']], value_summed, on='Block Number', how='left')
@@ -1067,9 +1068,13 @@ with tab1:
                             result_df = calculate_expected_egp_and_percentage(dma_value_merged_df, avg_price_per_m3, n)
                             revenue_difference_df = calculate_revenue_difference(result_df, n, start_date_dt, end_date_dt)
 
-                            
                             # Display the result
-                            st.write("Commercial Losses (EGP£) by DMA and Total Area:", revenue_difference_df)
+                            col1, col2 = st.columns(2)
+                            with col1:
+                                st.write("Commercial Losses by DMA and Total Area (EGP£):", revenue_difference_df)
+                            with col2:
+                                st.write("Average Commercial Losses in the selected period (EGP£):", np.mean.revenue_difference_df["Total Commercial Losses"])
+                                
                             plot_commercial_loss(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Loss (EGP£) DMA")
                             plot_billed_vs_expected(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Losses in EGP£")
 
