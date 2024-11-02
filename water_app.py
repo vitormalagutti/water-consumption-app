@@ -468,7 +468,7 @@ def plot_commercial_loss(revenue_diff_df, n, selected_dmas_zones, start_date_dt,
         yaxis=dict(title="EGP £", tickformat=","),  # Format as currency
         barmode='stack',  # Stack bars
         template="plotly_white",  # Use a clean white theme
-        legend=dict(title="Series", x=1.05, y=1),  # Place legend outside the plot
+        legend=dict(title="Series", traceorder="reversed", x=1.05, y=1),  # Place legend outside the plot
         margin=dict(l=50, r=50, t=50, b=50)  # Adjust margins for better layout
     )
     
