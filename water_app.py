@@ -733,10 +733,10 @@ with tab1:
 
                     with col2:
                         # Display the calculated total values
-                        st.write(f"## Total Population: {round(total_population_all_zone,-2)}")
-                        st.write(f"## Legal %: {legal_sum_zone:.1f}%")
-                        st.write(f"## Illegal %: {illegal_sum_zone:.1f}%")
-                        st.write(f"## Non-user %: {non_user_sum_zone:.1f}%")
+                        st.write(f"#### Total Population: {round(total_population_all_zone,-2)}")
+                        st.write(f"#### Legal %: {legal_sum_zone:.1f}%")
+                        st.write(f"#### Illegal %: {illegal_sum_zone:.1f}%")
+                        st.write(f"#### Non-user %: {non_user_sum_zone:.1f}%")
                         
                 elif visualization_type == "DMA" and "DMA" in available_options:
                     # Round the population and percentages for user_summary_dma
