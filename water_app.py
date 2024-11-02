@@ -22,7 +22,7 @@ from branca.element import Template, MacroElement
 from streamlit_keplergl import keplergl_static
 
 # Set up the Streamlit page with custom title and layout
-st.set_page_config(page_title="Water Consumption Visualization", layout="wide")
+#st.set_page_config(page_title="Water Consumption Visualization", layout="wide")
 
 # Main Title with description
 st.title("💧 Water Demand Estimation and Visualization 💧")
