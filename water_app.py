@@ -295,8 +295,6 @@ def plot_multiple_demand_billed(df, n, selected_dmas_zones, title="Water Demand 
     # Show the plot in Streamlit
     st.plotly_chart(fig)
 
-
-
 def calculate_expected_egp_and_percentage(merged_df, avg_price, n):
     # Rename the first n columns to "Total Billed EGP - (DMA number)"
     for i in range(n):
@@ -328,7 +326,6 @@ def calculate_expected_egp_and_percentage(merged_df, avg_price, n):
     merged_df.drop(columns=demand_columns, inplace=True)
 
     return merged_df
-
 
 def plot_billed_vs_expected(df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Total Billed vs Expected EGP Values"):
 
@@ -394,6 +391,23 @@ def plot_billed_vs_expected(df, n, selected_dmas_zones, start_date_dt, end_date_
     # Render the plot using Plotly in Streamlit
     st.plotly_chart(fig)
 
+def calculate_revenue_difference(results_df, n):
+    # Create a new DataFrame for storing the revenue difference
+    revenue_diff_df = pd.DataFrame(index=results_df.index)
+    
+    # Calculate revenue difference for each zone/DMA
+    for i in range(n):
+        zone_id = results_df.columns[i].split(" - ")[-1]  # Extract zone/DMA number
+        billed_column = f"Total Billed EGP - {zone_id}"
+        expected_column = f"Expected EGP Value - {zone_id}"
+        
+        # Calculate the revenue difference and store it in the new DataFrame
+        revenue_diff_df[f"Revenue Difference EGP - {zone_id}"] = results_df[expected_column] - results_df[billed_column]
+
+    # Add a column for the total difference across all zones/DMAs
+    revenue_diff_df["Total Revenue Difference EGP"] = revenue_diff_df.sum(axis=1)
+
+    return revenue_diff_df
 
 with tab1:
 
@@ -969,6 +983,10 @@ with tab1:
                             dma_value_df = add_month_column_from_index(dma_value_df)
                             dma_value_merged_df = join_billed_with_demand(dma_value_df, water_demand_dma)
                             result_df = calculate_expected_egp_and_percentage(dma_value_merged_df, avg_price_per_m3, n)
+                            revenue_difference_df = calculate_revenue_difference(result_df, n)
+
+                            # Display the result
+                            st.write("Revenue Difference by Zone/DMA and Total:", revenue_difference_df)
 
                             st.markdown("### Billing Analysis by EGP£ per DMA")
                             st.dataframe(result_df)
@@ -1043,6 +1061,10 @@ with tab1:
 
                             st.markdown("### Billing Analysis by EGP£ per Zone")
                             st.dataframe(result_df)
+                            
+                            
+                            
+                            
 
                             zone_value_df.index = pd.to_datetime(zone_value_df.index, format='%m/%y')
                             unique_dates =  zone_value_df.index.sort_values().strftime('%m/%y').tolist()  # Get unique sorted dates as month-year strings
