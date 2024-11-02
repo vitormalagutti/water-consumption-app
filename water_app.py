@@ -1078,7 +1078,7 @@ with tab1:
                                 for i in range(n):
                                     column_name = revenue_difference_df.columns[i]  # Get the column name
                                     average_loss = round(np.mean(revenue_difference_df[column_name]), -3)  # Calculate and round the mean
-                                    st.write(f"#### **{column_name}:** {average_loss:,} EGP£")
+                                    st.write(f"##### **{column_name}:** {average_loss:,} EGP£")
                                 
                             plot_commercial_loss(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Loss (EGP£) DMA")
                             plot_billed_vs_expected(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Losses in EGP£")
