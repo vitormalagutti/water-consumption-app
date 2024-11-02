@@ -434,7 +434,7 @@ def plot_commercial_loss(revenue_diff_df, n, selected_dmas_zones, start_date_dt,
     fig = go.Figure()
 
     # Define a color palette for stacked bars
-    colors = px.colors.qualitative.Set2  # A distinct color palette for the zones/DMAs
+    colors = px.colors.qualitative.Set3  # A distinct color palette for the zones/DMAs
 
     # Plot each revenue difference as stacked bars
     for i, revenue_column in enumerate(revenue_columns):
@@ -1081,6 +1081,7 @@ with tab1:
                             plot_billed_vs_expected(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Losses per DMA (EGP£)")
 
                             st.markdown("### Billing Analysis by EGP£ per DMA")
+                            result_df.index = result_df.index.strftime('%m/%y')
                             st.dataframe(result_df)
                             plot_billed_vs_expected(result_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Total Billed vs Expected EGP£")
 
@@ -1165,7 +1166,6 @@ with tab1:
                                 
                             plot_commercial_loss(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Losses (EGP£)")
                             plot_billed_vs_expected(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Losses per Zone (EGP£)")
-                            
                             
                             
                             st.markdown("### Billing Analysis by EGP£ per Zone")
