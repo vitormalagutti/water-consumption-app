@@ -25,7 +25,7 @@ from streamlit_keplergl import keplergl_static
 st.set_page_config(page_title="Water Consumption Visualization", layout="wide")
 
 # Main Title with description
-st.title("💧 Water Demand Estimation and Visualization 💧")
+st.title("💧 Water Demand and Commercial Losses Model 💧")
 st.markdown("This app calculates water consumption based on buildings information, with breakdowns by zone and user type. Use the sidebar to provide average consumption details and view interactive maps, graphs, and tables.")
 
 # Streamlit tabs for organized visualization
