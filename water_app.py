@@ -408,10 +408,10 @@ def calculate_revenue_difference(results_df, n, start_date_dt, end_date_dt):
         expected_column = f"Expected EGP Value - {zone_id}"
         
         # Calculate the revenue difference and store it in the new DataFrame
-        revenue_diff_df[f"Revenue Difference - {zone_id}"] = filtered_df[expected_column] - filtered_df[billed_column]
+        revenue_diff_df[f"Commercial Losses - {zone_id}"] = filtered_df[expected_column] - filtered_df[billed_column]
 
     # Add a column for the total difference across all zones/DMAs
-    revenue_diff_df["Total Revenue Difference"] = revenue_diff_df.sum(axis=1)
+    revenue_diff_df["Total Commercial Losses"] = revenue_diff_df.sum(axis=1)
 
     return revenue_diff_df
 
