@@ -420,7 +420,7 @@ def plot_commercial_loss(revenue_diff_df, n, selected_dmas_zones, start_date_dt,
     
     # Filter columns based on selected DMAs/Zones
     revenue_columns = [col for col in revenue_diff_df.columns if col.split(' ')[-1] in selected_dmas_zones]
-    total_column = "Total Revenue Difference"
+    total_column = "Total Commercial Losses"
 
     # Filter DataFrame to only include selected columns
     filtered_df = revenue_diff_df[revenue_columns + [total_column]].copy()
