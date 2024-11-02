@@ -973,12 +973,6 @@ with tab1:
                             plot_multiple_demand_billed(dma_merged_df, n, selected_dmas_zones, title="Water Demand vs Billed Volumes per DMA")
 
                         elif billing_type == "Value (EGP £) Analysis" :
- 
-
-
-                            # Convert selected dates back to datetime format to filter
-                            start_date_dt = pd.to_datetime(start_date, format='%m/%y')
-                            end_date_dt = pd.to_datetime(end_date, format='%m/%y')
 
                             avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=2.0)  # Default value is 5 EGP£ for example
                             
@@ -1000,6 +994,10 @@ with tab1:
                                 options=unique_dates,
                                 value=(unique_dates[0], unique_dates[-1])  # Default to full range
                             )
+
+                            # Convert selected dates back to datetime format to filter
+                            start_date_dt = pd.to_datetime(start_date, format='%m/%y')
+                            end_date_dt = pd.to_datetime(end_date, format='%m/%y')
                             
                             dma_value_merged_df = join_billed_with_demand(dma_value_df, water_demand_dma)
                             result_df = calculate_expected_egp_and_percentage(dma_value_merged_df, avg_price_per_m3, n)
