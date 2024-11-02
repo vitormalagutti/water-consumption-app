@@ -415,6 +415,69 @@ def calculate_revenue_difference(results_df, n, start_date_dt, end_date_dt):
 
     return revenue_diff_df
 
+def plot_commercial_loss(revenue_diff_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Loss (Revenue Difference) by Zone/DMA"):
+    selected_dmas_zones = [str(zone) for zone in selected_dmas_zones]
+    
+    # Filter columns based on selected DMAs/Zones
+    revenue_columns = [col for col in revenue_diff_df.columns if col.split(' ')[-1] in selected_dmas_zones]
+    total_column = "Total Revenue Difference"
+
+    # Filter DataFrame to only include selected columns
+    filtered_df = revenue_diff_df[revenue_columns + [total_column]].copy()
+    filtered_df.index = pd.to_datetime(filtered_df.index, format='%m/%y')
+    
+    # Filter based on the selected date range
+    filtered_df = filtered_df[(filtered_df.index >= start_date_dt) & (filtered_df.index <= end_date_dt)]
+
+    # Use the filtered DataFrame index as the x-axis labels
+    x_labels = filtered_df.index
+
+    # Create a Plotly figure
+    fig = go.Figure()
+
+    # Define a color palette for stacked bars
+    colors = px.colors.qualitative.Set2  # A distinct color palette for the zones/DMAs
+
+    # Plot each revenue difference as stacked bars
+    for i, revenue_column in enumerate(revenue_columns):
+        dma_zone = revenue_column.split(' ')[-1]  # Extract DMA/Zone number for label
+        fig.add_trace(
+            go.Bar(
+                x=x_labels, 
+                y=filtered_df[revenue_column],  # Use filtered data here
+                name=f"Commercial Loss - {dma_zone}", 
+                marker_color=colors[i % len(colors)],
+                opacity=0.8
+            )
+        )
+
+    # Plot Total Revenue Difference as a line on top of stacked bars
+    fig.add_trace(
+        go.Scatter(
+            x=x_labels, 
+            y=filtered_df[total_column],  # Use filtered data here
+            mode='lines+markers',
+            name="Total Commercial Loss", 
+            line=dict(color="black", width=2, dash="dashdot"),
+            marker=dict(size=8, color="black")
+        )
+    )
+
+    # Update layout for readability and interactivity
+    fig.update_layout(
+        title=title,
+        xaxis=dict(title="Date", tickmode='array', tickvals=x_labels),
+        yaxis=dict(title="EGP £", tickformat=","),  # Format as currency
+        barmode='stack',  # Stack bars
+        template="plotly_white",  # Use a clean white theme
+        legend=dict(title="Series", x=1.05, y=1),  # Place legend outside the plot
+        margin=dict(l=50, r=50, t=50, b=50)  # Adjust margins for better layout
+    )
+    
+    # Render the plot using Plotly in Streamlit
+    st.plotly_chart(fig)
+
+
 with tab1:
 
     # File upload section with icon
@@ -1009,7 +1072,7 @@ with tab1:
                             
                             # Display the result
                             st.write("Commercial Losses (EGP£) by DMA and Total Area:", revenue_difference_df)
-
+                            plot_commercial_loss(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Loss (EGP£) DMA")
                             plot_billed_vs_expected(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Losses in EGP£")
 
                             st.markdown("### Billing Analysis by EGP£ per DMA")
