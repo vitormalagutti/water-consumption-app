@@ -1069,7 +1069,7 @@ with tab1:
                             revenue_difference_df = calculate_revenue_difference(result_df, n, start_date_dt, end_date_dt)
 
                             # Display the result
-                            col1, col2 = st.columns(2)
+                            col1, col2 = st.columns(4,2)
                             with col1:
                                 st.write("Commercial Losses by DMA and Total Area (EGP£):", revenue_difference_df)
                             with col2:
