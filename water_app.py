@@ -985,12 +985,6 @@ with tab1:
                             result_df = calculate_expected_egp_and_percentage(dma_value_merged_df, avg_price_per_m3, n)
                             revenue_difference_df = calculate_revenue_difference(result_df, n)
 
-                            # Display the result
-                            st.write("Revenue Difference by Zone/DMA and Total:", revenue_difference_df)
-
-                            st.markdown("### Billing Analysis by EGP£ per DMA")
-                            st.dataframe(result_df)
-                            
                             dma_value_df.index = pd.to_datetime( dma_value_df.index, format='%m/%y')
                             unique_dates =  dma_value_df.index.sort_values().strftime('%m/%y').tolist()  # Get unique sorted dates as month-year strings
 
@@ -1004,6 +998,16 @@ with tab1:
                             # Convert selected dates back to datetime format to filter
                             start_date_dt = pd.to_datetime(start_date, format='%m/%y')
                             end_date_dt = pd.to_datetime(end_date, format='%m/%y')
+
+                            # Display the result
+                            st.write("Revenue Difference by Zone/DMA and Total:", revenue_difference_df)
+
+                            plot_billed_vs_expected(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Total Billed vs Expected EGP £")
+
+                            st.markdown("### Billing Analysis by EGP£ per DMA")
+                            st.dataframe(result_df)
+                            
+
 
                             plot_billed_vs_expected(result_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Total Billed vs Expected EGP £")
 
