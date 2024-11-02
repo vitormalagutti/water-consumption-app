@@ -459,7 +459,7 @@ def plot_commercial_loss(revenue_diff_df, n, selected_dmas_zones, start_date_dt,
             mode='lines+markers',
             name="Total Commercial Loss", 
             line=dict(color="black", width=2, dash="dashdot"),
-            marker=dict(size=8, color="black")
+            marker=dict(size=8, color="blue")
         )
     )
 
