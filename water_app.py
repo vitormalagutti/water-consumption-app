@@ -391,21 +391,24 @@ def plot_billed_vs_expected(df, n, selected_dmas_zones, start_date_dt, end_date_
     # Render the plot using Plotly in Streamlit
     st.plotly_chart(fig)
 
-def calculate_revenue_difference(results_df, n):
-    # Create a new DataFrame for storing the revenue difference
-    revenue_diff_df = pd.DataFrame(index=results_df.index)
+def calculate_revenue_difference(results_df, n, start_date_dt, end_date_dt):
+    # Filter the DataFrame based on the date range
+    filtered_df = results_df[(results_df.index >= start_date_dt) & (results_df.index <= end_date_dt)]
+    
+    # Create a new DataFrame for storing the revenue difference within the date range
+    revenue_diff_df = pd.DataFrame(index=filtered_df.index)
     
     # Calculate revenue difference for each zone/DMA
     for i in range(n):
-        zone_id = results_df.columns[i].split(" - ")[-1]  # Extract zone/DMA number
+        zone_id = filtered_df.columns[i].split(" - ")[-1]  # Extract zone/DMA number
         billed_column = f"Total Billed EGP - {zone_id}"
         expected_column = f"Expected EGP Value - {zone_id}"
         
         # Calculate the revenue difference and store it in the new DataFrame
-        revenue_diff_df[f"Commercial Losses EGP - {zone_id}"] = results_df[expected_column] - results_df[billed_column]
+        revenue_diff_df[f"Revenue Difference - {zone_id}"] = filtered_df[expected_column] - filtered_df[billed_column]
 
     # Add a column for the total difference across all zones/DMAs
-    revenue_diff_df["Total Commercial Loss EGP"] = revenue_diff_df.sum(axis=1)
+    revenue_diff_df["Total Revenue Difference"] = revenue_diff_df.sum(axis=1)
 
     return revenue_diff_df
 
@@ -1000,16 +1003,16 @@ with tab1:
                             end_date_dt = pd.to_datetime(end_date, format='%m/%y')
 
                             # Display the result
-                            st.write("Commercial Losses by DMA and Total Area:", revenue_difference_df)
+                            st.write("Commercial Losses (EGP£) by DMA and Total Area:", revenue_difference_df)
 
-                            plot_billed_vs_expected(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Losses in EGP £")
+                            plot_billed_vs_expected(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Losses in EGP£")
 
                             st.markdown("### Billing Analysis by EGP£ per DMA")
                             st.dataframe(result_df)
                             
 
 
-                            plot_billed_vs_expected(result_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Total Billed vs Expected EGP £")
+                            plot_billed_vs_expected(result_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Total Billed vs Expected EGP£")
 
 
 
