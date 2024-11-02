@@ -973,6 +973,12 @@ with tab1:
                             plot_multiple_demand_billed(dma_merged_df, n, selected_dmas_zones, title="Water Demand vs Billed Volumes per DMA")
 
                         elif billing_type == "Value (EGP £) Analysis" :
+ 
+
+
+                            # Convert selected dates back to datetime format to filter
+                            start_date_dt = pd.to_datetime(start_date, format='%m/%y')
+                            end_date_dt = pd.to_datetime(end_date, format='%m/%y')
 
                             avg_price_per_m3 = st.number_input("Average Price per m³ in EGP£", min_value=0.0, value=2.0)  # Default value is 5 EGP£ for example
                             
@@ -984,10 +990,7 @@ with tab1:
                             dma_value_df = dma_value_df.transpose()
 
                             dma_value_df = add_month_column_from_index(dma_value_df)
-                            dma_value_merged_df = join_billed_with_demand(dma_value_df, water_demand_dma)
-                            result_df = calculate_expected_egp_and_percentage(dma_value_merged_df, avg_price_per_m3, n)
-                            revenue_difference_df = calculate_revenue_difference(result_df, n)
-
+                            
                             dma_value_df.index = pd.to_datetime( dma_value_df.index, format='%m/%y')
                             unique_dates =  dma_value_df.index.sort_values().strftime('%m/%y').tolist()  # Get unique sorted dates as month-year strings
 
@@ -997,11 +1000,12 @@ with tab1:
                                 options=unique_dates,
                                 value=(unique_dates[0], unique_dates[-1])  # Default to full range
                             )
+                            
+                            dma_value_merged_df = join_billed_with_demand(dma_value_df, water_demand_dma)
+                            result_df = calculate_expected_egp_and_percentage(dma_value_merged_df, avg_price_per_m3, n)
+                            revenue_difference_df = calculate_revenue_difference(result_df, n, start_date_dt, end_date_dt)
 
-                            # Convert selected dates back to datetime format to filter
-                            start_date_dt = pd.to_datetime(start_date, format='%m/%y')
-                            end_date_dt = pd.to_datetime(end_date, format='%m/%y')
-
+                            
                             # Display the result
                             st.write("Commercial Losses (EGP£) by DMA and Total Area:", revenue_difference_df)
 
