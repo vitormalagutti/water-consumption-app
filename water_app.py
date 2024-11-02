@@ -395,6 +395,9 @@ def calculate_revenue_difference(results_df, n, start_date_dt, end_date_dt):
     # Filter the DataFrame based on the date range
     filtered_df = results_df[(results_df.index >= start_date_dt) & (results_df.index <= end_date_dt)]
     
+    # Reformat the index to 'mm/yy' format
+    filtered_df.index = filtered_df.index.strftime('%m/%y')
+    
     # Create a new DataFrame for storing the revenue difference within the date range
     revenue_diff_df = pd.DataFrame(index=filtered_df.index)
     
