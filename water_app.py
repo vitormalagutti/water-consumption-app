@@ -1073,7 +1073,7 @@ with tab1:
                             with col1:
                                 st.write("Commercial Losses by DMA and Total Area (EGP£):", revenue_difference_df)
                             with col2:
-                                st.write("Average Commercial Losses in the selected period (EGP£):", round(np.mean(revenue_difference_df["Total Commercial Losses"])), -3)
+                                st.write("Average Commercial Losses in the selected period (EGP£):", round(np.mean(revenue_difference_df["Total Commercial Losses"]), -3))
                                 
                             plot_commercial_loss(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Loss (EGP£) DMA")
                             plot_billed_vs_expected(revenue_difference_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Commercial Losses in EGP£")
