@@ -687,7 +687,7 @@ with tab1:
             st.markdown("## Summary of the Network Users")
 
             # Create columns for side-by-side layout for the tables
-            col1, col2, col3 = st.columns([4, 1, 2])
+            col1, col2, col3 = st.columns([4, 2, 1])
 
             # Place the two tables in the side-by-side layout
             
