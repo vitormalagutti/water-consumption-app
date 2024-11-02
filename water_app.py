@@ -1169,6 +1169,7 @@ with tab1:
                             
                             
                             st.markdown("### Billing Analysis by EGP£ per Zone")
+                            result_df.index = result_df.index.strftime('%m/%y')
                             st.dataframe(result_df)
                             
                             plot_billed_vs_expected(result_df, n, selected_dmas_zones, start_date_dt, end_date_dt, title="Total Billed vs Expected EGP £")
