@@ -1,0 +1,323 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//ChatGPT//DiR Yoga Barcelona Weekly Calendar//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:DiR Yoga — Gràcia, Claret & Campus
+X-WR-CALDESC:Weekday yoga classes. No weekends or virtual sessions. Clare
+ t times are provisional.
+X-WR-TIMEZONE:Europe/Madrid
+BEGIN:VTIMEZONE
+TZID:Europe/Madrid
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:dir-yoga-2026-gracia-1-1915-0@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261123T191500
+DTEND;TZID=Europe/Madrid:20261123T200500
+RRULE:FREQ=WEEKLY;BYDAY=MO
+SUMMARY:Yoga DIR · DiR Gràcia
+DESCRIPTION:Instructor: Lola.\nTimes transcribed from the user-provided D
+ iR Gràcia timetable effective 7 September 2026.\nOfficial current timet
+ able: https://www.dir.cat/es/schedule/dir-gracia
+LOCATION:DiR Gràcia\, Carrer Gran de Gràcia 37\, 08012 Barcelona\, Spai
+ n
+URL:https://www.dir.cat/es/schedule/dir-gracia
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dir-yoga-2026-gracia-2-0915-1@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261117T091500
+DTEND;TZID=Europe/Madrid:20261117T101000
+RRULE:FREQ=WEEKLY;BYDAY=TU
+SUMMARY:Vinyasa · DiR Gràcia
+DESCRIPTION:Instructor: Marta.\nTimes transcribed from the user-provided 
+ DiR Gràcia timetable effective 7 September 2026.\nOfficial current time
+ table: https://www.dir.cat/es/schedule/dir-gracia
+LOCATION:DiR Gràcia\, Carrer Gran de Gràcia 37\, 08012 Barcelona\, Spai
+ n
+URL:https://www.dir.cat/es/schedule/dir-gracia
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dir-yoga-2026-gracia-2-1315-2@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261117T131500
+DTEND;TZID=Europe/Madrid:20261117T140500
+RRULE:FREQ=WEEKLY;BYDAY=TU
+SUMMARY:Yoga DIR · DiR Gràcia
+DESCRIPTION:Instructor: Antonia.\nTimes transcribed from the user-provide
+ d DiR Gràcia timetable effective 7 September 2026.\nOfficial current ti
+ metable: https://www.dir.cat/es/schedule/dir-gracia
+LOCATION:DiR Gràcia\, Carrer Gran de Gràcia 37\, 08012 Barcelona\, Spai
+ n
+URL:https://www.dir.cat/es/schedule/dir-gracia
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dir-yoga-2026-gracia-2-2015-3@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261117T201500
+DTEND;TZID=Europe/Madrid:20261117T211000
+RRULE:FREQ=WEEKLY;BYDAY=TU
+SUMMARY:Vinyasa · DiR Gràcia
+DESCRIPTION:Instructor: Jenifer.\nTimes transcribed from the user-provide
+ d DiR Gràcia timetable effective 7 September 2026.\nOfficial current ti
+ metable: https://www.dir.cat/es/schedule/dir-gracia
+LOCATION:DiR Gràcia\, Carrer Gran de Gràcia 37\, 08012 Barcelona\, Spai
+ n
+URL:https://www.dir.cat/es/schedule/dir-gracia
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dir-yoga-2026-gracia-4-1415-4@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261119T141500
+DTEND;TZID=Europe/Madrid:20261119T150500
+RRULE:FREQ=WEEKLY;BYDAY=TH
+SUMMARY:Yoga DIR · DiR Gràcia
+DESCRIPTION:Instructor: Antonia.\nTimes transcribed from the user-provide
+ d DiR Gràcia timetable effective 7 September 2026.\nOfficial current ti
+ metable: https://www.dir.cat/es/schedule/dir-gracia
+LOCATION:DiR Gràcia\, Carrer Gran de Gràcia 37\, 08012 Barcelona\, Spai
+ n
+URL:https://www.dir.cat/es/schedule/dir-gracia
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dir-yoga-2026-gracia-5-1715-5@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261120T171500
+DTEND;TZID=Europe/Madrid:20261120T180500
+RRULE:FREQ=WEEKLY;BYDAY=FR
+SUMMARY:Vinyasa · DiR Gràcia
+DESCRIPTION:Instructor: Paula.\nTimes transcribed from the user-provided 
+ DiR Gràcia timetable effective 7 September 2026.\nOfficial current time
+ table: https://www.dir.cat/es/schedule/dir-gracia
+LOCATION:DiR Gràcia\, Carrer Gran de Gràcia 37\, 08012 Barcelona\, Spai
+ n
+URL:https://www.dir.cat/es/schedule/dir-gracia
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dir-yoga-2026-claret-1-1315-6@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261123T131500
+DTEND;TZID=Europe/Madrid:20261123T141000
+RRULE:FREQ=WEEKLY;BYDAY=MO
+SUMMARY:Vinyasa · DiR Claret [verify]
+DESCRIPTION:Instructor: Ivan.\nPROVISIONAL: older DiR Claret published ti
+ metable (2 September\, year not confirmed current). Verify this class ti
+ me on the current official website before attending.\nOfficial current t
+ imetable: https://www.dir.cat/es/schedule/dir-claret
+LOCATION:DiR Claret\, Carrer de Sant Antoni Maria Claret 84-86\, 08025 Ba
+ rcelona\, Spain
+URL:https://www.dir.cat/es/schedule/dir-claret
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dir-yoga-2026-claret-1-2015-7@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261123T201500
+DTEND;TZID=Europe/Madrid:20261123T210500
+RRULE:FREQ=WEEKLY;BYDAY=MO
+SUMMARY:Yoga DIR · DiR Claret [verify]
+DESCRIPTION:Instructor: Gabriel.\nPROVISIONAL: older DiR Claret published
+  timetable (2 September\, year not confirmed current). Verify this class
+  time on the current official website before attending.\nOfficial curren
+ t timetable: https://www.dir.cat/es/schedule/dir-claret
+LOCATION:DiR Claret\, Carrer de Sant Antoni Maria Claret 84-86\, 08025 Ba
+ rcelona\, Spain
+URL:https://www.dir.cat/es/schedule/dir-claret
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dir-yoga-2026-claret-2-0915-8@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261117T091500
+DTEND;TZID=Europe/Madrid:20261117T100500
+RRULE:FREQ=WEEKLY;BYDAY=TU
+SUMMARY:Yoga DIR · DiR Claret [verify]
+DESCRIPTION:Instructor: Lola.\nPROVISIONAL: older DiR Claret published ti
+ metable (2 September\, year not confirmed current). Verify this class ti
+ me on the current official website before attending.\nOfficial current t
+ imetable: https://www.dir.cat/es/schedule/dir-claret
+LOCATION:DiR Claret\, Carrer de Sant Antoni Maria Claret 84-86\, 08025 Ba
+ rcelona\, Spain
+URL:https://www.dir.cat/es/schedule/dir-claret
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dir-yoga-2026-claret-2-1915-9@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261117T191500
+DTEND;TZID=Europe/Madrid:20261117T200500
+RRULE:FREQ=WEEKLY;BYDAY=TU
+SUMMARY:Yoga DIR · DiR Claret [verify]
+DESCRIPTION:Instructor: Jerzy.\nPROVISIONAL: older DiR Claret published t
+ imetable (2 September\, year not confirmed current). Verify this class t
+ ime on the current official website before attending.\nOfficial current 
+ timetable: https://www.dir.cat/es/schedule/dir-claret
+LOCATION:DiR Claret\, Carrer de Sant Antoni Maria Claret 84-86\, 08025 Ba
+ rcelona\, Spain
+URL:https://www.dir.cat/es/schedule/dir-claret
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dir-yoga-2026-claret-3-1315-10@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261118T131500
+DTEND;TZID=Europe/Madrid:20261118T141000
+RRULE:FREQ=WEEKLY;BYDAY=WE
+SUMMARY:Hatha Yoga · DiR Claret [verify]
+DESCRIPTION:Instructor: Ivan.\nPROVISIONAL: older DiR Claret published ti
+ metable (2 September\, year not confirmed current). Verify this class ti
+ me on the current official website before attending.\nOfficial current t
+ imetable: https://www.dir.cat/es/schedule/dir-claret
+LOCATION:DiR Claret\, Carrer de Sant Antoni Maria Claret 84-86\, 08025 Ba
+ rcelona\, Spain
+URL:https://www.dir.cat/es/schedule/dir-claret
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dir-yoga-2026-claret-3-1415-11@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261118T141500
+DTEND;TZID=Europe/Madrid:20261118T150500
+RRULE:FREQ=WEEKLY;BYDAY=WE
+SUMMARY:Yoga DIR · DiR Claret [verify]
+DESCRIPTION:Instructor: Lola.\nPROVISIONAL: older DiR Claret published ti
+ metable (2 September\, year not confirmed current). Verify this class ti
+ me on the current official website before attending.\nOfficial current t
+ imetable: https://www.dir.cat/es/schedule/dir-claret
+LOCATION:DiR Claret\, Carrer de Sant Antoni Maria Claret 84-86\, 08025 Ba
+ rcelona\, Spain
+URL:https://www.dir.cat/es/schedule/dir-claret
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dir-yoga-2026-claret-3-1515-12@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261118T151500
+DTEND;TZID=Europe/Madrid:20261118T161000
+RRULE:FREQ=WEEKLY;BYDAY=WE
+SUMMARY:Forrest Yoga · DiR Claret [verify]
+DESCRIPTION:Instructor: Pati.\nPROVISIONAL: older DiR Claret published ti
+ metable (2 September\, year not confirmed current). Verify this class ti
+ me on the current official website before attending.\nOfficial current t
+ imetable: https://www.dir.cat/es/schedule/dir-claret
+LOCATION:DiR Claret\, Carrer de Sant Antoni Maria Claret 84-86\, 08025 Ba
+ rcelona\, Spain
+URL:https://www.dir.cat/es/schedule/dir-claret
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dir-yoga-2026-claret-4-1215-13@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261119T121500
+DTEND;TZID=Europe/Madrid:20261119T131000
+RRULE:FREQ=WEEKLY;BYDAY=TH
+SUMMARY:Yin Yoga · DiR Claret [verify]
+DESCRIPTION:Instructor: Bárbara.\nPROVISIONAL: older DiR Claret publishe
+ d timetable (2 September\, year not confirmed current). Verify this clas
+ s time on the current official website before attending.\nOfficial curre
+ nt timetable: https://www.dir.cat/es/schedule/dir-claret
+LOCATION:DiR Claret\, Carrer de Sant Antoni Maria Claret 84-86\, 08025 Ba
+ rcelona\, Spain
+URL:https://www.dir.cat/es/schedule/dir-claret
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dir-yoga-2026-claret-5-1415-14@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261120T141500
+DTEND;TZID=Europe/Madrid:20261120T151000
+RRULE:FREQ=WEEKLY;BYDAY=FR
+SUMMARY:Hatha Yoga · DiR Claret [verify]
+DESCRIPTION:Instructor: Paula.\nPROVISIONAL: older DiR Claret published t
+ imetable (2 September\, year not confirmed current). Verify this class t
+ ime on the current official website before attending.\nOfficial current 
+ timetable: https://www.dir.cat/es/schedule/dir-claret
+LOCATION:DiR Claret\, Carrer de Sant Antoni Maria Claret 84-86\, 08025 Ba
+ rcelona\, Spain
+URL:https://www.dir.cat/es/schedule/dir-claret
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dir-yoga-2026-claret-5-1715-15@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261120T171500
+DTEND;TZID=Europe/Madrid:20261120T181000
+RRULE:FREQ=WEEKLY;BYDAY=FR
+SUMMARY:Vinyasa · DiR Claret [verify]
+DESCRIPTION:Instructor: Paula.\nPROVISIONAL: older DiR Claret published t
+ imetable (2 September\, year not confirmed current). Verify this class t
+ ime on the current official website before attending.\nOfficial current 
+ timetable: https://www.dir.cat/es/schedule/dir-claret
+LOCATION:DiR Claret\, Carrer de Sant Antoni Maria Claret 84-86\, 08025 Ba
+ rcelona\, Spain
+URL:https://www.dir.cat/es/schedule/dir-claret
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dir-yoga-2026-campus-1-1715-16@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261123T171500
+DTEND;TZID=Europe/Madrid:20261123T180500
+RRULE:FREQ=WEEKLY;BYDAY=MO
+SUMMARY:Yoga DIR · DiR Campus
+DESCRIPTION:Instructor: David Ng.\nDiR Campus schedule as consulted for t
+ he week 17–23 November 2026. Only 17:15 and 18:15 starts included.\nOf
+ ficial current timetable: https://www.dir.cat/es/schedule/dir-campus
+LOCATION:DiR Campus\, Av. del Dr. Marañón 17\, 08028 Barcelona\, Spain
+URL:https://www.dir.cat/es/schedule/dir-campus
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:dir-yoga-2026-campus-2-1815-17@vitormalagutti.github.io
+DTSTAMP:20261117T120000Z
+DTSTART;TZID=Europe/Madrid:20261117T181500
+DTEND;TZID=Europe/Madrid:20261117T190500
+RRULE:FREQ=WEEKLY;BYDAY=TU
+SUMMARY:Yoga DIR · DiR Campus
+DESCRIPTION:Instructor: Bernat Bp.\nDiR Campus schedule as consulted for 
+ the week 17–23 November 2026. Only 17:15 and 18:15 starts included.\nO
+ fficial current timetable: https://www.dir.cat/es/schedule/dir-campus
+LOCATION:DiR Campus\, Av. del Dr. Marañón 17\, 08028 Barcelona\, Spain
+URL:https://www.dir.cat/es/schedule/dir-campus
+CATEGORIES:Yoga,DiR
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR
